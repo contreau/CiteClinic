@@ -1,9 +1,9 @@
 <script>
-  import PubMedFetch from "./lib/PubMedFetch.svelte";
+  import FetchModule from "./lib/FetchModule.svelte";
 </script>
 
 <main>
-  <PubMedFetch />
+  <FetchModule />
 </main>
 
 <style>
