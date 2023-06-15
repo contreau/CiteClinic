@@ -1,7 +1,10 @@
 <script>
-  import { parseData_PubMed } from "./fetchFunctions";
-  import { parseData_Nature } from "./fetchFunctions";
-  import { parseData_AMJM } from "./fetchFunctions";
+  import {
+    parseData_NEJM,
+    parseData_PubMed,
+    parseData_Nature,
+    parseData_AMJM,
+  } from "./fetchFunctions";
 
   // *
   // ** Fetch Module **
@@ -19,6 +22,10 @@
   // sample AMJM urls
   // https://www.amjmed.com/article/S0002-9343(23)00345-5/fulltext
   // https://www.amjmed.com/article/S0002-9343(00)00308-9/fulltext
+
+  // sample NEJM urls
+  // https://www.nejm.org/doi/full/10.1056/NEJMoa2101195
+  // https://www.nejm.org/doi/full/10.1056/NEJMoa0708638
 
   let input;
   let sourceSelect = "";
@@ -38,6 +45,10 @@
         parseData_AMJM(input);
         input.value = "";
         break;
+      case "NEJM":
+        parseData_NEJM(input);
+        input.value = "";
+        break;
     }
   };
 </script>
@@ -53,6 +64,7 @@
     <option value="PubMed">PubMed</option>
     <option value="Nature">Nature</option>
     <option value="AMJM">AMJM</option>
+    <option value="NEJM">NEJM</option>
   </select>
 
   <button
