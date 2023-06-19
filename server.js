@@ -51,7 +51,7 @@ router.get("/amjm-fetch", async (req, res) => {
 
 router.get("/nejm-fetch", async (req, res) => {
   const url = req.query.url;
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
 
   await page.goto(url);
