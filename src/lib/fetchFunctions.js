@@ -1,10 +1,9 @@
 const parser = new DOMParser();
 
-// ** Server Calls
-
-// TODO: add URL validation to these fetch functions so server
-// doesn't crash when non-URL values are submitted (try native URL constructor)
+// TODO:
 // error handle when selectors are not present to scrape from so that a default value is served and server doesn't crash
+
+// ** Server Calls
 
 const fetchPage = async function (input) {
   try {
@@ -22,34 +21,16 @@ const fetchPage = async function (input) {
   }
 };
 
-const puppetAMJM = async function (input) {
+const puppetFetch = async function (input, route) {
   try {
     const submitURL = new Promise((resolve) => {
       resolve(input.value);
-      input.value = "";
     });
     const url = await submitURL;
-    const response = await fetch(`http://localhost:3000/amjm-fetch?url=${url}`);
+    const response = await fetch(`http://localhost:3000/${route}?url=${url}`);
     const text = await response.text();
     return parser.parseFromString(text, "text/html");
   } catch (err) {
-    console.log();
-    console.error("URL likely invalid.", err);
-  }
-};
-
-const puppetNEJM = async function (input) {
-  try {
-    const submitURL = new Promise((resolve) => {
-      resolve(input.value);
-      input.value = "";
-    });
-    const url = await submitURL;
-    const response = await fetch(`http://localhost:3000/nejm-fetch?url=${url}`);
-    const text = await response.text();
-    return parser.parseFromString(text, "text/html");
-  } catch (err) {
-    console.log();
     console.error("URL likely invalid.", err);
   }
 };
@@ -57,57 +38,20 @@ const puppetNEJM = async function (input) {
 // ** Data Parsing
 
 // PUBMED
-export const parseData_PubMed = async function (input) {
+export const parseData = async function (input, params) {
   if (input.value != "") {
     try {
+      const url = new URL(input.value);
+      if (url.host != params.host)
+        throw new Error("The provided URL does not match your target.");
       const dom = await fetchPage(input);
-      const title = dom.querySelector(".heading-title");
-      const bylines = Array.from(dom.querySelectorAll(".full-name"));
-      const doi = dom.querySelector(".citation-doi");
-      const publication = dom.querySelector("#full-view-journal-trigger");
+      const title = dom.querySelector(params.title).textContent.trim();
+      const bylines = Array.from(dom.querySelectorAll(params.rawAuthors));
+      const doi = dom.querySelector(params.doi).textContent.trim();
+      const journal = dom.querySelector(params.journal).textContent.trim();
       const nameset = new Set();
       const authors = [];
 
-      bylines.forEach((e) => {
-        if (!nameset.has(e.textContent)) {
-          authors.push(e.textContent);
-          nameset.add(e.textContent);
-        }
-      });
-
-      const citation = {
-        title: title.textContent.trim(),
-        authors: authors,
-        doi: doi.textContent.trim(),
-        publication: publication.textContent.trim(),
-      };
-
-      console.log(citation);
-      return citation;
-    } catch (err) {
-      console.error(err);
-    }
-  }
-};
-
-// NATURE
-export const parseData_Nature = async function (input) {
-  if (input.value != "") {
-    try {
-      const dom = await fetchPage(input);
-      const title = dom.querySelector(".c-article-title").textContent;
-      const citationText = dom
-        .querySelector(".c-bibliographic-information__citation")
-        .textContent.trim();
-      const doi = dom.querySelector(
-        "span.c-bibliographic-information__value"
-      ).textContent;
-
-      const bylines = Array.from(
-        dom.querySelectorAll("[data-test = author-name]")
-      );
-      const nameset = new Set();
-      const authors = [];
       bylines.forEach((e) => {
         if (!nameset.has(e.textContent)) {
           authors.push(e.textContent);
@@ -119,11 +63,13 @@ export const parseData_Nature = async function (input) {
         title: title,
         authors: authors,
         doi: doi,
-        citationText: citationText,
+        journal: journal,
       };
+
       console.log(citation);
+      return citation;
     } catch (err) {
-      console.error(err);
+      console.error("Invalid URL.", err);
     }
   }
 };
@@ -132,7 +78,7 @@ export const parseData_Nature = async function (input) {
 export const parseData_AMJM = async function (input) {
   if (input.value != "") {
     try {
-      const dom = await puppetAMJM(input);
+      const dom = await puppetFetch(input, "amjm-fetch");
       const title = dom.querySelector(".article-header__title");
       const bylines = Array.from(dom.querySelectorAll(".loa__item__name"));
       const doi = dom.querySelector(".article-header__doi");
@@ -163,33 +109,38 @@ export const parseData_AMJM = async function (input) {
 };
 
 // NEJM
-export const parseData_NEJM = async function (input) {
+export const parseData_NEJM = async function (input, params) {
   if (input.value != "") {
     try {
-      const dom = await puppetNEJM(input);
-      const title = dom.querySelector(".title_default");
-      const doi_parent = dom.querySelector("p.f-ui");
+      const url = new URL(input.value);
+      if (url.host != params.host)
+        throw new Error("The provided URL does not match your target.");
+      const dom = await puppetFetch(input, params.route);
+      const title = dom.querySelector(params.title).textContent.trim();
+      const doi_parent = dom.querySelector(params.doi);
       const doi = Array.from(doi_parent.childNodes)[4].textContent.trim();
-      const authorsUL = dom.querySelector(".m-article-header__authors");
+      const journal = Array.from(doi_parent.childNodes)[2].textContent.trim();
+      const authorsUL = dom.querySelector(params.rawAuthors);
       const authorChildren = Array.from(authorsUL.childNodes);
 
       const nameset = new Set();
       let authors = [];
       authorChildren.forEach((e) => {
         if (!nameset.has(e.textContent)) {
-          authors.push(e.textContent);
+          authors.push(e.textContent.trim());
           nameset.add(e.textContent);
         }
       });
 
       const citation = {
-        title: title.textContent.trim(),
+        title: title,
         authors: authors,
         doi: doi,
+        journal: journal,
       };
       console.log(citation);
     } catch (err) {
-      console.error(err);
+      console.error("Invalid URL.", err);
     }
   }
 };

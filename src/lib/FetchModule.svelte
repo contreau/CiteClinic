@@ -1,10 +1,7 @@
 <script>
-  import {
-    parseData_NEJM,
-    parseData_PubMed,
-    parseData_Nature,
-    parseData_AMJM,
-  } from "./fetchFunctions";
+  import { parseData_NEJM, parseData, parseData_AMJM } from "./fetchFunctions";
+
+  import { pubmedPARAMS, naturePARAMS, nejmPARAMS } from "./parameters";
 
   // *
   // ** Fetch Module **
@@ -34,20 +31,24 @@
   const launchFetch = (input) => {
     switch (sourceSelect) {
       case "PubMed":
-        parseData_PubMed(input);
+        parseData(input, pubmedPARAMS);
         input.value = "";
+        input.focus();
         break;
       case "Nature":
-        parseData_Nature(input);
+        parseData(input, naturePARAMS);
         input.value = "";
+        input.focus();
         break;
       case "AMJM":
         parseData_AMJM(input);
         input.value = "";
+        input.focus();
         break;
       case "NEJM":
-        parseData_NEJM(input);
+        parseData_NEJM(input, nejmPARAMS);
         input.value = "";
+        input.focus();
         break;
     }
   };
@@ -80,6 +81,10 @@
   .input-wrap {
     max-width: 400px;
     width: 100%;
-    margin: 4em auto;
+    margin: 0 auto;
+  }
+
+  p {
+    margin: 0;
   }
 </style>
