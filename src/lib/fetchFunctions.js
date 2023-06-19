@@ -2,26 +2,15 @@ const parser = new DOMParser();
 
 // TODO:
 // error handle when selectors are not present to scrape from so that a default value is served and server doesn't crash
+// remaining journals to route to:
+// * The Lancet
+// * JAMA
+// * BMJ (British Medical Journal)
+// * Remove AMJM eventually, keep for now as cookie handling reference
 
-// ** Server Calls
+// ** Server Call
 
-const fetchPage = async function (input) {
-  try {
-    const submitURL = new Promise((resolve) => {
-      resolve(input.value);
-    });
-    const url = await submitURL;
-    const response = await fetch(
-      `http://localhost:3000/scholar-fetch?url=${url}`
-    );
-    const text = await response.text();
-    return parser.parseFromString(text, "text/html");
-  } catch (err) {
-    console.error("URL likely invalid.", err);
-  }
-};
-
-const puppetFetch = async function (input, route) {
+const fetchPage = async function (input, route) {
   try {
     const submitURL = new Promise((resolve) => {
       resolve(input.value);
@@ -44,7 +33,7 @@ export const parseData = async function (input, params) {
       const url = new URL(input.value);
       if (url.host != params.host)
         throw new Error("The provided URL does not match your target.");
-      const dom = await fetchPage(input);
+      const dom = await fetchPage(input, params.route);
       const title = dom.querySelector(params.title).textContent.trim();
       const bylines = Array.from(dom.querySelectorAll(params.rawAuthors));
       const doi = dom.querySelector(params.doi).textContent.trim();
@@ -75,10 +64,11 @@ export const parseData = async function (input, params) {
 };
 
 // AMJM
+// not updating error handling like the rest since this will be dropped eventually
 export const parseData_AMJM = async function (input) {
   if (input.value != "") {
     try {
-      const dom = await puppetFetch(input, "amjm-fetch");
+      const dom = await fetchPage(input, "amjm-fetch");
       const title = dom.querySelector(".article-header__title");
       const bylines = Array.from(dom.querySelectorAll(".loa__item__name"));
       const doi = dom.querySelector(".article-header__doi");
@@ -115,7 +105,7 @@ export const parseData_NEJM = async function (input, params) {
       const url = new URL(input.value);
       if (url.host != params.host)
         throw new Error("The provided URL does not match your target.");
-      const dom = await puppetFetch(input, params.route);
+      const dom = await fetchPage(input, params.route);
       const title = dom.querySelector(params.title).textContent.trim();
       const doi_parent = dom.querySelector(params.doi);
       const doi = Array.from(doi_parent.childNodes)[4].textContent.trim();

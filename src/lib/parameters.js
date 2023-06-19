@@ -4,6 +4,7 @@ export const pubmedPARAMS = {
   doi: ".citation-doi",
   journal: "#full-view-journal-trigger",
   host: "pubmed.ncbi.nlm.nih.gov",
+  route: "scholar-fetch",
 };
 
 export const naturePARAMS = {
@@ -12,6 +13,7 @@ export const naturePARAMS = {
   doi: ".c-bibliographic-information__list-item--doi span.c-bibliographic-information__value",
   journal: "[data-test = journal-title]",
   host: "www.nature.com",
+  route: "scholar-fetch",
 };
 
 export const nejmPARAMS = {
