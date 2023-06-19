@@ -18,6 +18,9 @@ body {
 }
 
 #app {
-  max-width: 1320px;
+  // max-width: 1320px;
   margin: 0 auto;
+  min-height: 100vh;
+  background-image: url("/polygon-scatter-mint.svg");
+  background-repeat: repeat;
 }
