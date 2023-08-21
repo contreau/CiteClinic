@@ -65,6 +65,33 @@ router.get("/nejm-fetch", async (req, res) => {
   res.send(htmlContent);
 });
 
+router.get("/lancet-fetch", async (req, res) => {
+  const url = req.query.url;
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  await page.goto(url);
+
+  try {
+    await page.waitForSelector("#onetrust-accept-btn-handler", {
+      visible: true,
+      timeout: 5000,
+    });
+    await page.click("#onetrust-accept-btn-handler");
+  } catch (error) {
+    console.log("Cookie consent button not found or not clickable");
+  }
+
+  await page.waitForSelector(".article-header__title", {
+    visible: true,
+    timeout: 5000,
+  });
+
+  const htmlContent = await page.content();
+  await browser.close();
+  res.send(htmlContent);
+});
+
 app.use(router);
 
 // server launch command: node server.js

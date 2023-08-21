@@ -23,3 +23,20 @@ export const nejmPARAMS = {
   host: "www.nejm.org",
   route: "nejm-fetch",
 };
+
+export const lancetPARAMS = {
+  title: ".article-header__title",
+  rawAuthors: ".loa__item__email",
+  doi: ".article-header__doi__value",
+  host: "www.thelancet.com",
+  route: "lancet-fetch",
+};
+
+export const jamaPARAMS = {
+  title: ".meta-article-title ",
+  publishDate: ".epub",
+  rawAuthors: ".wi-fullname",
+  doi: ".parapublished-online",
+  host: "jamanetwork.com",
+  route: "scholar-fetch",
+};

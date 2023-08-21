@@ -1,7 +1,19 @@
 <script>
-  import { parseData_NEJM, parseData, parseData_AMJM } from "./fetchFunctions";
+  import {
+    parseData_NEJM,
+    parseData,
+    parseData_AMJM,
+    parseData_LANCET,
+    parseData_JAMA,
+  } from "./fetchFunctions";
 
-  import { pubmedPARAMS, naturePARAMS, nejmPARAMS } from "./parameters";
+  import {
+    pubmedPARAMS,
+    naturePARAMS,
+    nejmPARAMS,
+    lancetPARAMS,
+    jamaPARAMS,
+  } from "./parameters";
 
   // *
   // ** Fetch Module **
@@ -23,6 +35,12 @@
   // sample NEJM urls
   // https://www.nejm.org/doi/full/10.1056/NEJMoa2101195
   // https://www.nejm.org/doi/full/10.1056/NEJMoa0708638
+
+  // sample Lancet urls
+  // https://www.thelancet.com/journals/landia/article/PIIS2213-8587(23)00191-2/fulltext
+
+  // sample JAMA urls
+  // https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2795976?resultClick=1
 
   let input;
   let sourceSelect = "";
@@ -50,6 +68,16 @@
         input.value = "";
         input.focus();
         break;
+      case "Lancet":
+        parseData_LANCET(input, lancetPARAMS);
+        input.value = "";
+        input.focus();
+        break;
+      case "JAMA":
+        parseData_JAMA(input, jamaPARAMS);
+        input.value = "";
+        input.focus();
+        break;
     }
   };
 </script>
@@ -66,6 +94,8 @@
     <option value="Nature">Nature</option>
     <option value="AMJM">AMJM</option>
     <option value="NEJM">NEJM</option>
+    <option value="Lancet">The Lancet</option>
+    <option value="JAMA">JAMA Network</option>
   </select>
 
   <button
