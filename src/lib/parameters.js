@@ -40,3 +40,12 @@ export const jamaPARAMS = {
   host: "jamanetwork.com",
   route: "scholar-fetch",
 };
+
+export const bmjPARAMS = {
+  title: ".highwire-cite-title",
+  publishDate: ".highwire-cite-date",
+  rawAuthors: ".contributor-list",
+  doi: ".highwire-cite-doi",
+  host: "www.bmj.com",
+  route: "bmj-fetch",
+};

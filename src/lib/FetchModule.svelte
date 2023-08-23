@@ -5,6 +5,7 @@
     parseData_AMJM,
     parseData_LANCET,
     parseData_JAMA,
+    parseData_BMJ,
   } from "./fetchFunctions";
 
   import {
@@ -13,6 +14,7 @@
     nejmPARAMS,
     lancetPARAMS,
     jamaPARAMS,
+    bmjPARAMS,
   } from "./parameters";
 
   // *
@@ -78,6 +80,11 @@
         input.value = "";
         input.focus();
         break;
+      case "BMJ":
+        parseData_BMJ(input, bmjPARAMS);
+        input.value = "";
+        input.focus();
+        break;
     }
   };
 </script>
@@ -96,6 +103,7 @@
     <option value="NEJM">NEJM</option>
     <option value="Lancet">The Lancet</option>
     <option value="JAMA">JAMA Network</option>
+    <option value="BMJ">British Medical Journal</option>
   </select>
 
   <button

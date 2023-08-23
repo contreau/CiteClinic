@@ -4,7 +4,7 @@ const parser = new DOMParser();
 // error handle when selectors are not present to scrape from so that a default value is served and server doesn't crash
 // remaining journals to route to:
 // * JAMA (finish cleaning up data)
-// * BMJ (British Medical Journal)
+// * BMJ (finish cleaning up data)
 // * Remove AMJM eventually, keep for now as cookie handling reference
 
 // ** Server Call
@@ -170,6 +170,45 @@ export const parseData_LANCET = async function (input, params) {
 };
 
 export const parseData_JAMA = async function (input, params) {
+  if (input.value != "") {
+    try {
+      const url = new URL(input.value);
+      if (url.host != params.host)
+        throw new Error("The provided URL does not match your target.");
+      const dom = await fetchPage(input, params.route);
+      const title = dom.querySelector(params.title).textContent.trim();
+      const publishDate = dom
+        .querySelector(params.publishDate)
+        .textContent.trim();
+      const bylines = Array.from(dom.querySelectorAll(params.rawAuthors));
+      const doi = dom.querySelector(params.doi).textContent.trim();
+      const nameset = new Set();
+      let authors = [];
+
+      bylines.forEach((e) => {
+        if (e.textContent.trim() != "") {
+          if (!nameset.has(e.textContent)) {
+            authors.push(e.textContent.trim());
+            nameset.add(e.textContent);
+          }
+        }
+      });
+
+      const citation = {
+        title: title,
+        publishDate: publishDate,
+        authors: authors,
+        doi: doi,
+      };
+
+      console.log(citation);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+};
+
+export const parseData_BMJ = async function (input, params) {
   if (input.value != "") {
     try {
       const url = new URL(input.value);
