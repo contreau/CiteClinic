@@ -119,7 +119,6 @@ router.get("/bmj-fetch", async (req, res) => {
   });
 
   const htmlContent = await page.content();
-  console.log(htmlContent);
   await browser.close();
   res.send(htmlContent);
 });

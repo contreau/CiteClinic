@@ -44,6 +44,9 @@
   // sample JAMA urls
   // https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2795976?resultClick=1
 
+  // sample BMJ urls
+  // https://www.bmj.com/content/323/7322/1155
+
   let input;
   let sourceSelect = "";
 
