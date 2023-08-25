@@ -2,11 +2,12 @@ const parser = new DOMParser();
 
 // TODO:
 // error handle when selectors are not present to scrape from so that a default value is served and server doesn't crash
-// * JAMA (finish cleaning up author and DOI)
+// Reapproach way to scrape NEJM DOI and publish date
+// use this newer article as comparison:
+// https://www.nejm.org/doi/full/10.1056/NEJMoa2303062?query=featured_home
 // * Clean up given citation for Nature
-// * Remove AMJM eventually, keep for now as cookie handling reference
-// ** Server Call
 
+// ** Server Call
 const fetchPage = async function (input, route) {
   try {
     const submitURL = new Promise((resolve) => {
@@ -72,41 +73,6 @@ export const parseData = async function (input, params) {
       return citation;
     } catch (err) {
       console.error("Invalid URL.", err);
-    }
-  }
-};
-
-// AMJM
-// not updating error handling like the rest since this will be dropped eventually
-export const parseData_AMJM = async function (input) {
-  if (input.value != "") {
-    try {
-      const dom = await fetchPage(input, "amjm-fetch");
-      const title = dom.querySelector(".article-header__title");
-      const bylines = Array.from(dom.querySelectorAll(".loa__item__name"));
-      const doi = dom.querySelector(".article-header__doi");
-      const nameset = new Set();
-      let authors = [];
-
-      bylines.forEach((e) => {
-        if (e.textContent.trim() != "") {
-          if (!nameset.has(e.textContent)) {
-            authors.push(e.textContent.trim());
-            nameset.add(e.textContent);
-          }
-        }
-      });
-
-      const citation = {
-        title: title.textContent.trim(),
-        authors: authors,
-        doi: doi.textContent.trim(),
-        // publication: publication.textContent.trim(),
-      };
-
-      console.log(citation);
-    } catch (err) {
-      console.error(err);
     }
   }
 };
@@ -231,14 +197,15 @@ export const parseData_JAMA = async function (input, params) {
 
       bylines.forEach((e) => {
         if (e.textContent.trim() != "") {
-          if (!nameset.has(e.textContent)) {
-            authors.push(e.textContent.trim());
-            nameset.add(e.textContent);
+          if (!nameset.has(e.childNodes[0].childNodes[0].textContent)) {
+            authors.push(e.childNodes[0].childNodes[0].textContent.trim());
+            nameset.add(e.childNodes[0].childNodes[0].textContent);
           }
         }
       });
       // DOI
-      const doi = dom.querySelector(params.doi).textContent.trim();
+      const doiRaw = dom.querySelector(params.doi).textContent.trim();
+      const doi = doiRaw.split(" ")[1];
       // Journal
       const journal = dom.querySelector(params.journal).textContent.trim();
 

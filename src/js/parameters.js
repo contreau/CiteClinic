@@ -44,9 +44,9 @@ export const lancetPARAMS = {
 
 export const jamaPARAMS = {
   title: ".meta-article-title ",
-  publishDate: ".epub",
+  publishDate: ".meta-date",
   rawAuthors: ".wi-fullname",
-  doi: ".parapublished-online",
+  doi: ".meta-citation",
   journal: ".meta-citation-journal-name",
   host: "jamanetwork.com",
   route: "scholar-fetch",

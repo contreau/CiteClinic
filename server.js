@@ -22,34 +22,6 @@ router.get("/scholar-fetch", async (req, res) => {
   res.send(text);
 });
 
-router.get("/amjm-fetch", async (req, res) => {
-  const url = req.query.url;
-  const browser = await puppeteer.launch({ headless: "new" });
-  console.log("launching puppeteer");
-  const page = await browser.newPage();
-
-  await page.goto(url);
-
-  try {
-    await page.waitForSelector("#onetrust-accept-btn-handler", {
-      visible: true,
-      timeout: 5000,
-    });
-    await page.click("#onetrust-accept-btn-handler");
-  } catch (error) {
-    console.log("Cookie consent button not found or not clickable");
-  }
-
-  await page.waitForSelector(".article-header__middle", {
-    visible: true,
-    timeout: 5000,
-  });
-
-  const htmlContent = await page.content();
-  await browser.close();
-  res.send(htmlContent);
-});
-
 router.get("/nejm-fetch", async (req, res) => {
   const url = req.query.url;
   const browser = await puppeteer.launch({ headless: "new" });
