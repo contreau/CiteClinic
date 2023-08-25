@@ -25,6 +25,7 @@ body {
 body {
   background-color: var(--bg-color);
   background-image: url("/green-scatter-bg.svg");
+  backdrop-filter: blur(0.4em);
 }
 
 #app {

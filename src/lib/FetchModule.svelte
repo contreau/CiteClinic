@@ -2,11 +2,10 @@
   import {
     parseData_NEJM,
     parseData,
-    parseData_AMJM,
     parseData_LANCET,
     parseData_JAMA,
     parseData_BMJ,
-  } from "./fetchFunctions";
+  } from "../js/fetchFunctions";
 
   import {
     pubmedPARAMS,
@@ -15,7 +14,7 @@
     lancetPARAMS,
     jamaPARAMS,
     bmjPARAMS,
-  } from "./parameters";
+  } from "../js/parameters";
 
   // *
   // ** Fetch Module **
@@ -29,10 +28,6 @@
   // sample Nature urls
   // https://www.nature.com/articles/s41591-023-02392-7
   // https://www.nature.com/articles/s41598-023-32742-x
-
-  // sample AMJM urls
-  // https://www.amjmed.com/article/S0002-9343(23)00345-5/fulltext
-  // https://www.amjmed.com/article/S0002-9343(00)00308-9/fulltext
 
   // sample NEJM urls
   // https://www.nejm.org/doi/full/10.1056/NEJMoa2101195
@@ -48,7 +43,7 @@
   // https://www.bmj.com/content/323/7322/1155
 
   let input;
-  let sourceSelect = "";
+  let sourceSelect = "Select a Journal";
 
   // submit button event function
   const launchFetch = (input) => {
@@ -60,11 +55,6 @@
         break;
       case "Nature":
         parseData(input, naturePARAMS);
-        input.value = "";
-        input.focus();
-        break;
-      case "AMJM":
-        parseData_AMJM(input);
         input.value = "";
         input.focus();
         break;
@@ -94,20 +84,25 @@
 
 <div class="input-wrap">
   <p>
-    Source: {sourceSelect}
+    {sourceSelect}
   </p>
-  <input bind:this={input} type="text" class="url-input" />
 
   <select bind:value={sourceSelect} name="source" id="source-select">
-    <option value="">Select</option>
+    <option value="Select a Journal">Select</option>
     <option value="PubMed">PubMed</option>
     <option value="Nature">Nature</option>
-    <option value="AMJM">AMJM</option>
     <option value="NEJM">NEJM</option>
     <option value="Lancet">The Lancet</option>
     <option value="JAMA">JAMA Network</option>
     <option value="BMJ">British Medical Journal</option>
   </select>
+
+  <input
+    bind:this={input}
+    type="text"
+    class="url-input"
+    placeholder="Paste URL"
+  />
 
   <button
     on:click={() => {
@@ -118,11 +113,10 @@
   >
 </div>
 
-<style>
+<style lang="scss">
   .input-wrap {
-    max-width: 400px;
-    width: 100%;
     margin: 0 auto;
+    margin-top: 2.5rem;
   }
 
   p {
