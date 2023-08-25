@@ -41,6 +41,7 @@
     padding-top: 1em;
 
     .journal-item {
+      font-weight: 600;
       color: #fff;
       padding: 0.3em 0.5em;
       // border: solid 1px #fff;
