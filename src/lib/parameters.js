@@ -25,7 +25,7 @@ export const nejmPARAMS = {
 	publishDate: '.o-colset-1-2-2 > .o-col',
 	rawAuthors: '.m-article-header__authors',
 	doi: 'p.f-ui',
-	journal: null,
+	journal: 'New England Journal of Medicine',
 	host: 'www.nejm.org',
 	route: 'nejm-fetch',
 	givenCitation: null
@@ -36,7 +36,7 @@ export const lancetPARAMS = {
 	publishDate: '.article-header__publish-date__value',
 	rawAuthors: '.loa__item__email',
 	doi: '.article-header__doi__value',
-	journal: null,
+	journal: 'meta[name="citation_journal_title"]',
 	host: 'www.thelancet.com',
 	route: 'lancet-fetch',
 	givenCitation: null

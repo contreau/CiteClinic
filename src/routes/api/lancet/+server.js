@@ -49,12 +49,15 @@ export async function GET({ url }) {
 	// DOI
 	const doi = dom.querySelector(lancetPARAMS.doi).textContent.trim();
 
+	// Journal
+	const journal = dom.querySelector(lancetPARAMS.journal).getAttribute('content');
+
 	const citation = {
 		title: title,
 		publishDate: publishDate,
 		authors: authors,
 		doi: doi,
-		journal: lancetPARAMS.journal,
+		journal: journal,
 		givenCitation: lancetPARAMS.givenCitation
 	};
 	return json(citation);

@@ -25,33 +25,44 @@ export async function GET({ url }) {
 
 		// Title
 		const title = dom.querySelector(nejmPARAMS.title).textContent.trim();
-		// Publish Date
-		const rawDate = dom.querySelector(nejmPARAMS.publishDate).textContent.trim();
-		let publishDate = '';
-		for (let i = 0; i < rawDate.length; i++) {
-			if (rawDate[i] != 'N') {
-				continue;
-			} else if (rawDate[i] === 'N' && rawDate[i + 1] === ' ') {
-				publishDate = rawDate.slice(0, i);
-				break;
+
+		// Publish Date and DOI
+		// handles two different formats of the p.f-ui element that can occur on NEJM
+		const doi_parent = dom.querySelector(nejmPARAMS.doi);
+		const parentArray = doi_parent.innerHTML.split('<br>');
+		const dateAnchorText = doi_parent.querySelector('a')?.textContent ?? null;
+		let publishDate = null;
+		let doi = null;
+
+		if (dateAnchorText === null) {
+			publishDate = parentArray[0];
+			doi = parentArray[1].trim();
+		} else {
+			publishDate = dateAnchorText;
+			for (let i = 0; i < parentArray.length; i++) {
+				if (parentArray[i].includes('DOI')) {
+					doi = parentArray[i].trim();
+					break;
+				}
 			}
 		}
-		// DOI
-		const doi_parent = dom.querySelector(nejmPARAMS.doi);
-		const doi = Array.from(doi_parent.childNodes)[4].textContent.trim();
-		// Journal
-		const journal = Array.from(doi_parent.childNodes)[2].textContent.trim();
+
 		// Authors
 		const authorsUL = dom.querySelector(nejmPARAMS.rawAuthors);
 		const authorChildren = Array.from(authorsUL.childNodes);
 
 		const nameset = new Set();
-		let authors = [];
+		let filteredAuthors = [];
 		authorChildren.forEach((e) => {
 			if (!nameset.has(e.textContent)) {
-				authors.push(e.textContent.trim());
+				filteredAuthors.push(e.textContent.trim());
 				nameset.add(e.textContent);
 			}
+		});
+
+		const authors = filteredAuthors.map((el) => {
+			if (el.at(-1) === ',') return el.slice(0, -1);
+			else return el;
 		});
 
 		const citation = {
@@ -59,7 +70,7 @@ export async function GET({ url }) {
 			publishDate: publishDate,
 			authors: authors,
 			doi: doi,
-			journal: journal,
+			journal: nejmPARAMS.journal,
 			givenCitation: nejmPARAMS.givenCitation
 		};
 		return json(citation);
