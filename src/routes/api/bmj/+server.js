@@ -34,19 +34,22 @@ export async function GET({ url }) {
 		const dom = new JSDOM(html).window.document;
 
 		// Title
-		const title = dom.querySelector(bmjPARAMS.title).textContent.trim();
+		const title = dom.querySelector(bmjPARAMS.title)?.textContent.trim() ?? null;
 		// Publish Date
-		const publishDate = dom.querySelector(bmjPARAMS.publishDate).textContent.trim();
+		const publishDate = dom.querySelector(bmjPARAMS.publishDate)?.textContent.trim() ?? null;
 		// Authors
-		const authorArr = dom.querySelector(bmjPARAMS.rawAuthors).textContent.split(',');
-		const authors = [];
-		for (let i = 0; i < authorArr.length; i++) {
-			if (i % 2 === 0) authors.push(authorArr[i].trim());
+		const authorArr = dom.querySelector(bmjPARAMS.rawAuthors)?.textContent.split(',') ?? null;
+		let authors = null;
+		if (authorArr !== null) {
+			authors = [];
+			for (let i = 0; i < authorArr.length; i++) {
+				if (i % 2 === 0) authors.push(authorArr[i].trim());
+			}
 		}
 		// DOI
-		const doi = dom.querySelector(bmjPARAMS.doi).textContent.trim();
+		const doi = dom.querySelector(bmjPARAMS.doi)?.textContent.trim() ?? null;
 		// Journal
-		const journal = dom.querySelector(bmjPARAMS.journal).textContent.trim();
+		const journal = dom.querySelector(bmjPARAMS.journal)?.getAttribute('content') ?? 'BMJ';
 
 		// Citation Object
 		const citation = {

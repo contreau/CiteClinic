@@ -10,27 +10,31 @@ export async function GET({ url }) {
 		const dom = new JSDOM(html).window.document;
 
 		// Title
-		const title = dom.querySelector(jamaPARAMS.title).textContent.trim();
+		const title = dom.querySelector(jamaPARAMS.title)?.textContent.trim() ?? null;
 		// Publish Date
-		const publishDate = dom.querySelector(jamaPARAMS.publishDate).textContent.trim();
+		const publishDate = dom.querySelector(jamaPARAMS.publishDate)?.textContent.trim() ?? null;
 		// Authors
-		const bylines = Array.from(dom.querySelectorAll(jamaPARAMS.rawAuthors));
-		const nameset = new Set();
-		let authors = [];
-
-		bylines.forEach((e) => {
-			if (e.textContent.trim() != '') {
-				if (!nameset.has(e.childNodes[0].childNodes[0].textContent)) {
-					authors.push(e.childNodes[0].childNodes[0].textContent.trim());
-					nameset.add(e.childNodes[0].childNodes[0].textContent);
+		const rawAuthors = dom.querySelectorAll(jamaPARAMS.rawAuthors);
+		const bylines = rawAuthors.length > 0 ? Array.from(rawAuthors) : null;
+		let authors = null;
+		if (bylines !== null) {
+			const nameset = new Set();
+			authors = [];
+			bylines.forEach((e) => {
+				if (e.textContent.trim() != '') {
+					if (!nameset.has(e.childNodes[0].childNodes[0].textContent)) {
+						authors.push(e.childNodes[0].childNodes[0].textContent.trim());
+						nameset.add(e.childNodes[0].childNodes[0].textContent);
+					}
 				}
-			}
-		});
+			});
+		}
 		// DOI
-		const doiRaw = dom.querySelector(jamaPARAMS.doi).textContent.trim();
-		const doi = doiRaw.split(' ')[1];
+		const doiRaw = dom.querySelector(jamaPARAMS.doi)?.textContent.trim() ?? null;
+		const doi = doiRaw !== null ? doiRaw.split(' ')[1] : null;
 		// Journal
-		const journal = dom.querySelector(jamaPARAMS.journal).textContent.trim();
+		const journal =
+			dom.querySelector(jamaPARAMS.journal)?.getAttribute('content') ?? 'JAMA Network';
 
 		const citation = {
 			title: title,

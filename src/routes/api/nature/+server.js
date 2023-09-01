@@ -9,32 +9,32 @@ export async function GET({ url }) {
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
 
-		const title = dom.querySelector(naturePARAMS.title).textContent.trim();
+		const title = dom.querySelector(naturePARAMS.title)?.textContent.trim() ?? null;
 		// Publish Date
-		let publishDate = null;
-		if (naturePARAMS.publishDate != null) {
-			publishDate = dom.querySelector(naturePARAMS.publishDate).textContent;
-		}
+		let publishDate = dom.querySelector(naturePARAMS.publishDate)?.textContent ?? null;
+
 		// Authors
-		const bylines = Array.from(dom.querySelectorAll(naturePARAMS.rawAuthors));
-		const nameset = new Set();
-		const authors = [];
-		bylines.forEach((e) => {
-			if (!nameset.has(e.textContent)) {
-				authors.push(e.textContent);
-				nameset.add(e.textContent);
-			}
-		});
+		const rawAuthors = dom.querySelectorAll(naturePARAMS.rawAuthors);
+		const bylines = rawAuthors.length > 0 ? Array.from(rawAuthors) : null;
+		let authors = null;
+		if (bylines !== null) {
+			const nameset = new Set();
+			authors = [];
+			bylines.forEach((e) => {
+				if (!nameset.has(e.textContent)) {
+					authors.push(e.textContent);
+					nameset.add(e.textContent);
+				}
+			});
+		}
+
 		// DOI
-		const doi = dom.querySelector(naturePARAMS.doi).textContent.trim();
+		const doi = dom.querySelector(naturePARAMS.doi)?.textContent.trim() ?? null;
 		// Journal
-		const journal = dom.querySelector(naturePARAMS.journal).textContent.trim();
+		const journal = dom.querySelector(naturePARAMS.journal)?.getAttribute('content') ?? 'Nature';
 
 		// Given Citation
-		let givenCitation = null;
-		if (naturePARAMS.givenCitation != null) {
-			givenCitation = dom.querySelector(naturePARAMS.givenCitation).textContent;
-		}
+		let givenCitation = dom.querySelector(naturePARAMS.givenCitation)?.textContent ?? null;
 
 		const citation = {
 			title: title,

@@ -9,32 +9,32 @@ export async function GET({ url }) {
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
 
-		const title = dom.querySelector(pubmedPARAMS.title).textContent.trim();
+		const title = dom.querySelector(pubmedPARAMS.title)?.textContent.trim() ?? null;
 		// Publish Date
-		let publishDate = null;
-		if (pubmedPARAMS.publishDate != null) {
-			publishDate = dom.querySelector(pubmedPARAMS.publishDate).textContent;
-		}
+		let publishDate = dom.querySelector(pubmedPARAMS.publishDate)?.textContent ?? null;
+
 		// Authors
-		const bylines = Array.from(dom.querySelectorAll(pubmedPARAMS.rawAuthors));
-		const nameset = new Set();
-		const authors = [];
-		bylines.forEach((e) => {
-			if (!nameset.has(e.textContent)) {
-				authors.push(e.textContent);
-				nameset.add(e.textContent);
-			}
-		});
+		const rawAuthors = dom.querySelectorAll(pubmedPARAMS.rawAuthors);
+		const bylines = rawAuthors.length > 0 ? Array.from(rawAuthors) : null;
+		let authors = null;
+		if (bylines !== null) {
+			const nameset = new Set();
+			authors = [];
+			bylines.forEach((e) => {
+				if (!nameset.has(e.textContent)) {
+					authors.push(e.textContent);
+					nameset.add(e.textContent);
+				}
+			});
+		}
+
 		// DOI
-		const doi = dom.querySelector(pubmedPARAMS.doi).textContent.trim();
+		const doi = dom.querySelector(pubmedPARAMS.doi)?.textContent.trim() ?? null;
 		// Journal
-		const journal = dom.querySelector(pubmedPARAMS.journal).textContent.trim();
+		const journal = dom.querySelector(pubmedPARAMS.journal)?.getAttribute('content') ?? 'PubMed';
 
 		// Given Citation
-		let givenCitation = null;
-		if (pubmedPARAMS.givenCitation != null) {
-			givenCitation = dom.querySelector(pubmedPARAMS.givenCitation).textContent;
-		}
+		let givenCitation = dom.querySelector(pubmedPARAMS.givenCitation)?.textContent ?? null;
 
 		const citation = {
 			title: title,

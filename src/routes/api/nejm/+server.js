@@ -24,53 +24,62 @@ export async function GET({ url }) {
 		const dom = new JSDOM(html).window.document;
 
 		// Title
-		const title = dom.querySelector(nejmPARAMS.title).textContent.trim();
+		const title = dom.querySelector(nejmPARAMS.title)?.textContent.trim() ?? null;
 
 		// Publish Date and DOI
 		// handles two different formats of the p.f-ui element that can occur on NEJM
-		const doi_parent = dom.querySelector(nejmPARAMS.doi);
-		const parentArray = doi_parent.innerHTML.split('<br>');
-		const dateAnchorText = doi_parent.querySelector('a')?.textContent ?? null;
+		const doi_parent = dom.querySelector(nejmPARAMS.doi) ?? null;
 		let publishDate = null;
 		let doi = null;
-
-		if (dateAnchorText === null) {
-			publishDate = parentArray[0];
-			doi = parentArray[1].trim();
-		} else {
-			publishDate = dateAnchorText;
-			for (let i = 0; i < parentArray.length; i++) {
-				if (parentArray[i].includes('DOI')) {
-					doi = parentArray[i].trim();
-					break;
+		if (doi_parent !== null) {
+			const parentArray = doi_parent.innerHTML.split('<br>');
+			const dateAnchorText = doi_parent.querySelector('a')?.textContent ?? null;
+			if (dateAnchorText === null) {
+				publishDate = parentArray[0];
+				doi = parentArray[1].trim();
+			} else {
+				publishDate = dateAnchorText;
+				for (let i = 0; i < parentArray.length; i++) {
+					if (parentArray[i].includes('DOI')) {
+						doi = parentArray[i].trim();
+						break;
+					}
 				}
 			}
 		}
 
 		// Authors
-		const authorsUL = dom.querySelector(nejmPARAMS.rawAuthors);
-		const authorChildren = Array.from(authorsUL.childNodes);
+		const authorsUL = dom.querySelector(nejmPARAMS.rawAuthors) ?? null;
+		let authors = null;
+		if (authorsUL !== null) {
+			const authorChildren = Array.from(authorsUL.childNodes);
 
-		const nameset = new Set();
-		let filteredAuthors = [];
-		authorChildren.forEach((e) => {
-			if (!nameset.has(e.textContent)) {
-				filteredAuthors.push(e.textContent.trim());
-				nameset.add(e.textContent);
-			}
-		});
+			const nameset = new Set();
+			let filteredAuthors = [];
+			authorChildren.forEach((e) => {
+				if (!nameset.has(e.textContent)) {
+					filteredAuthors.push(e.textContent.trim());
+					nameset.add(e.textContent);
+				}
+			});
 
-		const authors = filteredAuthors.map((el) => {
-			if (el.at(-1) === ',') return el.slice(0, -1);
-			else return el;
-		});
+			authors = filteredAuthors.map((el) => {
+				if (el.at(-1) === ',') return el.slice(0, -1);
+				else return el;
+			});
+		}
+
+		// Journal
+		const journal =
+			dom.querySelector(nejmPARAMS.journal)?.getAttribute('content') ??
+			'New England Journal of Medicine';
 
 		const citation = {
 			title: title,
 			publishDate: publishDate,
 			authors: authors,
 			doi: doi,
-			journal: nejmPARAMS.journal,
+			journal: journal,
 			givenCitation: nejmPARAMS.givenCitation
 		};
 		return json(citation);
