@@ -31,7 +31,8 @@ export async function GET({ url }) {
 		}
 		// DOI
 		const doiRaw = dom.querySelector(jamaPARAMS.doi)?.textContent.trim() ?? null;
-		const doi = doiRaw !== null ? doiRaw.split(' ')[1] : null;
+		let doi = doiRaw !== null ? doiRaw.split(' ')[1] : null;
+		doi = doi !== null ? doi.split(':')[1].trim() : null;
 		// Journal
 		const journal =
 			dom.querySelector(jamaPARAMS.journal)?.getAttribute('content') ?? 'JAMA Network';

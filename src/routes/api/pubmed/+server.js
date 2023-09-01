@@ -29,7 +29,8 @@ export async function GET({ url }) {
 		}
 
 		// DOI
-		const doi = dom.querySelector(pubmedPARAMS.doi)?.textContent.trim() ?? null;
+		let doi = dom.querySelector(pubmedPARAMS.doi)?.textContent.trim() ?? null;
+		doi = doi !== null ? doi.split(':')[1].trim() : null;
 		// Journal
 		const journal = dom.querySelector(pubmedPARAMS.journal)?.getAttribute('content') ?? 'PubMed';
 

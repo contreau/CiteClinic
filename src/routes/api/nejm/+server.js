@@ -46,6 +46,7 @@ export async function GET({ url }) {
 					}
 				}
 			}
+			doi = doi.split(':')[1].trim();
 		}
 
 		// Authors
