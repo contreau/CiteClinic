@@ -3,7 +3,7 @@ export const pubmedPARAMS = {
 	publishDate: null,
 	rawAuthors: '.full-name',
 	doi: '.citation-doi',
-	journal: '#full-view-journal-trigger',
+	journal: 'meta[name="citation_journal_title"]',
 	host: 'pubmed.ncbi.nlm.nih.gov',
 	route: 'scholar-fetch',
 	givenCitation: null
@@ -14,7 +14,7 @@ export const naturePARAMS = {
 	publishDate: 'time',
 	rawAuthors: '[data-test = author-name]',
 	doi: '.c-bibliographic-information__list-item--doi span.c-bibliographic-information__value',
-	journal: '[data-test = journal-title]',
+	journal: 'meta[name="citation_journal_title"]',
 	host: 'www.nature.com',
 	route: 'scholar-fetch',
 	givenCitation: '.c-bibliographic-information__citation'
@@ -25,7 +25,7 @@ export const nejmPARAMS = {
 	publishDate: '.o-colset-1-2-2 > .o-col',
 	rawAuthors: '.m-article-header__authors',
 	doi: 'p.f-ui',
-	journal: 'New England Journal of Medicine',
+	journal: 'meta[name="citation_journal_title"]',
 	host: 'www.nejm.org',
 	route: 'nejm-fetch',
 	givenCitation: null
@@ -43,11 +43,11 @@ export const lancetPARAMS = {
 };
 
 export const jamaPARAMS = {
-	title: '.meta-article-title ',
+	title: '.meta-article-title',
 	publishDate: '.meta-date',
 	rawAuthors: '.wi-fullname',
 	doi: '.meta-citation',
-	journal: '.meta-citation-journal-name',
+	journal: 'meta[name="citation_journal_title"]',
 	host: 'jamanetwork.com',
 	route: 'scholar-fetch',
 	givenCitation: null
@@ -58,7 +58,7 @@ export const bmjPARAMS = {
 	publishDate: '.highwire-cite-date',
 	rawAuthors: '.contributor-list',
 	doi: '.highwire-cite-doi',
-	journal: '.highwire-cite-journal',
+	journal: 'meta[name="citation_journal_title"]',
 	host: 'www.bmj.com',
 	route: 'bmj-fetch',
 	givenCitation: null
