@@ -27,6 +27,7 @@
 		color-scheme: light dark;
 		color: rgba(255, 255, 255, 0.87);
 		--bg-color: #001829d6;
+		--green: #35fb9f;
 	}
 
 	*,

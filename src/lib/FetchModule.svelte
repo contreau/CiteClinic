@@ -17,10 +17,6 @@
 	} from './parameters';
 
 	// TODO:
-	// error handle when selectors are not present to scrape from so that a default value is served and server doesn't crash
-	// Reapproach way to scrape NEJM DOI and publish date
-	// use this newer article as comparison:
-	// https://www.nejm.org/doi/full/10.1056/NEJMoa2303062?query=featured_home
 	// * Clean up given citation for Nature
 
 	// *
@@ -39,6 +35,7 @@
 	// sample NEJM urls
 	// https://www.nejm.org/doi/full/10.1056/NEJMoa2101195
 	// https://www.nejm.org/doi/full/10.1056/NEJMoa0708638
+	// https://www.nejm.org/doi/full/10.1056/NEJMoa2303062?query=featured_home
 
 	// sample Lancet urls
 	// https://www.thelancet.com/journals/landia/article/PIIS2213-8587(23)00191-2/fulltext
@@ -49,17 +46,29 @@
 	// sample BMJ urls
 	// https://www.bmj.com/content/323/7322/1155
 
-	/**
-	 *@type {any}
-	 */
-	let input;
-	let sourceSelect = 'Select a Journal';
+	let input = null;
+	let source = null;
+	let sourceSelect = 'Select';
+	let buttonClass = 'dormant';
+	let buttonAnimation = 'none';
+
+	function lightFetchButton() {
+		if (sourceSelect !== 'Select' && input.value !== '') {
+			buttonClass = 'ready';
+		} else {
+			buttonClass = 'dormant';
+		}
+	}
+
+	function checkSource() {
+		if (source.value !== 'Select' && input.value !== '') {
+			buttonClass = 'ready';
+		} else {
+			buttonClass = 'dormant';
+		}
+	}
 
 	// submit button event function
-	/**
-	 *
-	 * @param {any} input
-	 */
 	const launchFetch = (input) => {
 		switch (sourceSelect) {
 			case 'PubMed':
@@ -97,28 +106,51 @@
 </script>
 
 <div class="input-wrap">
-	<p>
-		{sourceSelect}
-	</p>
-
-	<select bind:value={sourceSelect} name="source" id="source-select">
-		<option value="Select a Journal">Select</option>
-		<option value="PubMed">PubMed</option>
-		<option value="Nature">Nature</option>
-		<option value="NEJM">NEJM</option>
-		<option value="Lancet">The Lancet</option>
-		<option value="JAMA">JAMA Network</option>
-		<option value="BMJ">British Medical Journal</option>
-	</select>
-
-	<input bind:this={input} type="text" class="url-input" placeholder="Paste URL" />
+	<div class="input-fields">
+		<select
+			bind:value={sourceSelect}
+			bind:this={source}
+			class={sourceSelect}
+			name="source"
+			id="source-select"
+			on:input={() => {
+				checkSource();
+			}}
+		>
+			<option value="Select">Select</option>
+			<option value="NEJM">New England Journal of Medicine</option>
+			<option value="PubMed">PubMed</option>
+			<option value="Nature">Nature</option>
+			<option value="Lancet">The Lancet</option>
+			<option value="JAMA">JAMA Network</option>
+			<option value="BMJ">British Medical Journal</option>
+		</select>
+		<input
+			bind:this={input}
+			on:input={() => {
+				lightFetchButton();
+			}}
+			type="text"
+			class="url-input"
+			placeholder="Paste URL ( include https:// )"
+		/>
+	</div>
 
 	<button
 		on:click={() => {
-			launchFetch(input);
+			if (input.value === null || input.value === '') {
+				console.log('invalid input');
+				buttonAnimation = 'rejectButton';
+				setTimeout(() => {
+					buttonAnimation = 'none';
+				}, 500);
+			} else {
+				buttonAnimation = 'none';
+				launchFetch(input);
+			}
 		}}
 		type="submit"
-		class="submit">Submit</button
+		class="submit {buttonClass} {buttonAnimation}">Fetch</button
 	>
 </div>
 
@@ -126,9 +158,127 @@
 	.input-wrap {
 		margin: 0 auto;
 		margin-top: 2.5rem;
+		border: solid 1px #565656;
+		max-width: 1000px;
+		padding: 1em;
+		border-radius: 30px;
+		background-color: #081118d6;
 	}
 
-	p {
-		margin: 0;
+	.input-fields {
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+
+		select,
+		input {
+			border: solid 1.5px transparent;
+			border-radius: 30px;
+			padding: 0.5em;
+			font-size: 1rem;
+			outline: transparent;
+			transition: 0.2s border;
+			&:focus {
+				border: solid 1.5px #fff;
+			}
+		}
+
+		select {
+			--select: #2b2a33;
+			--nejm: #bb2f39;
+			--pubmed: #1872c0;
+			--nature: #212121;
+			--lancet: #088798;
+			--jama: #d21f72;
+			--bmj: #034796;
+			width: 35%;
+			background-color: #0e6db1;
+			text-align: center;
+			&:hover {
+				cursor: pointer;
+			}
+		}
+
+		.Select {
+			background-color: var(--select);
+		}
+		.NEJM {
+			background-color: var(--nejm);
+			filter: drop-shadow(0 0 0.5em var(--nejm));
+		}
+		.PubMed {
+			background-color: var(pubmed);
+			filter: drop-shadow(0 0 0.5em var(--pubmed));
+		}
+		.Nature {
+			background-color: var(--nature);
+			filter: drop-shadow(0 0 0.5em var(--nature));
+		}
+		.Lancet {
+			background-color: var(--lancet);
+			filter: drop-shadow(0 0 0.5em var(--lancet));
+		}
+		.JAMA {
+			background-color: var(--jama);
+			filter: drop-shadow(0 0 0.5em var(--jama));
+		}
+		.BMJ {
+			background-color: var(--bmj);
+			filter: drop-shadow(0 0 0.5em var(--bmj));
+		}
+
+		input {
+			width: 60%;
+			border: solid 1px transparent;
+			color: var(--green);
+		}
+	}
+
+	button {
+		display: block;
+		margin: 0 auto;
+		margin-top: 2rem;
+		padding: 0.5em 2em;
+		border-radius: 30px;
+		border: solid 1px transparent;
+		outline: transparent;
+		font-size: 1rem;
+		transition: 0.3s all;
+		&:hover {
+			cursor: pointer;
+		}
+		// &:focus {
+		// 	border: solid 1px #fff;
+		// }
+	}
+
+	// fetch button lights up when a source is selected / url is input
+	.ready {
+		background-color: #2d955f;
+		filter: drop-shadow(0 0 0.6em #2d955f);
+	}
+	.dormant {
+		background-color: #292929;
+		filter: none;
+	}
+
+	// button animation when url is invalid
+	.rejectButton {
+		animation: shuffle 200ms linear 2;
+	}
+
+	@keyframes shuffle {
+		25% {
+			transform: translateX(20px);
+		}
+		50% {
+			transform: translateX(0px);
+		}
+		75% {
+			transform: translateX(-20px);
+		}
+		100% {
+			transform: translateX(0px);
+		}
 	}
 </style>

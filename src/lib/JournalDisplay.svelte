@@ -35,7 +35,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-around;
-		border-top: solid 2px #35fb9f;
+		border-top: solid 2px var(--green);
 		border-top-left-radius: 4px;
 		border-top-right-radius: 4px;
 		padding-top: 1em;
