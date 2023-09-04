@@ -69,10 +69,15 @@
 	}
 
 	// submit button event function
-	const launchFetch = (input) => {
+	async function launchFetch(input) {
 		switch (sourceSelect) {
 			case 'PubMed':
-				parseData(input, pubmedPARAMS);
+				const result = await parseData(input, pubmedPARAMS);
+				if (result instanceof Error) {
+					console.error(result.message);
+				} else {
+					console.log(result);
+				}
 				input.value = '';
 				input.focus();
 				break;
@@ -102,7 +107,7 @@
 				input.focus();
 				break;
 		}
-	};
+	}
 </script>
 
 <div class="input-wrap">
@@ -138,7 +143,7 @@
 
 	<button
 		on:click={() => {
-			if (input.value === null || input.value === '') {
+			if (input.value === null || input.value === '' || source.value === 'Select') {
 				console.log('invalid input');
 				buttonAnimation = 'rejectButton';
 				setTimeout(() => {
@@ -150,12 +155,13 @@
 			}
 		}}
 		type="submit"
-		class="submit {buttonClass} {buttonAnimation}">Fetch</button
+		class="submit {buttonClass} {buttonAnimation}">FETCH</button
 	>
 </div>
 
 <style lang="scss">
 	.input-wrap {
+		position: relative;
 		margin: 0 auto;
 		margin-top: 2.5rem;
 		border: solid 1px #565656;
@@ -163,6 +169,18 @@
 		padding: 1em;
 		border-radius: 30px;
 		background-color: #081118d6;
+		&::after {
+			content: '';
+			position: absolute;
+			width: 2px;
+			height: 2px;
+			background-color: var(--green);
+			width: 90%;
+			left: 5%;
+			bottom: 24%;
+			z-index: 0;
+			filter: blur(0.8px);
+		}
 	}
 
 	.input-fields {
@@ -187,13 +205,15 @@
 			--select: #2b2a33;
 			--nejm: #bb2f39;
 			--pubmed: #1872c0;
-			--nature: #212121;
+			--nature: #0b9307;
 			--lancet: #088798;
 			--jama: #d21f72;
 			--bmj: #034796;
 			width: 35%;
 			background-color: #0e6db1;
 			text-align: center;
+			transition: 0.3s all;
+			font-weight: 700;
 			&:hover {
 				cursor: pointer;
 			}
@@ -231,10 +251,13 @@
 			width: 60%;
 			border: solid 1px transparent;
 			color: var(--green);
+			font-weight: 500;
 		}
 	}
 
 	button {
+		position: relative;
+		z-index: 3;
 		display: block;
 		margin: 0 auto;
 		margin-top: 2rem;
@@ -243,10 +266,13 @@
 		border: solid 1px transparent;
 		outline: transparent;
 		font-size: 1rem;
+		font-weight: 800;
+		letter-spacing: 1px;
 		transition: 0.3s all;
 		&:hover {
 			cursor: pointer;
 		}
+
 		// &:focus {
 		// 	border: solid 1px #fff;
 		// }
@@ -258,7 +284,7 @@
 		filter: drop-shadow(0 0 0.6em #2d955f);
 	}
 	.dormant {
-		background-color: #292929;
+		background-color: #2b2a33;
 		filter: none;
 	}
 

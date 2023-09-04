@@ -9,10 +9,10 @@ export async function parseData(input, params) {
 			} else if (params.host === 'www.nature.com') {
 				response = await fetch(`/api/nature?url=${url}`);
 			}
-			const text = await response.json();
-			console.log(text);
+			const data = await response.json();
+			return data;
 		} catch (err) {
-			console.error(err);
+			return err;
 		}
 	}
 }
