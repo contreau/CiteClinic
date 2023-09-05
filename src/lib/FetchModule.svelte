@@ -16,6 +16,8 @@
 		bmjPARAMS
 	} from './parameters';
 
+	import { scrapes } from './store';
+
 	// TODO:
 	// * Clean up given citation for Nature
 
@@ -68,49 +70,60 @@
 		}
 	}
 
+	function displayResults(result) {
+		if (result instanceof Error) {
+			console.error(result.message);
+		} else {
+			$scrapes = [...$scrapes, result];
+			console.log($scrapes);
+		}
+	}
+
 	// submit button event function
 	async function launchFetch(input) {
 		switch (sourceSelect) {
 			case 'PubMed':
-				const result = await parseData(input, pubmedPARAMS);
-				if (result instanceof Error) {
-					console.error(result.message);
-				} else {
-					console.log(result);
-				}
+				const PMresult = await parseData(input, pubmedPARAMS);
+				displayResults(PMresult);
 				input.value = '';
 				input.focus();
 				break;
 			case 'Nature':
-				parseData(input, naturePARAMS);
+				const NAresult = await parseData(input, naturePARAMS);
+				displayResults(NAresult);
 				input.value = '';
 				input.focus();
 				break;
 			case 'NEJM':
-				parseData_NEJM(input, nejmPARAMS);
+				const NEresult = await parseData_NEJM(input, nejmPARAMS);
+				displayResults(NEresult);
 				input.value = '';
 				input.focus();
 				break;
 			case 'Lancet':
-				parseData_LANCET(input, lancetPARAMS);
+				const LAresult = await parseData_LANCET(input, lancetPARAMS);
+				displayResults(LAresult);
 				input.value = '';
 				input.focus();
 				break;
 			case 'JAMA':
-				parseData_JAMA(input, jamaPARAMS);
+				const JAresult = await parseData_JAMA(input, jamaPARAMS);
+				displayResults(JAresult);
 				input.value = '';
 				input.focus();
 				break;
 			case 'BMJ':
-				parseData_BMJ(input, bmjPARAMS);
+				const BMJresult = await parseData_BMJ(input, bmjPARAMS);
+				displayResults(BMJresult);
 				input.value = '';
 				input.focus();
 				break;
 		}
 	}
+	let inputWrap;
 </script>
 
-<div class="input-wrap">
+<div class="input-wrap" bind:this={inputWrap}>
 	<div class="input-fields">
 		<select
 			bind:value={sourceSelect}
@@ -122,7 +135,7 @@
 				checkSource();
 			}}
 		>
-			<option value="Select">Select</option>
+			<option value="Select">Select Site</option>
 			<option value="NEJM">New England Journal of Medicine</option>
 			<option value="PubMed">PubMed</option>
 			<option value="Nature">Nature</option>
@@ -146,8 +159,10 @@
 			if (input.value === null || input.value === '' || source.value === 'Select') {
 				console.log('invalid input');
 				buttonAnimation = 'rejectButton';
+				inputWrap.style.setProperty('--line-color', '#ff4646');
 				setTimeout(() => {
 					buttonAnimation = 'none';
+					inputWrap.style.setProperty('--line-color', '#35fb9f');
 				}, 500);
 			} else {
 				buttonAnimation = 'none';
@@ -159,8 +174,13 @@
 	>
 </div>
 
+{#each $scrapes as scrape}
+	<p>{scrape.title}</p>
+{/each}
+
 <style lang="scss">
 	.input-wrap {
+		--line-color: #35fb9f;
 		position: relative;
 		margin: 0 auto;
 		margin-top: 2.5rem;
@@ -169,17 +189,21 @@
 		padding: 1em;
 		border-radius: 30px;
 		background-color: #081118d6;
+
 		&::after {
 			content: '';
 			position: absolute;
 			width: 2px;
 			height: 2px;
-			background-color: var(--green);
+			background-color: var(--line-color);
+			transition: 0.4s all;
 			width: 90%;
 			left: 5%;
 			bottom: 24%;
 			z-index: 0;
 			filter: blur(0.8px);
+			border-radius: 30px;
+			filter: drop-shadow(0 0 0.4em var(--line-color));
 		}
 	}
 
@@ -205,7 +229,7 @@
 			--select: #2b2a33;
 			--nejm: #bb2f39;
 			--pubmed: #1872c0;
-			--nature: #0b9307;
+			--nature: #007c3c;
 			--lancet: #088798;
 			--jama: #d21f72;
 			--bmj: #034796;
@@ -262,7 +286,7 @@
 		margin: 0 auto;
 		margin-top: 2rem;
 		padding: 0.5em 2em;
-		border-radius: 30px;
+		border-radius: 20px;
 		border: solid 1px transparent;
 		outline: transparent;
 		font-size: 1rem;

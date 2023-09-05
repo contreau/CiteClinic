@@ -23,10 +23,10 @@ export async function parseData_NEJM(input, params) {
 			const url = new URL(input.value);
 			if (url.host != params.host) throw new Error('The provided URL does not match your target.');
 			const response = await fetch(`/api/nejm?url=${url}`);
-			const text = await response.json();
-			console.log(text);
+			const data = await response.json();
+			return data;
 		} catch (err) {
-			console.log(err);
+			return err;
 		}
 	}
 }
@@ -37,10 +37,10 @@ export async function parseData_LANCET(input, params) {
 			const url = new URL(input.value);
 			if (url.host != params.host) throw new Error('The provided URL does not match your target.');
 			const response = await fetch(`/api/lancet?url=${url}`);
-			const text = await response.json();
-			console.log(text);
+			const data = await response.json();
+			return data;
 		} catch (err) {
-			console.log(err);
+			return err;
 		}
 	}
 }
@@ -51,10 +51,10 @@ export async function parseData_JAMA(input, params) {
 			const url = new URL(input.value);
 			if (url.host != params.host) throw new Error('The provided URL does not match your target.');
 			const response = await fetch(`/api/jama?url=${url}`);
-			const text = await response.json();
-			console.log(text);
+			const data = await response.json();
+			return data;
 		} catch (err) {
-			console.log(err);
+			return err;
 		}
 	}
 }
@@ -65,10 +65,10 @@ export async function parseData_BMJ(input, params) {
 			const url = new URL(input.value);
 			if (url.host != params.host) throw new Error('The provided URL does not match your target.');
 			const response = await fetch(`/api/bmj?url=${url}`);
-			const text = await response.json();
-			console.log(text);
+			const data = await response.json();
+			return data;
 		} catch (err) {
-			console.log(err);
+			return err;
 		}
 	}
 }
