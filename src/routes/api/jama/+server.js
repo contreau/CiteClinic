@@ -30,9 +30,7 @@ export async function GET({ url }) {
 			});
 		}
 		// DOI
-		const doiRaw = dom.querySelector(jamaPARAMS.doi)?.textContent.trim() ?? null;
-		let doi = doiRaw !== null ? doiRaw.split(' ')[1] : null;
-		doi = doi !== null ? doi.split(':')[1].trim() : null;
+		const doi = dom.querySelector(jamaPARAMS.doi)?.getAttribute('content') ?? null;
 		// Journal
 		const journal =
 			dom.querySelector(jamaPARAMS.journal)?.getAttribute('content') ?? 'JAMA Network';

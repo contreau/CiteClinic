@@ -46,7 +46,7 @@ export const jamaPARAMS = {
 	title: '.meta-article-title',
 	publishDate: '.meta-date',
 	rawAuthors: '.wi-fullname',
-	doi: '.meta-citation',
+	doi: 'meta[name="citation_doi"]',
 	journal: 'meta[name="citation_journal_title"]',
 	host: 'jamanetwork.com',
 	route: 'scholar-fetch',
