@@ -16,7 +16,7 @@
 		bmjPARAMS
 	} from './parameters';
 
-	import { scrapes } from './store';
+	import { scrapes, urlHistory } from './store';
 
 	// TODO:
 	// * Clean up given citation for Nature
@@ -53,6 +53,10 @@
 	let sourceSelect = 'Select';
 	let buttonClass = 'dormant';
 	let buttonAnimation = 'none';
+	let inputWrap;
+	let fetchErrorMessage = 'Nothing to see here.';
+	let loadSymbolClass = 'none';
+	let displayErrorClass = 'none';
 
 	function lightFetchButton() {
 		if (sourceSelect !== 'Select' && input.value !== '') {
@@ -73,9 +77,48 @@
 	function displayResults(result) {
 		if (result instanceof Error) {
 			console.error(result.message);
+			fetchErrorMessage = result.message;
+			buttonClass = 'dormant';
+			input.focus();
 		} else {
+			loadSymbolClass = 'none';
 			$scrapes = [...$scrapes, result];
-			console.log($scrapes);
+			buttonClass = 'dormant';
+			input.value = '';
+			input.focus();
+			console.log('Fetched Data:', $scrapes);
+		}
+	}
+
+	function validateURL(input, params) {
+		try {
+			const url = new URL(input.value.trim());
+			if (url.host != params.host) {
+				const errorMessage = 'The provided URL does not match your target.';
+				console.error(errorMessage);
+				fetchErrorMessage = errorMessage;
+				displayErrorClass = 'display-error';
+				setTimeout(() => {
+					displayErrorClass = 'none';
+				}, 2000);
+				input.focus();
+				buttonClass = 'dormant';
+				return false;
+			} else {
+				$urlHistory = [...$urlHistory, url.href];
+				console.log(`URL History:`, $urlHistory);
+				return true;
+			}
+		} catch (err) {
+			console.error(err);
+			fetchErrorMessage = 'Invalid URL.';
+			displayErrorClass = 'display-error';
+			setTimeout(() => {
+				displayErrorClass = 'none';
+			}, 2000);
+			input.focus();
+			buttonClass = 'dormant';
+			return false;
 		}
 	}
 
@@ -83,44 +126,49 @@
 	async function launchFetch(input) {
 		switch (sourceSelect) {
 			case 'PubMed':
-				const PMresult = await parseData(input, pubmedPARAMS);
-				displayResults(PMresult);
-				input.value = '';
-				input.focus();
+				if (validateURL(input, pubmedPARAMS)) {
+					loadSymbolClass = 'animate-load';
+					const PMresult = await parseData(input, pubmedPARAMS);
+					displayResults(PMresult);
+				}
 				break;
 			case 'Nature':
-				const NAresult = await parseData(input, naturePARAMS);
-				displayResults(NAresult);
-				input.value = '';
-				input.focus();
+				if (validateURL(input, naturePARAMS)) {
+					loadSymbolClass = 'animate-load';
+					const NAresult = await parseData(input, naturePARAMS);
+					displayResults(NAresult);
+				}
 				break;
 			case 'NEJM':
-				const NEresult = await parseData_NEJM(input, nejmPARAMS);
-				displayResults(NEresult);
-				input.value = '';
-				input.focus();
+				if (validateURL(input, nejmPARAMS)) {
+					loadSymbolClass = 'animate-load';
+					const NEresult = await parseData_NEJM(input);
+					displayResults(NEresult);
+				}
 				break;
 			case 'Lancet':
-				const LAresult = await parseData_LANCET(input, lancetPARAMS);
-				displayResults(LAresult);
-				input.value = '';
-				input.focus();
+				if (validateURL(input, lancetPARAMS)) {
+					loadSymbolClass = 'animate-load';
+					const LAresult = await parseData_LANCET(input);
+					displayResults(LAresult);
+				}
 				break;
 			case 'JAMA':
-				const JAresult = await parseData_JAMA(input, jamaPARAMS);
-				displayResults(JAresult);
-				input.value = '';
-				input.focus();
+				if (validateURL(input, jamaPARAMS)) {
+					loadSymbolClass = 'animate-load';
+					const JAresult = await parseData_JAMA(input);
+					displayResults(JAresult);
+				}
 				break;
 			case 'BMJ':
-				const BMJresult = await parseData_BMJ(input, bmjPARAMS);
-				displayResults(BMJresult);
-				input.value = '';
-				input.focus();
+				if (validateURL(input, bmjPARAMS)) {
+					loadSymbolClass = 'animate-load';
+					const BMJresult = await parseData_BMJ(input);
+					displayResults(BMJresult);
+				}
 				break;
 		}
 	}
-	let inputWrap;
 </script>
 
 <div class="input-wrap" bind:this={inputWrap}>
@@ -173,6 +221,9 @@
 		class="submit {buttonClass} {buttonAnimation}">FETCH</button
 	>
 </div>
+
+<p class="loading-symbol"><i class="fa-solid fa-arrows-rotate {loadSymbolClass}" /></p>
+<p class="error-message {displayErrorClass}">{fetchErrorMessage}</p>
 
 {#each $scrapes as scrape}
 	<p>{scrape.title}</p>
@@ -317,6 +368,41 @@
 		animation: shuffle 200ms linear 2;
 	}
 
+	// loading symbol (fa icon for now, will make custom asset)
+	.loading-symbol {
+		text-align: center;
+
+		.fa-arrows-rotate {
+			opacity: 0;
+			font-size: 2.2rem;
+			color: var(--green);
+			filter: drop-shadow(0 0 0.1em var(--green));
+			transition: opacity 0.3s;
+
+			&.animate-load {
+				opacity: 1;
+				animation: loading 1.2s linear infinite;
+			}
+		}
+	}
+
+	// error message
+	.error-message {
+		opacity: 0;
+		text-align: center;
+		font-size: 1rem;
+		padding: 0.3em 0.8em;
+		background-color: rgb(199, 46, 46);
+		border-radius: 30px;
+		max-width: 500px;
+		margin: 0 auto;
+		transition: opacity 0.5s;
+	}
+
+	.display-error {
+		opacity: 1;
+	}
+
 	@keyframes shuffle {
 		25% {
 			transform: translateX(20px);
@@ -329,6 +415,12 @@
 		}
 		100% {
 			transform: translateX(0px);
+		}
+	}
+
+	@keyframes loading {
+		100% {
+			transform: rotate(360deg);
 		}
 	}
 </style>
