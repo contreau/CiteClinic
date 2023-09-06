@@ -9,9 +9,11 @@ export async function GET({ url }) {
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
 
-		const title = dom.querySelector(pubmedPARAMS.title)?.textContent.trim() ?? null;
+		const title = dom.querySelector(pubmedPARAMS.title)?.getAttribute('content') ?? null;
 		// Publish Date
-		let publishDate = dom.querySelector(pubmedPARAMS.publishDate)?.textContent ?? null;
+		const publishDate =
+			dom.querySelector(pubmedPARAMS.publishDate)?.getAttribute('content') ?? null;
+		const publishYear = dom.querySelector(pubmedPARAMS.volume)?.textContent.split(' ')[0] ?? null;
 
 		// Authors
 		const rawAuthors = dom.querySelectorAll(pubmedPARAMS.rawAuthors);
@@ -29,10 +31,15 @@ export async function GET({ url }) {
 		}
 
 		// DOI
-		let doi = dom.querySelector(pubmedPARAMS.doi)?.textContent.trim() ?? null;
-		doi = doi !== null ? doi.split(':')[1].trim() : null;
+		const doi = dom.querySelector(pubmedPARAMS.doi)?.getAttribute('content') ?? null;
 		// Journal
 		const journal = dom.querySelector(pubmedPARAMS.journal)?.getAttribute('content') ?? 'PubMed';
+		const journalAbbreviation =
+			dom.querySelector(pubmedPARAMS.journalAbbr)?.getAttribute('content') ?? journal;
+
+		// Volume + Page Range
+		const volumeAndPageRange =
+			dom.querySelector(pubmedPARAMS.volume)?.textContent.split(';')[1].trim() ?? null;
 
 		// Given Citation
 		let givenCitation = dom.querySelector(pubmedPARAMS.givenCitation)?.textContent ?? null;
@@ -40,9 +47,12 @@ export async function GET({ url }) {
 		const citation = {
 			title: title,
 			publishDate: publishDate,
+			publishYear: publishYear,
 			authors: authors,
 			doi: doi,
+			volumeAndPageRange: volumeAndPageRange,
 			journal: journal,
+			journalAbbreviation: journalAbbreviation,
 			givenCitation: givenCitation
 		};
 

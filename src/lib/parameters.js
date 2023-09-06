@@ -1,9 +1,11 @@
 export const pubmedPARAMS = {
-	title: '.heading-title',
-	publishDate: null,
+	title: 'meta[name="citation_title"]',
+	publishDate: 'meta[name="citation_date"]',
 	rawAuthors: '.full-name',
-	doi: '.citation-doi',
+	volume: 'span.cit',
+	doi: 'meta[name="citation_doi"]',
 	journal: 'meta[name="citation_journal_title"]',
+	journalAbbr: 'meta[name="citation_publisher"]',
 	host: 'pubmed.ncbi.nlm.nih.gov',
 	route: 'scholar-fetch',
 	givenCitation: null
@@ -21,10 +23,11 @@ export const naturePARAMS = {
 };
 
 export const nejmPARAMS = {
-	title: '.title_default',
-	publishDate: '.o-colset-1-2-2 > .o-col',
+	title: 'meta[name="dc.Title"]',
+	publishDate: 'meta[name="dc.Date"]',
 	rawAuthors: '.m-article-header__authors',
-	doi: 'p.f-ui',
+	blurb: 'p.f-ui',
+	doi: 'meta[scheme="doi"]',
 	journal: 'meta[name="citation_journal_title"]',
 	host: 'www.nejm.org',
 	route: 'nejm-fetch',

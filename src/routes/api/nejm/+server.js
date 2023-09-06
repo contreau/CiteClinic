@@ -24,29 +24,31 @@ export async function GET({ url }) {
 		const dom = new JSDOM(html).window.document;
 
 		// Title
-		const title = dom.querySelector(nejmPARAMS.title)?.textContent.trim() ?? null;
+		const title = dom.querySelector(nejmPARAMS.title)?.getAttribute('content') ?? null;
 
-		// Publish Date and DOI
+		// Publish Date, DOI, Volume + Page Range
 		// handles two different formats of the p.f-ui element that can occur on NEJM
-		const doi_parent = dom.querySelector(nejmPARAMS.doi) ?? null;
-		let publishDate = null;
-		let doi = null;
-		if (doi_parent !== null) {
-			const parentArray = doi_parent.innerHTML.split('<br>');
-			const dateAnchorText = doi_parent.querySelector('a')?.textContent ?? null;
-			if (dateAnchorText === null) {
-				publishDate = parentArray[0];
-				doi = parentArray[1].trim();
-			} else {
-				publishDate = dateAnchorText;
+		const blurb_parent = dom.querySelector(nejmPARAMS.blurb) ?? null;
+		// * Publish Date / Year
+		const publishDate = dom.querySelector(nejmPARAMS.publishDate)?.getAttribute('content') ?? null;
+		const publishYear = publishDate.split('-')[0] ?? null;
+		// * DOI
+		const doi = dom.querySelector(nejmPARAMS.doi)?.getAttribute('content') ?? null;
+		// * Volume + Page Range
+		let volumeAndPageRange = null;
+		if (blurb_parent !== null) {
+			const parentArray = blurb_parent.innerHTML.split('<br>');
+			const dateAnchorText = blurb_parent.querySelector('a')?.textContent ?? null;
+			if (dateAnchorText !== null) {
+				// contains volume/page range
 				for (let i = 0; i < parentArray.length; i++) {
-					if (parentArray[i].includes('DOI')) {
-						doi = parentArray[i].trim();
+					if (parentArray[i].includes(';')) {
+						const selection = parentArray[i];
+						volumeAndPageRange = selection.split(';')[1].trim();
 						break;
 					}
 				}
 			}
-			doi = doi.split(':')[1].trim();
 		}
 
 		// Authors
@@ -74,13 +76,18 @@ export async function GET({ url }) {
 		const journal =
 			dom.querySelector(nejmPARAMS.journal)?.getAttribute('content') ??
 			'New England Journal of Medicine';
+		let journalAbbreviation = null;
+		if (journal === 'New England Journal of Medicine') journalAbbreviation = 'N Engl J Med';
 
 		const citation = {
 			title: title,
 			publishDate: publishDate,
+			publishYear: publishYear,
 			authors: authors,
 			doi: doi,
+			volumeAndPageRange: volumeAndPageRange,
 			journal: journal,
+			journalAbbreviation: journalAbbreviation,
 			givenCitation: nejmPARAMS.givenCitation
 		};
 		return json(citation);
