@@ -31,7 +31,7 @@ export async function GET({ url }) {
 		const blurb_parent = dom.querySelector(nejmPARAMS.blurb) ?? null;
 		// * Publish Date / Year
 		const publishDate = dom.querySelector(nejmPARAMS.publishDate)?.getAttribute('content') ?? null;
-		const publishYear = publishDate.split('-')[0] ?? null;
+		const publishYear = publishDate ? publishDate.split('-')[0] : null;
 		// * DOI
 		const doi = dom.querySelector(nejmPARAMS.doi)?.getAttribute('content') ?? null;
 		// * Volume + Page Range
@@ -87,8 +87,7 @@ export async function GET({ url }) {
 			doi: doi,
 			volumeAndPageRange: volumeAndPageRange,
 			journal: journal,
-			journalAbbreviation: journalAbbreviation,
-			givenCitation: nejmPARAMS.givenCitation
+			journalAbbreviation: journalAbbreviation
 		};
 		return json(citation);
 	} catch (err) {

@@ -9,9 +9,11 @@ export async function GET({ url }) {
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
 
-		const title = dom.querySelector(naturePARAMS.title)?.textContent.trim() ?? null;
+		const title = dom.querySelector(naturePARAMS.title)?.getAttribute('content') ?? null;
 		// Publish Date
-		let publishDate = dom.querySelector(naturePARAMS.publishDate)?.textContent ?? null;
+		const publishDate =
+			dom.querySelector(naturePARAMS.publishDate)?.getAttribute('content') ?? null;
+		const publishYear = publishDate ? publishDate.split('-')[0] : null;
 
 		// Authors
 		const rawAuthors = dom.querySelectorAll(naturePARAMS.rawAuthors);
@@ -28,21 +30,32 @@ export async function GET({ url }) {
 			});
 		}
 
+		// Volume + Page Range
+		const volume = dom.querySelector(naturePARAMS.volume).getAttribute('content');
+		console.log(volume);
+		const issue = dom.querySelector(naturePARAMS.issue).getAttribute('content');
+		const pageRange = `${dom.querySelector(naturePARAMS.startPage).getAttribute('content')}-${dom
+			.querySelector(naturePARAMS.endPage)
+			.getAttribute('content')}`;
+		const volumeAndPageRange = `${volume}(${issue}):${pageRange}`;
+
 		// DOI
-		const doi = dom.querySelector(naturePARAMS.doi)?.textContent.trim() ?? null;
+		const doi = dom.querySelector(naturePARAMS.doi)?.getAttribute('content') ?? null;
+
 		// Journal
 		const journal = dom.querySelector(naturePARAMS.journal)?.getAttribute('content') ?? 'Nature';
-
-		// Given Citation
-		let givenCitation = dom.querySelector(naturePARAMS.givenCitation)?.textContent ?? null;
+		const journalAbbreviation =
+			dom.querySelector(naturePARAMS.journalAbbrev)?.getAttribute('content') ?? journal;
 
 		const citation = {
 			title: title,
 			publishDate: publishDate,
+			publishYear: publishYear,
 			authors: authors,
 			doi: doi,
+			volumeAndPageRange: volumeAndPageRange,
 			journal: journal,
-			givenCitation: givenCitation
+			journalAbbreviation: journalAbbreviation
 		};
 
 		return json(citation);

@@ -39,10 +39,8 @@ export async function GET({ url }) {
 
 		// Volume + Page Range
 		const volumeAndPageRange =
-			dom.querySelector(pubmedPARAMS.volume)?.textContent.split(';')[1].trim() ?? null;
-
-		// Given Citation
-		let givenCitation = dom.querySelector(pubmedPARAMS.givenCitation)?.textContent ?? null;
+			dom.querySelector(pubmedPARAMS.volume)?.textContent.split(';')[1].trim().split('.')[0] ??
+			null;
 
 		const citation = {
 			title: title,
@@ -52,8 +50,7 @@ export async function GET({ url }) {
 			doi: doi,
 			volumeAndPageRange: volumeAndPageRange,
 			journal: journal,
-			journalAbbreviation: journalAbbreviation,
-			givenCitation: givenCitation
+			journalAbbreviation: journalAbbreviation
 		};
 
 		return json(citation);

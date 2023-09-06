@@ -7,19 +7,22 @@ export const pubmedPARAMS = {
 	journal: 'meta[name="citation_journal_title"]',
 	journalAbbr: 'meta[name="citation_publisher"]',
 	host: 'pubmed.ncbi.nlm.nih.gov',
-	route: 'scholar-fetch',
-	givenCitation: null
+	route: 'scholar-fetch'
 };
 
 export const naturePARAMS = {
-	title: '.c-article-title',
-	publishDate: 'time',
+	title: 'meta[name="dc.title"]',
+	publishDate: 'meta[name="dc.date"]',
 	rawAuthors: '[data-test = author-name]',
-	doi: '.c-bibliographic-information__list-item--doi span.c-bibliographic-information__value',
+	volume: 'meta[name="citation_volume"]',
+	issue: 'meta[name="citation_issue"]',
+	startPage: 'meta[name="citation_firstpage"]',
+	endPage: 'meta[name="citation_lastpage"]',
+	doi: 'meta[name="citation_doi"]',
 	journal: 'meta[name="citation_journal_title"]',
+	journalAbbrev: 'meta[name="citation_journal_abbrev"]',
 	host: 'www.nature.com',
-	route: 'scholar-fetch',
-	givenCitation: '.c-bibliographic-information__citation'
+	route: 'scholar-fetch'
 };
 
 export const nejmPARAMS = {
@@ -30,8 +33,7 @@ export const nejmPARAMS = {
 	doi: 'meta[scheme="doi"]',
 	journal: 'meta[name="citation_journal_title"]',
 	host: 'www.nejm.org',
-	route: 'nejm-fetch',
-	givenCitation: null
+	route: 'nejm-fetch'
 };
 
 export const lancetPARAMS = {
