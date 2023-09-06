@@ -322,11 +322,15 @@
 			filter: drop-shadow(0 0 0.5em var(--bmj));
 		}
 
-		input {
+		.url-input {
+			background-color: #2b2a33;
 			width: 60%;
 			border: solid 1px transparent;
 			color: var(--green);
-			font-weight: 500;
+			font-weight: 400;
+			&::placeholder {
+				color: var(--green);
+			}
 		}
 	}
 
