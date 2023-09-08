@@ -1,4 +1,4 @@
-# ScholarFetch ![scroll](./static/favicon.ico)
+# ScholarFetch ![scroll](./static/favicon-32x32.png)
 
 _ScholarFetch_ is an in-development web application that allows users to easily **scrape citation information** from research journal sites and **generate modifiable, styled UI citation components** for use on their sites.
 
