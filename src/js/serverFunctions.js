@@ -67,3 +67,30 @@ export async function parseData_BMJ(input) {
 		}
 	}
 }
+
+export function retrieve(dom, params) {
+	// *** Retrieves targeted metadata content after html is scraped
+	return dom.querySelector(params)?.getAttribute('content') ?? null;
+}
+
+export function getVolumeAndPageRange(dom, params) {
+	// *** Consolidates Volume, issue, and page range portions of citation
+	const volume = retrieve(dom, params.volume);
+	const issue = retrieve(dom, params.issue);
+	const startPage = retrieve(dom, params.startPage);
+	const endPage = retrieve(dom, params.endPage);
+	let pageRange = null;
+	// page range is null as a default / fallback
+	if (endPage === null && startPage !== null) {
+		// page range is set to only the start page's value if there is no end page (i.e. null)
+		pageRange = startPage;
+	} else if (startPage !== null && endPage !== null) {
+		// page range is a normal range
+		pageRange = `${startPage}-${endPage}`;
+	}
+	let volumeAndPageRange = null;
+	if (volume !== null && issue !== null && pageRange !== null) {
+		volumeAndPageRange = `${volume}(${issue}):${pageRange}`;
+	}
+	return volumeAndPageRange;
+}

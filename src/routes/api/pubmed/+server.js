@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { json } from '@sveltejs/kit';
 import { pubmedPARAMS } from '$lib/parameters';
+import { retrieve } from '../../../js/serverFunctions.js';
 
 export async function GET({ url }) {
 	try {
@@ -9,10 +10,10 @@ export async function GET({ url }) {
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
 
-		const title = dom.querySelector(pubmedPARAMS.title)?.getAttribute('content') ?? null;
+		// Title
+		const title = retrieve(dom, pubmedPARAMS.title);
 		// Publish Date
-		const publishDate =
-			dom.querySelector(pubmedPARAMS.publishDate)?.getAttribute('content') ?? null;
+		const publishDate = retrieve(dom, pubmedPARAMS.publishDate);
 		const publishYear = dom.querySelector(pubmedPARAMS.volume)?.textContent.split(' ')[0] ?? null;
 
 		// Authors
@@ -31,11 +32,10 @@ export async function GET({ url }) {
 		}
 
 		// DOI
-		const doi = dom.querySelector(pubmedPARAMS.doi)?.getAttribute('content') ?? null;
+		const doi = retrieve(dom, pubmedPARAMS.doi);
 		// Journal
-		const journal = dom.querySelector(pubmedPARAMS.journal)?.getAttribute('content') ?? 'PubMed';
-		const journalAbbreviation =
-			dom.querySelector(pubmedPARAMS.journalAbbr)?.getAttribute('content') ?? journal;
+		const journal = retrieve(dom, pubmedPARAMS.journal);
+		const journalAbbreviation = retrieve(dom, pubmedPARAMS.journalAbbr);
 
 		// Volume + Page Range
 		const volumeAndPageRange =

@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { json } from '@sveltejs/kit';
 import { nejmPARAMS } from '$lib/parameters';
+import { retrieve } from '../../../js/serverFunctions.js';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
@@ -24,17 +25,18 @@ export async function GET({ url }) {
 		const dom = new JSDOM(html).window.document;
 
 		// Title
-		const title = dom.querySelector(nejmPARAMS.title)?.getAttribute('content') ?? null;
+		const title = retrieve(dom, nejmPARAMS.title);
 
-		// Publish Date, DOI, Volume + Page Range
+		// * Publish Date / Year
+		const publishDate = retrieve(dom, nejmPARAMS.publishDate);
+		const publishYear = publishDate ? publishDate.split('-')[0] : null;
+
+		// * DOI
+		const doi = retrieve(dom, nejmPARAMS.doi);
+
+		// * Volume + Page Range
 		// handles two different formats of the p.f-ui element that can occur on NEJM
 		const blurb_parent = dom.querySelector(nejmPARAMS.blurb) ?? null;
-		// * Publish Date / Year
-		const publishDate = dom.querySelector(nejmPARAMS.publishDate)?.getAttribute('content') ?? null;
-		const publishYear = publishDate ? publishDate.split('-')[0] : null;
-		// * DOI
-		const doi = dom.querySelector(nejmPARAMS.doi)?.getAttribute('content') ?? null;
-		// * Volume + Page Range
 		let volumeAndPageRange = null;
 		if (blurb_parent !== null) {
 			const parentArray = blurb_parent.innerHTML.split('<br>');
@@ -73,9 +75,7 @@ export async function GET({ url }) {
 		}
 
 		// Journal
-		const journal =
-			dom.querySelector(nejmPARAMS.journal)?.getAttribute('content') ??
-			'New England Journal of Medicine';
+		const journal = retrieve(dom, nejmPARAMS.journal);
 		let journalAbbreviation = null;
 		if (journal === 'New England Journal of Medicine') journalAbbreviation = 'N Engl J Med';
 

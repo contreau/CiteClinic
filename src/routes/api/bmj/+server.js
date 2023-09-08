@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { json } from '@sveltejs/kit';
 import { bmjPARAMS } from '$lib/parameters';
+import { getVolumeAndPageRange, retrieve } from '../../../js/serverFunctions.js';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
@@ -34,9 +35,12 @@ export async function GET({ url }) {
 		const dom = new JSDOM(html).window.document;
 
 		// Title
-		const title = dom.querySelector(bmjPARAMS.title)?.textContent.trim() ?? null;
+		const title = retrieve(dom, bmjPARAMS.title);
+
 		// Publish Date
-		const publishDate = dom.querySelector(bmjPARAMS.publishDate)?.textContent.trim() ?? null;
+		const publishDate = retrieve(dom, bmjPARAMS.publishDate);
+		const publishYear = publishDate ? publishDate.split('-')[0] : null;
+
 		// Authors
 		const authorArr = dom.querySelector(bmjPARAMS.rawAuthors)?.textContent.split(',') ?? null;
 		let authors = null;
@@ -46,19 +50,27 @@ export async function GET({ url }) {
 				if (i % 2 === 0) authors.push(authorArr[i].trim());
 			}
 		}
+
 		// DOI
-		const doi = dom.querySelector(bmjPARAMS.doi)?.textContent.trim() ?? null;
+		const doi = retrieve(dom, bmjPARAMS.doi);
+
 		// Journal
-		const journal = dom.querySelector(bmjPARAMS.journal)?.getAttribute('content') ?? 'BMJ';
+		const journal = retrieve(dom, bmjPARAMS.journal);
+		const journalAbbreviation = retrieve(dom, bmjPARAMS.journalAbbrev);
+
+		// Volume + Page Range
+		const volumeAndPageRange = getVolumeAndPageRange(dom, bmjPARAMS);
 
 		// Citation Object
 		const citation = {
 			title: title,
 			publishDate: publishDate,
+			publishYear: publishYear,
 			authors: authors,
+			volumeAndPageRange: volumeAndPageRange,
 			doi: doi,
 			journal: journal,
-			givenCitation: bmjPARAMS.givenCitation
+			journalAbbreviation
 		};
 		return json(citation);
 	} catch (err) {

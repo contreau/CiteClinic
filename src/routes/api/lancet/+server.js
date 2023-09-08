@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { json } from '@sveltejs/kit';
 import { lancetPARAMS } from '$lib/parameters';
+import { getVolumeAndPageRange, retrieve } from '../../../js/serverFunctions.js';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 puppeteer.use(StealthPlugin());
@@ -31,9 +32,10 @@ export async function GET({ url }) {
 	const dom = new JSDOM(html).window.document;
 
 	// Title
-	const title = dom.querySelector(lancetPARAMS.title)?.textContent.trim() ?? null;
+	const title = retrieve(dom, lancetPARAMS.title);
 	// Publish Date
-	const publishDate = dom.querySelector(lancetPARAMS.publishDate)?.textContent.trim() ?? null;
+	const publishDate = retrieve(dom, lancetPARAMS.publishDate);
+	const publishYear = publishDate ? publishDate.split('/')[0] : null;
 	// Authors
 	const bylines = Array.from(dom.querySelectorAll(lancetPARAMS.rawAuthors)) ?? null;
 	let authors = null;
@@ -51,18 +53,24 @@ export async function GET({ url }) {
 	}
 
 	// DOI
-	const doi = dom.querySelector(lancetPARAMS.doi)?.textContent.trim() ?? null;
+	const doi = retrieve(dom, lancetPARAMS.doi);
 
 	// Journal
-	const journal = dom.querySelector(lancetPARAMS.journal)?.getAttribute('content') ?? 'The Lancet';
+	const journal = retrieve(dom, lancetPARAMS.journal);
+	const journalAbbreviation = retrieve(dom, lancetPARAMS.journalAbbrev);
+
+	// Volume + Page Range
+	const volumeAndPageRange = getVolumeAndPageRange(dom, lancetPARAMS);
 
 	const citation = {
 		title: title,
 		publishDate: publishDate,
+		publishYear: publishYear,
 		authors: authors,
 		doi: doi,
+		volumeAndPageRange: volumeAndPageRange,
 		journal: journal,
-		givenCitation: lancetPARAMS.givenCitation
+		journalAbbreviation: journalAbbreviation
 	};
 	return json(citation);
 }

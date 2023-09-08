@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { json } from '@sveltejs/kit';
 import { jamaPARAMS } from '$lib/parameters';
+import { getVolumeAndPageRange, retrieve } from '../../../js/serverFunctions.js';
 
 export async function GET({ url }) {
 	try {
@@ -8,11 +9,16 @@ export async function GET({ url }) {
 		const response = await fetch(target);
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
+		console.log(typeof dom);
 
 		// Title
-		const title = dom.querySelector(jamaPARAMS.title)?.textContent.trim() ?? null;
+		const title = retrieve(dom, jamaPARAMS.title);
+
 		// Publish Date
-		const publishDate = dom.querySelector(jamaPARAMS.publishDate)?.textContent.trim() ?? null;
+		let publishDate = retrieve(dom, jamaPARAMS.publishDate);
+		if (publishDate === null) publishDate = retrieve(dom, jamaPARAMS.publishDate2);
+		const publishYear = publishDate ? publishDate.split('/')[0] : null;
+
 		// Authors
 		const rawAuthors = dom.querySelectorAll(jamaPARAMS.rawAuthors);
 		const bylines = rawAuthors.length > 0 ? Array.from(rawAuthors) : null;
@@ -29,19 +35,26 @@ export async function GET({ url }) {
 				}
 			});
 		}
+
 		// DOI
-		const doi = dom.querySelector(jamaPARAMS.doi)?.getAttribute('content') ?? null;
+		const doi = retrieve(dom, jamaPARAMS.doi);
+
 		// Journal
-		const journal =
-			dom.querySelector(jamaPARAMS.journal)?.getAttribute('content') ?? 'JAMA Network';
+		const journal = retrieve(dom, jamaPARAMS.journal);
+		const journalAbbreviation = retrieve(dom, jamaPARAMS.journalAbbrev);
+
+		// Volume + Page Range
+		const volumeAndPageRange = getVolumeAndPageRange(dom, jamaPARAMS);
 
 		const citation = {
 			title: title,
 			publishDate: publishDate,
+			publishYear: publishYear,
 			authors: authors,
 			doi: doi,
+			volumeAndPageRange: volumeAndPageRange,
 			journal: journal,
-			givenCitation: jamaPARAMS.givenCitation
+			journalAbbreviation: journalAbbreviation
 		};
 		return json(citation);
 	} catch (err) {

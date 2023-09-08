@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { json } from '@sveltejs/kit';
 import { naturePARAMS } from '$lib/parameters';
+import { getVolumeAndPageRange, retrieve } from '../../../js/serverFunctions.js';
 
 export async function GET({ url }) {
 	try {
@@ -9,10 +10,11 @@ export async function GET({ url }) {
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
 
-		const title = dom.querySelector(naturePARAMS.title)?.getAttribute('content') ?? null;
+		// Title
+		const title = retrieve(dom, naturePARAMS.title);
+
 		// Publish Date
-		const publishDate =
-			dom.querySelector(naturePARAMS.publishDate)?.getAttribute('content') ?? null;
+		const publishDate = retrieve(dom, naturePARAMS.publishDate);
 		const publishYear = publishDate ? publishDate.split('-')[0] : null;
 
 		// Authors
@@ -31,21 +33,14 @@ export async function GET({ url }) {
 		}
 
 		// Volume + Page Range
-		const volume = dom.querySelector(naturePARAMS.volume).getAttribute('content');
-		console.log(volume);
-		const issue = dom.querySelector(naturePARAMS.issue).getAttribute('content');
-		const pageRange = `${dom.querySelector(naturePARAMS.startPage).getAttribute('content')}-${dom
-			.querySelector(naturePARAMS.endPage)
-			.getAttribute('content')}`;
-		const volumeAndPageRange = `${volume}(${issue}):${pageRange}`;
+		const volumeAndPageRange = getVolumeAndPageRange(dom, naturePARAMS);
 
 		// DOI
-		const doi = dom.querySelector(naturePARAMS.doi)?.getAttribute('content') ?? null;
+		const doi = retrieve(dom, naturePARAMS.doi);
 
 		// Journal
-		const journal = dom.querySelector(naturePARAMS.journal)?.getAttribute('content') ?? 'Nature';
-		const journalAbbreviation =
-			dom.querySelector(naturePARAMS.journalAbbrev)?.getAttribute('content') ?? journal;
+		const journal = retrieve(dom, naturePARAMS.journal);
+		const journalAbbreviation = retrieve(dom, naturePARAMS.journalAbbrev);
 
 		const citation = {
 			title: title,
