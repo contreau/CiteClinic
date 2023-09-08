@@ -19,7 +19,9 @@
 	import { scrapes, urlHistory } from './store';
 
 	// TODO:
-	// * Clean up given citation for Nature
+	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
+	// * Consider improving PubMed's publish date / year parameter (at least publish year)
+	// * Citation Display will have 'additional info' section below with full publish date, full unabbreviated journal name
 
 	// *
 	// ** Fetch Module **
@@ -41,9 +43,11 @@
 
 	// sample Lancet urls
 	// https://www.thelancet.com/journals/landia/article/PIIS2213-8587(23)00191-2/fulltext
+	// https://www.thelancet.com/journals/laneur/article/PIIS1474-4422(23)00246-6/fulltext
 
 	// sample JAMA urls
 	// https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2795976?resultClick=1
+	// https://jamanetwork.com/journals/jamaotolaryngology/article-abstract/2808807
 
 	// sample BMJ urls
 	// https://www.bmj.com/content/323/7322/1155
@@ -105,6 +109,7 @@
 				buttonClass = 'dormant';
 				return false;
 			} else {
+				console.clear();
 				$urlHistory = [...$urlHistory, url.href];
 				console.log(`URL History:`, $urlHistory);
 				return true;
