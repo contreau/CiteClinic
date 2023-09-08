@@ -37,33 +37,47 @@ export const nejmPARAMS = {
 };
 
 export const lancetPARAMS = {
-	title: '.article-header__title',
-	publishDate: '.article-header__publish-date__value',
+	title: 'meta[name="citation_title"]',
+	publishDate: 'meta[name="citation_date"]',
 	rawAuthors: '.loa__item__email',
-	doi: '.article-header__doi__value',
+	volume: 'meta[name="citation_volume"]',
+	issue: 'meta[name="citation_issue"]',
+	startPage: 'meta[name="citation_firstpage"]',
+	endPage: 'meta[name="citation_lastpage"]',
+	doi: 'meta[name="citation_doi"]',
 	journal: 'meta[name="citation_journal_title"]',
+	journalAbbrev: 'meta[name="citation_journal_abbrev"]',
 	host: 'www.thelancet.com',
-	route: 'lancet-fetch',
-	givenCitation: null
+	route: 'lancet-fetch'
 };
 
 export const jamaPARAMS = {
-	title: '.meta-article-title',
-	publishDate: '.meta-date',
+	title: 'meta[name="citation_title"]',
+	publishDate: 'meta[name="citation_publication_date"]',
+	publishDate2: 'meta[name="citation_online_date"]',
 	rawAuthors: '.wi-fullname',
+	volume: 'meta[name="citation_volume"]',
+	issue: 'meta[name="citation_issue"]',
+	startPage: 'meta[name="citation_firstpage"]',
+	endPage: 'meta[name="citation_lastpage"]',
 	doi: 'meta[name="citation_doi"]',
 	journal: 'meta[name="citation_journal_title"]',
+	journalAbbrev: 'meta[name="citation_journal_abbrev"]',
 	host: 'jamanetwork.com',
-	route: 'scholar-fetch',
-	givenCitation: null
+	route: 'scholar-fetch'
 };
 
 export const bmjPARAMS = {
-	title: '.highwire-cite-title',
-	publishDate: '.highwire-cite-date',
+	title: 'meta[name="DC.Title"]',
+	publishDate: 'meta[name="DC.Date"]',
 	rawAuthors: '.contributor-list',
-	doi: '.highwire-cite-doi',
+	volume: 'meta[name="citation_volume"]',
+	issue: 'meta[name="citation_issue"]',
+	startPage: 'meta[name="citation_firstpage"]',
+	endPage: 'meta[name="citation_lastpage"]',
+	doi: 'meta[name="DC.Identifier"]',
 	journal: 'meta[name="citation_journal_title"]',
+	journalAbbrev: 'meta[name="citation_journal_abbrev"]',
 	host: 'www.bmj.com',
 	route: 'bmj-fetch',
 	givenCitation: null
