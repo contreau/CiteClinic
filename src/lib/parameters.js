@@ -79,6 +79,5 @@ export const bmjPARAMS = {
 	journal: 'meta[name="citation_journal_title"]',
 	journalAbbrev: 'meta[name="citation_journal_abbrev"]',
 	host: 'www.bmj.com',
-	route: 'bmj-fetch',
-	givenCitation: null
+	route: 'bmj-fetch'
 };
