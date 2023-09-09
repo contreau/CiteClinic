@@ -1,7 +1,7 @@
 export const pubmedPARAMS = {
 	title: 'meta[name="citation_title"]',
 	publishDate: 'meta[name="citation_date"]',
-	rawAuthors: '.full-name',
+	rawAuthors: 'meta[name="citation_authors"]',
 	volume: 'span.cit',
 	doi: 'meta[name="citation_doi"]',
 	journal: 'meta[name="citation_journal_title"]',
@@ -28,7 +28,7 @@ export const naturePARAMS = {
 export const nejmPARAMS = {
 	title: 'meta[name="dc.Title"]',
 	publishDate: 'meta[name="dc.Date"]',
-	rawAuthors: '.m-article-header__authors',
+	rawAuthors: 'meta[name="dc.Creator"]',
 	blurb: 'p.f-ui',
 	doi: 'meta[scheme="doi"]',
 	journal: 'meta[name="citation_journal_title"]',
@@ -39,7 +39,7 @@ export const nejmPARAMS = {
 export const lancetPARAMS = {
 	title: 'meta[name="citation_title"]',
 	publishDate: 'meta[name="citation_date"]',
-	rawAuthors: '.loa__item__email',
+	rawAuthors: 'meta[name="citation_author"]',
 	volume: 'meta[name="citation_volume"]',
 	issue: 'meta[name="citation_issue"]',
 	startPage: 'meta[name="citation_firstpage"]',
@@ -55,7 +55,7 @@ export const jamaPARAMS = {
 	title: 'meta[name="citation_title"]',
 	publishDate: 'meta[name="citation_publication_date"]',
 	publishDate2: 'meta[name="citation_online_date"]',
-	rawAuthors: '.wi-fullname',
+	rawAuthors: 'meta[name="citation_author"]',
 	volume: 'meta[name="citation_volume"]',
 	issue: 'meta[name="citation_issue"]',
 	startPage: 'meta[name="citation_firstpage"]',
@@ -70,7 +70,7 @@ export const jamaPARAMS = {
 export const bmjPARAMS = {
 	title: 'meta[name="DC.Title"]',
 	publishDate: 'meta[name="DC.Date"]',
-	rawAuthors: '.contributor-list',
+	rawAuthors: 'meta[name="citation_author"]',
 	volume: 'meta[name="citation_volume"]',
 	issue: 'meta[name="citation_issue"]',
 	startPage: 'meta[name="citation_firstpage"]',

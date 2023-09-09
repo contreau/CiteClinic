@@ -14,7 +14,7 @@ export async function GET({ url }) {
 		const title = retrieve(dom, pubmedPARAMS.title);
 		// Publish Date
 		const publishDate = retrieve(dom, pubmedPARAMS.publishDate);
-		let publishYear = dom.querySelector(pubmedPARAMS.volume)?.textContent ?? null;
+		let publishYear = dom.querySelector(pubmedPARAMS.volume)?.textContent ?? 'null';
 		if (publishYear.includes(' ')) {
 			publishYear = publishYear.split(' ')[0];
 		} else if (publishYear.includes(';')) {
@@ -22,18 +22,14 @@ export async function GET({ url }) {
 		}
 
 		// Authors
-		const rawAuthors = dom.querySelectorAll(pubmedPARAMS.rawAuthors);
-		const bylines = rawAuthors.length > 0 ? Array.from(rawAuthors) : null;
-		let authors = null;
-		if (bylines !== null) {
-			const nameset = new Set();
-			authors = [];
-			bylines.forEach((e) => {
-				if (!nameset.has(e.textContent)) {
-					authors.push(e.textContent);
-					nameset.add(e.textContent);
-				}
-			});
+		const rawAuthors = retrieve(dom, pubmedPARAMS.rawAuthors);
+		let authors = rawAuthors ? rawAuthors.split(';') : 'null';
+		if (authors !== 'null') {
+			authors.pop();
+			for (let i = 1; i < authors.length; i++) {
+				authors[i] = ' ' + authors[i];
+			}
+			authors[authors.length - 1] += '.';
 		}
 
 		// DOI
@@ -45,17 +41,17 @@ export async function GET({ url }) {
 		// Volume + Page Range
 		const volumeAndPageRange =
 			dom.querySelector(pubmedPARAMS.volume)?.textContent.split(';')[1]?.trim().split('.')[0] ??
-			null;
+			'null';
 
 		const citation = {
-			title: title,
+			title: title + '.',
 			publishDate: publishDate,
-			publishYear: publishYear,
+			publishYear: publishYear + ';',
 			authors: authors,
 			doi: doi,
-			volumeAndPageRange: volumeAndPageRange,
+			volumeAndPageRange: volumeAndPageRange + '.',
 			journal: journal,
-			journalAbbreviation: journalAbbreviation
+			journalAbbreviation: journalAbbreviation + '.'
 		};
 
 		return json(citation);
