@@ -1,6 +1,7 @@
 <script>
 	import FetchModule from '$lib/FetchModule.svelte';
 	import JournalDisplay from '$lib/JournalDisplay.svelte';
+	import ComponentFill from '$lib/ComponentFill.svelte';
 </script>
 
 <nav>
@@ -17,6 +18,7 @@
 <main>
 	<JournalDisplay />
 	<FetchModule />
+	<ComponentFill />
 </main>
 
 <style lang="scss" global>
