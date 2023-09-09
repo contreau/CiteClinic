@@ -14,7 +14,12 @@ export async function GET({ url }) {
 		const title = retrieve(dom, pubmedPARAMS.title);
 		// Publish Date
 		const publishDate = retrieve(dom, pubmedPARAMS.publishDate);
-		const publishYear = dom.querySelector(pubmedPARAMS.volume)?.textContent.split(' ')[0] ?? null;
+		let publishYear = dom.querySelector(pubmedPARAMS.volume)?.textContent ?? null;
+		if (publishYear.includes(' ')) {
+			publishYear = publishYear.split(' ')[0];
+		} else if (publishYear.includes(';')) {
+			publishYear = publishYear.split(';')[0];
+		}
 
 		// Authors
 		const rawAuthors = dom.querySelectorAll(pubmedPARAMS.rawAuthors);
@@ -39,7 +44,7 @@ export async function GET({ url }) {
 
 		// Volume + Page Range
 		const volumeAndPageRange =
-			dom.querySelector(pubmedPARAMS.volume)?.textContent.split(';')[1].trim().split('.')[0] ??
+			dom.querySelector(pubmedPARAMS.volume)?.textContent.split(';')[1]?.trim().split('.')[0] ??
 			null;
 
 		const citation = {
