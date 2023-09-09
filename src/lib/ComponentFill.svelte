@@ -20,7 +20,10 @@
 			</div>
 			<div class="block--display">
 				<p>
-					{scrape.authors}. {scrape.title}. {scrape.journalAbbreviation}. {scrape.publishYear};{scrape.volumeAndPageRange}.
+					{scrape.authors}
+					{scrape.title}
+					{scrape.journalAbbreviation}
+					{scrape.publishYear}{scrape.volumeAndPageRange}
 				</p>
 			</div>
 		</div>
