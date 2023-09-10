@@ -1,4 +1,6 @@
-export async function parseData(input, params) {
+import type { Param } from './types';
+
+export async function parseData(input: HTMLInputElement, params: Param) {
 	if (input.value != '') {
 		try {
 			const url = new URL(input.value);
@@ -7,6 +9,8 @@ export async function parseData(input, params) {
 				response = await fetch(`/api/pubmed?url=${url}`);
 			} else if (params.host === 'www.nature.com') {
 				response = await fetch(`/api/nature?url=${url}`);
+			} else {
+				throw new Error('Invalid Host.');
 			}
 			const data = await response.json();
 			return data;
@@ -16,7 +20,7 @@ export async function parseData(input, params) {
 	}
 }
 
-export async function parseData_NEJM(input) {
+export async function parseData_NEJM(input: HTMLInputElement) {
 	if (input.value != '') {
 		try {
 			const url = new URL(input.value);
@@ -29,7 +33,7 @@ export async function parseData_NEJM(input) {
 	}
 }
 
-export async function parseData_LANCET(input) {
+export async function parseData_LANCET(input: HTMLInputElement) {
 	if (input.value != '') {
 		try {
 			const url = new URL(input.value);
@@ -42,7 +46,7 @@ export async function parseData_LANCET(input) {
 	}
 }
 
-export async function parseData_JAMA(input) {
+export async function parseData_JAMA(input: HTMLInputElement) {
 	if (input.value != '') {
 		try {
 			const url = new URL(input.value);
@@ -55,7 +59,7 @@ export async function parseData_JAMA(input) {
 	}
 }
 
-export async function parseData_BMJ(input) {
+export async function parseData_BMJ(input: HTMLInputElement) {
 	if (input.value != '') {
 		try {
 			const url = new URL(input.value);
@@ -68,12 +72,12 @@ export async function parseData_BMJ(input) {
 	}
 }
 
-export function retrieve(dom, params) {
+export function retrieve(dom: Document, params: string): string {
 	// *** Retrieves targeted metadata content after html is scraped
 	return dom.querySelector(params)?.getAttribute('content') ?? 'null';
 }
 
-export function getVolumeAndPageRange(dom, params) {
+export function getVolumeAndPageRange(dom: Document, params: Param): string {
 	// *** Consolidates Volume, issue, and page range portions of citation
 	const volume = retrieve(dom, params.volume);
 	const issue = retrieve(dom, params.issue);

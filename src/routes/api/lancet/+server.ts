@@ -1,20 +1,19 @@
 import { JSDOM } from 'jsdom';
 import { json } from '@sveltejs/kit';
-import { bmjPARAMS } from '$lib/parameters';
-import { getVolumeAndPageRange, retrieve } from '../../../js/serverFunctions.js';
+import { lancetPARAMS } from '$lib/parameters';
+import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions.js';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-
+import type { Citation } from '../../../ts/types.js';
 puppeteer.use(StealthPlugin());
 
 export async function GET({ url }) {
-	try {
-		const target = url.searchParams.get('url');
+	const target = url.searchParams.get('url');
+	if (target !== null) {
 		const browser = await puppeteer.launch({ headless: 'new' });
 		console.log('launching puppeteer');
 		const page = await browser.newPage();
 		await page.goto(target);
-
 		try {
 			await page.waitForSelector('#onetrust-accept-btn-handler', {
 				visible: true,
@@ -25,7 +24,7 @@ export async function GET({ url }) {
 			console.log('Cookie consent button not found or not clickable');
 		}
 
-		await page.waitForSelector('.highwire-cite-title', {
+		await page.waitForSelector('.article-header__title', {
 			visible: true,
 			timeout: 5000
 		});
@@ -35,33 +34,31 @@ export async function GET({ url }) {
 		const dom = new JSDOM(html).window.document;
 
 		// Title
-		const title = retrieve(dom, bmjPARAMS.title);
+		const title = retrieve(dom, lancetPARAMS.title);
 
 		// Publish Date
-		const publishDate = retrieve(dom, bmjPARAMS.publishDate);
-		const publishYear = publishDate ? publishDate.split('-')[0] : 'null';
+		const publishDate = retrieve(dom, lancetPARAMS.publishDate);
+		const publishYear = publishDate ? publishDate.split('/')[0] : 'null';
 
 		// Authors
-		const rawAuthors = Array.from(dom.querySelectorAll(bmjPARAMS.rawAuthors));
-		// @ts-ignore
-		let authors = rawAuthors.map((el) => el.content);
+		const rawAuthors: Element[] = Array.from(dom.querySelectorAll(lancetPARAMS.rawAuthors));
+		const authors: string[] = rawAuthors.map((el: Element) => (el as HTMLMetaElement).content);
 		for (let i = 1; i < authors.length; i++) {
 			authors[i] = ' ' + authors[i];
 		}
 		authors[authors.length - 1] += '.';
 
 		// DOI
-		const doi = retrieve(dom, bmjPARAMS.doi);
+		const doi = retrieve(dom, lancetPARAMS.doi);
 
 		// Journal
-		const journal = retrieve(dom, bmjPARAMS.journal);
-		const journalAbbreviation = retrieve(dom, bmjPARAMS.journalAbbrev);
+		const journal = retrieve(dom, lancetPARAMS.journal);
+		const journalAbbreviation = retrieve(dom, lancetPARAMS.journalAbbrev);
 
 		// Volume + Page Range
-		const volumeAndPageRange = getVolumeAndPageRange(dom, bmjPARAMS);
+		const volumeAndPageRange = getVolumeAndPageRange(dom, lancetPARAMS);
 
-		// Citation Object
-		const citation = {
+		const citation: Citation = {
 			title: title + '.',
 			publishDate: publishDate,
 			publishYear: publishYear + ';',
@@ -72,7 +69,5 @@ export async function GET({ url }) {
 			journalAbbreviation: journalAbbreviation + '.'
 		};
 		return json(citation);
-	} catch (err) {
-		return new Response(`${err}`);
 	}
 }

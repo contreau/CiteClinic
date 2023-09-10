@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
 	import {
 		parseData,
 		parseData_NEJM,
 		parseData_LANCET,
 		parseData_JAMA,
 		parseData_BMJ
-	} from '../js/serverFunctions';
+	} from '../ts/serverFunctions';
 
 	import {
 		pubmedPARAMS,
@@ -17,6 +17,7 @@
 	} from './parameters';
 
 	import { scrapes, urlHistory } from './store';
+	import type { Citation, Param } from '../ts/types';
 
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
@@ -53,12 +54,12 @@
 	// sample BMJ urls
 	// https://www.bmj.com/content/323/7322/1155
 
-	let input = null;
-	let source = null;
+	let input: HTMLInputElement;
+	let source: HTMLSelectElement;
 	let sourceSelect = 'Select';
 	let buttonClass = 'dormant';
 	let buttonAnimation = 'none';
-	let inputWrap;
+	let inputWrap: HTMLDivElement;
 	let fetchErrorMessage = 'Nothing to see here.';
 	let loadSymbolClass = 'none';
 	let displayErrorClass = 'none';
@@ -79,7 +80,7 @@
 		}
 	}
 
-	function displayResults(result) {
+	function displayResults(result: Citation) {
 		if (result instanceof Error) {
 			console.error(result.message);
 			fetchErrorMessage = result.message;
@@ -87,7 +88,7 @@
 			input.focus();
 		} else {
 			loadSymbolClass = 'none';
-			$scrapes = [...$scrapes, result];
+			scrapes.update((scrapes) => [...scrapes, result]);
 			buttonClass = 'dormant';
 			input.value = '';
 			input.focus();
@@ -95,7 +96,7 @@
 		}
 	}
 
-	function validateURL(input, params) {
+	function validateURL(input: HTMLInputElement, params: Param): boolean {
 		try {
 			const url = new URL(input.value.trim());
 			if (url.host != params.host) {
@@ -111,7 +112,8 @@
 				return false;
 			} else {
 				console.clear();
-				$urlHistory = [...$urlHistory, url.href];
+				urlHistory.update((urlHistory) => [...urlHistory, url.href]);
+				// $urlHistory = [...$urlHistory, url.href];
 				console.log(`URL History:`, $urlHistory);
 				return true;
 			}
@@ -129,7 +131,7 @@
 	}
 
 	// submit button event function
-	async function launchFetch(input) {
+	async function launchFetch(input: HTMLInputElement) {
 		switch (sourceSelect) {
 			case 'PubMed':
 				if (validateURL(input, pubmedPARAMS)) {
