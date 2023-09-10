@@ -54,25 +54,6 @@ export async function GET({ url }) {
 		}
 
 		// Authors
-		// const authorsUL = dom.querySelector(nejmPARAMS.rawAuthors) ?? null;
-		// let authors = null;
-		// if (authorsUL !== null) {
-		// 	const authorChildren = Array.from(authorsUL.childNodes);
-
-		// 	const nameset = new Set();
-		// 	let filteredAuthors = [];
-		// 	authorChildren.forEach((e) => {
-		// 		if (!nameset.has(e.textContent)) {
-		// 			filteredAuthors.push(e.textContent.trim());
-		// 			nameset.add(e.textContent);
-		// 		}
-		// 	});
-
-		// 	authors = filteredAuthors.map((el) => {
-		// 		if (el.at(-1) === ',') return el.slice(0, -1);
-		// 		else return el;
-		// 	});
-		// }
 		const rawAuthors = Array.from(dom.querySelectorAll(nejmPARAMS.rawAuthors));
 		// @ts-ignore
 		let authors = rawAuthors.map((el) => el.content.trim());

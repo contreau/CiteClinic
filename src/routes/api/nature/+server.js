@@ -31,6 +31,10 @@ export async function GET({ url }) {
 				}
 			});
 		}
+		for (let i = 1; i < authors.length; i++) {
+			authors[i] = ' ' + authors[i];
+		}
+		authors[authors.length - 1] += '.';
 
 		// Volume + Page Range
 		const volumeAndPageRange = getVolumeAndPageRange(dom, naturePARAMS);
@@ -43,14 +47,14 @@ export async function GET({ url }) {
 		const journalAbbreviation = retrieve(dom, naturePARAMS.journalAbbrev);
 
 		const citation = {
-			title: title,
+			title: title + '.',
 			publishDate: publishDate,
-			publishYear: publishYear,
+			publishYear: publishYear + ';',
 			authors: authors,
 			doi: doi,
-			volumeAndPageRange: volumeAndPageRange,
+			volumeAndPageRange: volumeAndPageRange + '.',
 			journal: journal,
-			journalAbbreviation: journalAbbreviation
+			journalAbbreviation: journalAbbreviation + '.'
 		};
 
 		return json(citation);

@@ -9,32 +9,23 @@ export async function GET({ url }) {
 		const response = await fetch(target);
 		const html = await response.text();
 		const dom = new JSDOM(html).window.document;
-		console.log(typeof dom);
 
 		// Title
 		const title = retrieve(dom, jamaPARAMS.title);
 
 		// Publish Date
 		let publishDate = retrieve(dom, jamaPARAMS.publishDate);
-		if (publishDate === null) publishDate = retrieve(dom, jamaPARAMS.publishDate2);
-		const publishYear = publishDate ? publishDate.split('/')[0] : null;
+		if (publishDate === 'null') publishDate = retrieve(dom, jamaPARAMS.publishDate2);
+		const publishYear = publishDate ? publishDate.split('/')[0] : 'null';
 
 		// Authors
-		const rawAuthors = dom.querySelectorAll(jamaPARAMS.rawAuthors);
-		const bylines = rawAuthors.length > 0 ? Array.from(rawAuthors) : null;
-		let authors = null;
-		if (bylines !== null) {
-			const nameset = new Set();
-			authors = [];
-			bylines.forEach((e) => {
-				if (e.textContent.trim() != '') {
-					if (!nameset.has(e.childNodes[0].childNodes[0].textContent)) {
-						authors.push(e.childNodes[0].childNodes[0].textContent.trim());
-						nameset.add(e.childNodes[0].childNodes[0].textContent);
-					}
-				}
-			});
+		const rawAuthors = Array.from(dom.querySelectorAll(jamaPARAMS.rawAuthors));
+		// @ts-ignore
+		let authors = rawAuthors.map((el) => el.content);
+		for (let i = 1; i < authors.length; i++) {
+			authors[i] = ' ' + authors[i];
 		}
+		authors[authors.length - 1] += '.';
 
 		// DOI
 		const doi = retrieve(dom, jamaPARAMS.doi);
@@ -47,14 +38,14 @@ export async function GET({ url }) {
 		const volumeAndPageRange = getVolumeAndPageRange(dom, jamaPARAMS);
 
 		const citation = {
-			title: title,
+			title: title + '.',
 			publishDate: publishDate,
-			publishYear: publishYear,
+			publishYear: publishYear + ';',
 			authors: authors,
 			doi: doi,
-			volumeAndPageRange: volumeAndPageRange,
+			volumeAndPageRange: volumeAndPageRange + '.',
 			journal: journal,
-			journalAbbreviation: journalAbbreviation
+			journalAbbreviation: journalAbbreviation + '.'
 		};
 		return json(citation);
 	} catch (err) {

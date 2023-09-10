@@ -33,24 +33,19 @@ export async function GET({ url }) {
 
 	// Title
 	const title = retrieve(dom, lancetPARAMS.title);
+
 	// Publish Date
 	const publishDate = retrieve(dom, lancetPARAMS.publishDate);
-	const publishYear = publishDate ? publishDate.split('/')[0] : null;
+	const publishYear = publishDate ? publishDate.split('/')[0] : 'null';
+
 	// Authors
-	const bylines = Array.from(dom.querySelectorAll(lancetPARAMS.rawAuthors)) ?? null;
-	let authors = null;
-	if (bylines !== null) {
-		authors = [];
-		const nameset = new Set();
-		bylines.forEach((e) => {
-			if (e.textContent.trim() != '') {
-				if (!nameset.has(e.textContent)) {
-					authors.push(e.textContent.trim());
-					nameset.add(e.textContent);
-				}
-			}
-		});
+	const rawAuthors = Array.from(dom.querySelectorAll(lancetPARAMS.rawAuthors));
+	// @ts-ignore
+	let authors = rawAuthors.map((el) => el.content);
+	for (let i = 1; i < authors.length; i++) {
+		authors[i] = ' ' + authors[i];
 	}
+	authors[authors.length - 1] += '.';
 
 	// DOI
 	const doi = retrieve(dom, lancetPARAMS.doi);
@@ -63,14 +58,14 @@ export async function GET({ url }) {
 	const volumeAndPageRange = getVolumeAndPageRange(dom, lancetPARAMS);
 
 	const citation = {
-		title: title,
+		title: title + '.',
 		publishDate: publishDate,
-		publishYear: publishYear,
+		publishYear: publishYear + ';',
 		authors: authors,
 		doi: doi,
-		volumeAndPageRange: volumeAndPageRange,
+		volumeAndPageRange: volumeAndPageRange + '.',
 		journal: journal,
-		journalAbbreviation: journalAbbreviation
+		journalAbbreviation: journalAbbreviation + '.'
 	};
 	return json(citation);
 }

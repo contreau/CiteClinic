@@ -20,7 +20,8 @@
 
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
-	// * Consider improving PubMed's publish date / year parameter (at least publish year)
+	// finish formatting author names in Vancouver style for: Nature, Lancet, BMJ, JAMA
+	// Have author fields be scraped from metadata where possible.
 	// * Citation Display will have 'additional info' section below with full publish date, full unabbreviated journal name
 
 	// *
@@ -229,10 +230,6 @@
 
 <p class="loading-symbol"><i class="fa-solid fa-arrows-rotate {loadSymbolClass}" /></p>
 <p class="error-message {displayErrorClass}">{fetchErrorMessage}</p>
-
-{#each $scrapes as scrape}
-	<p>{scrape.title}</p>
-{/each}
 
 <style lang="scss">
 	.input-wrap {

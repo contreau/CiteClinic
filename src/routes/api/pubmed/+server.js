@@ -36,7 +36,7 @@ export async function GET({ url }) {
 		const doi = retrieve(dom, pubmedPARAMS.doi);
 		// Journal
 		const journal = retrieve(dom, pubmedPARAMS.journal);
-		const journalAbbreviation = retrieve(dom, pubmedPARAMS.journalAbbr);
+		const journalAbbreviation = retrieve(dom, pubmedPARAMS.journalAbbrev);
 
 		// Volume + Page Range
 		const volumeAndPageRange =

@@ -39,17 +39,16 @@ export async function GET({ url }) {
 
 		// Publish Date
 		const publishDate = retrieve(dom, bmjPARAMS.publishDate);
-		const publishYear = publishDate ? publishDate.split('-')[0] : null;
+		const publishYear = publishDate ? publishDate.split('-')[0] : 'null';
 
 		// Authors
-		const authorArr = dom.querySelector(bmjPARAMS.rawAuthors)?.textContent.split(',') ?? null;
-		let authors = null;
-		if (authorArr !== null) {
-			authors = [];
-			for (let i = 0; i < authorArr.length; i++) {
-				if (i % 2 === 0) authors.push(authorArr[i].trim());
-			}
+		const rawAuthors = Array.from(dom.querySelectorAll(bmjPARAMS.rawAuthors));
+		// @ts-ignore
+		let authors = rawAuthors.map((el) => el.content);
+		for (let i = 1; i < authors.length; i++) {
+			authors[i] = ' ' + authors[i];
 		}
+		authors[authors.length - 1] += '.';
 
 		// DOI
 		const doi = retrieve(dom, bmjPARAMS.doi);
@@ -63,14 +62,14 @@ export async function GET({ url }) {
 
 		// Citation Object
 		const citation = {
-			title: title,
+			title: title + '.',
 			publishDate: publishDate,
-			publishYear: publishYear,
+			publishYear: publishYear + ';',
 			authors: authors,
-			volumeAndPageRange: volumeAndPageRange,
 			doi: doi,
+			volumeAndPageRange: volumeAndPageRange + '.',
 			journal: journal,
-			journalAbbreviation
+			journalAbbreviation: journalAbbreviation + '.'
 		};
 		return json(citation);
 	} catch (err) {
