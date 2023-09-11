@@ -5,8 +5,30 @@ import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types';
-
 puppeteer.use(StealthPlugin());
+
+const affixes: string[] = ['de', 'De', 'La', 'la', 'le', 'Le'];
+
+function formatName(name: string, affixes: string[]) {
+	let givenNames: string;
+	let surname;
+	const parts = name.split(' ');
+
+	// searches for affix within the author's name
+	const affix: string | undefined = parts.find((part) => affixes.includes(part));
+	if (affix) {
+		// affix is present
+		const rawGivenNames = name.slice(0, name.indexOf(affix)).trim().split(' ');
+		givenNames = rawGivenNames.map((name) => name[0]).join('');
+		surname = name.slice(name.indexOf(affix), name.length);
+	} else {
+		// affix not present
+		surname = parts.at(-1);
+		parts.pop();
+		givenNames = parts.map((name) => name[0]).join('');
+	}
+	return `${surname} ${givenNames}`;
+}
 
 export async function GET({ url }) {
 	try {
@@ -45,11 +67,17 @@ export async function GET({ url }) {
 
 			// Authors
 			const rawAuthors: Element[] = Array.from(dom.querySelectorAll(bmjPARAMS.rawAuthors));
-			const authors: string[] = rawAuthors.map((el: Element) => (el as HTMLMetaElement).content);
-			for (let i = 1; i < authors.length; i++) {
-				authors[i] = ' ' + authors[i];
+			let authors: string[] = rawAuthors.map((el: Element) => (el as HTMLMetaElement).content);
+			try {
+				authors.forEach((el: string, i) => {
+					authors[i] = formatName(el, affixes);
+					if (i > 0) authors[i] = ' ' + authors[i];
+				});
+				authors[authors.length - 1] += '.';
+			} catch (err) {
+				console.log(err);
+				authors = ['null'];
 			}
-			authors[authors.length - 1] += '.';
 
 			// DOI
 			const doi = retrieve(dom, bmjPARAMS.doi);

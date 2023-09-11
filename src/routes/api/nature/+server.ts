@@ -4,6 +4,21 @@ import { naturePARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions.js';
 import type { Citation } from '../../../ts/types.js';
 
+// Formats author names
+function formatName(name: string) {
+	const parts = name.split(',');
+	const surname = parts[0].trim();
+	parts.shift();
+	parts[0] = parts[0].trim(); // removes leading whitespace
+	if (parts[0].includes('.')) parts[0] = parts[0].slice(0, parts[0].length - 1); // removes period at end of middle intial
+	let givenNames = parts[0];
+	givenNames = givenNames
+		.split(' ')
+		.map((name: string) => name[0])
+		.join(''); // joins first letters of given names together
+	return `${surname} ${givenNames}`;
+}
+
 export async function GET({ url }) {
 	try {
 		const target = url.searchParams.get('url');
@@ -20,25 +35,20 @@ export async function GET({ url }) {
 			const publishYear = publishDate ? publishDate.split('-')[0] : null;
 
 			// Authors
-			const rawAuthors: Element[] = dom.querySelectorAll(naturePARAMS.rawAuthors);
-			const bylines = rawAuthors.length > 0 ? Array.from(rawAuthors) : null;
-			let authors = ['null'];
-			if (bylines !== null) {
-				const nameset = new Set();
-				authors = [];
-				bylines.forEach((e) => {
-					if (!nameset.has(e.textContent)) {
-						if (e.textContent !== null) {
-							authors.push(e.textContent);
-							nameset.add(e.textContent);
-						}
-					}
+			const rawAuthors: Element[] = Array.from(dom.querySelectorAll(naturePARAMS.rawAuthors));
+			let authors: string[] = rawAuthors.map((el: Element) =>
+				(el as HTMLMetaElement).content.trim()
+			);
+			try {
+				authors.forEach((el: string, i) => {
+					authors[i] = formatName(el);
+					if (i > 0) authors[i] = ' ' + authors[i];
 				});
+				authors[authors.length - 1] += '.';
+			} catch (err) {
+				console.log(err);
+				authors = ['null'];
 			}
-			for (let i = 1; i < authors.length; i++) {
-				authors[i] = ' ' + authors[i];
-			}
-			authors[authors.length - 1] += '.';
 
 			// Volume + Page Range
 			const volumeAndPageRange = getVolumeAndPageRange(dom, naturePARAMS);
