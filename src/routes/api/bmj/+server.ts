@@ -5,9 +5,8 @@ import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types';
+import { affixes } from '../../../ts/serverFunctions';
 puppeteer.use(StealthPlugin());
-
-const affixes: string[] = ['de', 'De', 'La', 'la', 'le', 'Le'];
 
 function formatName(name: string, affixes: string[]) {
 	let givenNames: string;

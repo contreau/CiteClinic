@@ -3,14 +3,28 @@ import { json } from '@sveltejs/kit';
 import { jamaPARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions.js';
 import type { Citation } from '../../../ts/types.js';
+import { affixes } from '../../../ts/serverFunctions.js';
 
 // Formats author names
-function formatName(name: string) {
+function formatName(name: string, affixes: string[]) {
+	let givenNames: string;
+	let surname;
 	const parts = name.split(' ');
-	const surname = parts[parts.length - 1].trim();
-	parts.pop();
-	const givenNames = parts.map((name: string) => name[0]).join('');
-	return `${surname} ${givenNames}`; // Join the surname and initials into the final string
+
+	// searches for affix within the author's name
+	const affix: string | undefined = parts.find((part) => affixes.includes(part));
+	if (affix) {
+		// affix is present
+		const rawGivenNames = name.slice(0, name.indexOf(affix)).trim().split(' ');
+		givenNames = rawGivenNames.map((name) => name[0]).join('');
+		surname = name.slice(name.indexOf(affix), name.length);
+	} else {
+		// affix not present
+		surname = parts.at(-1);
+		parts.pop();
+		givenNames = parts.map((name) => name[0]).join('');
+	}
+	return `${surname} ${givenNames}`;
 }
 
 export async function GET({ url }) {
@@ -36,7 +50,7 @@ export async function GET({ url }) {
 			let authors: string[] = rawAuthors.map((el: Element) => (el as HTMLMetaElement).content);
 			try {
 				authors.forEach((el: string, i) => {
-					authors[i] = formatName(el);
+					authors[i] = formatName(el, affixes);
 					if (i > 0) authors[i] = ' ' + authors[i];
 				});
 				authors[authors.length - 1] += '.';
