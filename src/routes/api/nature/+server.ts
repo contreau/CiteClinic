@@ -32,7 +32,7 @@ export async function GET({ url }) {
 
 			// Publish Date
 			const publishDate = retrieve(dom, naturePARAMS.publishDate);
-			const publishYear = publishDate ? publishDate.split('-')[0] : null;
+			const publishYear = publishDate ? publishDate.split('-')[0] : 'null';
 
 			// Authors
 			const rawAuthors: Element[] = Array.from(dom.querySelectorAll(naturePARAMS.rawAuthors));
