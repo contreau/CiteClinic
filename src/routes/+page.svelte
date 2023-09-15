@@ -42,6 +42,7 @@
 	body {
 		margin: 0;
 		padding: 0;
+		scroll-behavior: smooth;
 	}
 
 	body {
@@ -50,6 +51,7 @@
 		min-height: 100vh;
 		backdrop-filter: blur(0.4em);
 		margin: 0 auto;
+		padding: 0.5em 5em;
 	}
 
 	img {
@@ -63,7 +65,7 @@
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
-		padding: 0.5em 5em;
+		// padding: 0.5em 5em;
 		background-color: var(--bg-color);
 	}
 	.masthead {
@@ -91,7 +93,7 @@
 		}
 	}
 	main {
-		padding: 0.5em 5em 0 5em;
+		padding-top: 0.5em;
 	}
 
 	h1 {
