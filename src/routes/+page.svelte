@@ -1,7 +1,8 @@
 <script lang="ts">
 	import FetchModule from '$lib/FetchModule.svelte';
-	import JournalDisplay from '$lib/JournalDisplay.svelte';
 	import ComponentFill from '$lib/ComponentFill.svelte';
+	import ManualContent from '$lib/ManualContent.svelte';
+	import { onMount } from 'svelte';
 
 	let manual: HTMLElement;
 	let manualContent: HTMLDivElement;
@@ -12,19 +13,35 @@
 				manualContent.style.display = 'block';
 			}, 750);
 			manualContent.classList.add('fadeIn');
+			// disables main page scrolling while overlay is active
+			document.body.style.overflow = 'hidden';
 		} else if (manual.style.minWidth >= '100vw') {
 			manual.style.minWidth = '0vw';
 			manualContent.classList.remove('fadeIn');
 			manualContent.style.display = 'none';
-			// clean this up with a css class toggle perhaps
+			// re-enables main page scrolling when overlay is dismissed
+			document.body.style.overflow = 'auto';
 		}
 	}
+
+	// client side code
+	onMount(() => {
+		const root: any = document.querySelector(':root');
+		window.addEventListener('scroll', () => {
+			// recalculates on scroll the top and right position values of the user manual overlay
+			root?.style.setProperty('--overlay-top', `${window.scrollY}px`);
+			root?.style.setProperty('--overlay-right', `${window.scrollX}px`);
+		});
+	});
 </script>
 
-<nav>
+<nav class="padding-container">
 	<div class="masthead">
 		<h1>ScholarFetch</h1>
 		<img src="/green-scroll.png" alt="Green Scroll" />
+	</div>
+	<div class="tagline">
+		<h2>Generate <span><em>styled</em></span> citations with a url.</h2>
 	</div>
 
 	<div class="links">
@@ -42,20 +59,24 @@
 	</div>
 </nav>
 <main>
-	<JournalDisplay />
+	<p class="pagetop-icon"><i class="fa-solid fa-book-open-reader" /></p>
 	<FetchModule />
 	<ComponentFill />
-	<section bind:this={manual} class="user-manual">
-		<div bind:this={manualContent} class="manual-content">
-			<button
-				on:click={() => {
-					toggleManual();
-				}}><i class="fa-solid fa-circle-xmark" /></button
-			>
-			<h2>Using ScholarFetch</h2>
-		</div>
-	</section>
 </main>
+<section bind:this={manual} class="user-manual">
+	<div bind:this={manualContent} class="manual-content">
+		<button
+			on:click={() => {
+				toggleManual();
+			}}><i class="fa-solid fa-circle-xmark" /></button
+		>
+		<ManualContent />
+	</div>
+</section>
+
+<footer>
+	<p><i class="fa-solid fa-laptop-code" /> made by CK</p>
+</footer>
 
 <style lang="scss" global>
 	:root {
@@ -64,8 +85,10 @@
 		font-size: 1.125rem;
 		color-scheme: light dark;
 		color: rgba(255, 255, 255, 0.87);
-		--bg-color: #001829d6;
+		--bg-color: #000e18;
 		--green: #35fb9f;
+		--overlay-top: 0;
+		--overlay-right: 0;
 	}
 
 	*,
@@ -81,15 +104,20 @@
 		scroll-behavior: smooth;
 	}
 
+	.padding-container {
+		padding: 0.5em 5em;
+	}
+
 	body {
 		background-color: var(--bg-color);
 		background-image: url('/green-scatter-bg.svg');
 		min-height: 100vh;
-		backdrop-filter: blur(0.4em);
+		-webkit-backdrop-filter: blur(0.4em) brightness(55%);
+		backdrop-filter: blur(0.4em) brightness(55%);
 		margin: 0 auto;
-		padding: 0.5em 5em;
 		position: relative;
-		overflow-x: hidden;
+		display: flex;
+		flex-direction: column;
 	}
 
 	img {
@@ -97,14 +125,15 @@
 	}
 
 	nav {
-		width: 100%;
 		position: sticky;
+		top: 0;
+		z-index: 4;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
-		// padding: 0.5em 5em;
-		background-color: var(--bg-color);
+		background-color: #000e18;
+		border-bottom: solid 0.5px #232323;
 	}
 	.masthead {
 		// border: solid 1px #fff;
@@ -115,6 +144,15 @@
 		img {
 			width: 100%;
 			max-width: 35px;
+		}
+	}
+
+	.tagline {
+		h2 {
+			margin: 0;
+			span {
+				color: var(--green);
+			}
 		}
 	}
 
@@ -156,20 +194,22 @@
 	// slide-in-out instruction manual
 	.user-manual {
 		position: absolute;
-		background-color: #0000004d;
-		backdrop-filter: blur(1rem);
+		background-color: #000e18e9;
 		min-height: 100vh;
 		min-width: 0vw;
-		top: 0;
-		right: 0;
+		top: var(--overlay-top);
+		right: var(--overlay-right);
 		transition: min-width 0.7s ease-in-out;
-		z-index: 3;
+		z-index: 5;
+		overflow: auto;
+		overflow: scroll;
 
 		button {
 			font-size: 2rem;
 			border: transparent;
 			background: transparent;
 			transition: all 0.4s;
+			padding: 0;
 			cursor: pointer;
 			color: rgb(236, 65, 65);
 			&:hover,
@@ -183,6 +223,8 @@
 		opacity: 0;
 		display: none;
 		padding: 0.5em;
+		overflow: auto;
+		overflow: scroll;
 	}
 
 	.fadeIn {
@@ -195,12 +237,35 @@
 		}
 	}
 
+	.pagetop-icon {
+		text-align: center;
+		i {
+			font-size: 2rem;
+			color: var(--green);
+			filter: drop-shadow(0 0 0.3em var(--green));
+			margin: 0 auto;
+		}
+	}
+
 	main {
 		padding-top: 0.5em;
+		flex: 1 0 auto; // sticks footer to bottom
 	}
 
 	h1 {
 		margin: 0;
 		font-size: 2.2rem;
+	}
+
+	footer {
+		text-align: center;
+		flex-shrink: 0; // sticks footer to bottom (see rule on main element)
+		background-color: #000e18;
+		border-top: solid 0.5px #232323;
+		p {
+			margin: 0 auto;
+			padding: 0.5em 0em;
+			font-weight: 400;
+		}
 	}
 </style>
