@@ -28,9 +28,8 @@
 	onMount(() => {
 		const root: any = document.querySelector(':root');
 		window.addEventListener('scroll', () => {
-			// recalculates on scroll the top and right position values of the user manual overlay
+			// recalculates the 'top' position value of the user manual overlay on scroll
 			root?.style.setProperty('--overlay-top', `${window.scrollY}px`);
-			root?.style.setProperty('--overlay-right', `${window.scrollX}px`);
 		});
 	});
 </script>
@@ -88,7 +87,6 @@
 		--bg-color: #000e18;
 		--green: #35fb9f;
 		--overlay-top: 0;
-		--overlay-right: 0;
 	}
 
 	*,
@@ -198,7 +196,7 @@
 		min-height: 100vh;
 		min-width: 0vw;
 		top: var(--overlay-top);
-		right: var(--overlay-right);
+		right: 0;
 		transition: min-width 0.7s ease-in-out;
 		z-index: 5;
 		overflow: auto;
