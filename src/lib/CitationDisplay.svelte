@@ -1,8 +1,8 @@
-<script>
-	import { scrapes, urlHistory } from './store';
+<script lang="ts">
+	import { scrapes, urlHistory, expandedClass } from './store';
 </script>
 
-<section class="citation-display-area padding-container">
+<section class="citation-display-area {$expandedClass}">
 	{#if $scrapes.length === 0}
 		<div class="default-display">
 			<p class="default-display-icon"><i class="fa-solid fa-bookmark" /></p>
@@ -70,19 +70,27 @@
 
 <style lang="scss">
 	.citation-display-area {
-		// border-top: solid 0.5px #484848;
-		// border-bottom: solid 0.5px #484848;
+		transition: all 0.5s;
 		border: solid 0.5px #484848;
 		-webkit-backdrop-filter: brightness(75%);
-		backdrop-filter: brightness(75%);
+		backdrop-filter: brightness(65%);
 		max-width: 650px;
 		border-radius: 20px;
 		margin: 0 auto;
+		width: 100%; // will shrink if removed bc it's a flex item
+	}
+
+	.expanded {
+		border: none;
+		border-top: solid 0.5px #484848;
+		border-bottom: solid 0.5px #484848;
+		max-width: 100%;
+		padding: 0.5em 5em;
+		border-radius: 0;
 	}
 
 	// Display with citations
 	.default-display {
-		// padding: 1em 0;
 		p {
 			text-align: center;
 		}

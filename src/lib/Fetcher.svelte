@@ -16,7 +16,7 @@
 		bmjPARAMS
 	} from './parameters';
 
-	import { scrapes, urlHistory } from './store';
+	import { scrapes, urlHistory, expandedClass } from './store';
 	import type { Citation, Param } from '../ts/types';
 	import { browser } from '$app/environment';
 
@@ -31,9 +31,11 @@
 	// * create accordion-esque feature for citations, where they are openable/closeable, closed by default when they load
 	// * User manual should emphasize that scraped data won't be perfect, particularly author abbreviations
 	// * fix the autoscroll on citation load to go to the top of the loaded element rather than the footer - and diagnose the safari scrolling bug.
+	// highlight a "null." response in any textarea element that receives one.
+	// once a second citation is created, the first should become the first in a curtain of nav tabs. maximum 10 open tabs. tabs should be deletable.
 
 	// *
-	// ** Fetch Module **
+	// ** Fetcher **
 	// *
 
 	// sample PubMed urls
@@ -109,6 +111,7 @@
 		} else {
 			loadSymbolClass = 'none';
 			scrapes.update((scrapes) => [...scrapes, result]);
+			$expandedClass = 'expanded'; // expands citationDisplay to full width
 			buttonClass = 'dormant';
 			input.value = '';
 			input.focus();
@@ -268,7 +271,7 @@
 	</div>
 	{#if displayErrorClass === 'none'}
 		<p class="fetchStatus">
-			<i class="fa-solid fa-diamond" />
+			<i class="fa-solid fa-book-open-reader" />
 		</p>
 	{:else}
 		<p bind:this={fetchStatusElement} class="fetchStatus errorStatus {displayErrorClass}">
@@ -280,7 +283,7 @@
 <style lang="scss">
 	// Block with loading animation + error messaging
 	.loading-block {
-		padding-top: 1em;
+		padding-top: 3em;
 		padding-bottom: 1em;
 
 		.load-symbol-container {
@@ -314,9 +317,10 @@
 			transition: opacity 0.2s;
 			text-align: center;
 			margin: 0;
+			font-size: 1.2rem;
 
-			.fa-diamond {
-				font-size: 1rem;
+			.fa-book-open-reader {
+				font-size: 1.6rem;
 				color: var(--green);
 				filter: drop-shadow(0 0 0.4em var(--green));
 			}
@@ -353,12 +357,13 @@
 		--line-color: #35fb9f;
 		position: relative;
 		margin: 0 auto;
-		margin-top: 2.5rem;
-		border: solid 1px #565656;
+		margin-top: 0.8rem;
+		// border: solid 1px #565656;
+		width: 100%; // will shrink if removed bc it's a grid item
 		max-width: 1000px;
 		padding: 1em;
 		border-radius: 30px;
-		background-color: #081118d6;
+		// background-color: #081118d6;
 
 		&::after {
 			content: '';
@@ -385,7 +390,6 @@
 		select,
 		input {
 			border: solid 1.5px transparent;
-			border-radius: 30px;
 			padding: 0.5em;
 			font-size: 1rem;
 			outline: transparent;
@@ -393,6 +397,10 @@
 			&:focus-visible {
 				border: solid 1.5px #fff;
 			}
+		}
+
+		input {
+			border-radius: 15px;
 		}
 
 		select {
@@ -404,6 +412,7 @@
 			--jama: #d21f72;
 			--bmj: #034796;
 			width: 35%;
+			border-radius: 30px;
 			background-color: #0e6db1;
 			text-align: center;
 			transition: 0.3s all;

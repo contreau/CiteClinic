@@ -1,7 +1,7 @@
 <script lang="ts">
-	import FetchModule from '$lib/FetchModule.svelte';
-	import ComponentFill from '$lib/ComponentFill.svelte';
-	import ManualContent from '$lib/ManualContent.svelte';
+	import Fetcher from '$lib/Fetcher.svelte';
+	import CitationDisplay from '$lib/CitationDisplay.svelte';
+	import ManualContent from '$lib/UserGuideContent.svelte';
 	import { onMount } from 'svelte';
 
 	let manual: HTMLElement;
@@ -58,9 +58,14 @@
 	</div>
 </nav>
 <main>
-	<p class="pagetop-icon"><i class="fa-solid fa-book-open-reader" /></p>
-	<FetchModule />
-	<ComponentFill />
+	<div class="content-grid">
+		<div class="grid-item item1">
+			<Fetcher />
+		</div>
+		<div class="grid-item item2">
+			<CitationDisplay />
+		</div>
+	</div>
 </main>
 <section bind:this={manual} class="user-manual">
 	<div bind:this={manualContent} class="manual-content">
@@ -134,7 +139,6 @@
 		border-bottom: solid 0.5px #232323;
 	}
 	.masthead {
-		// border: solid 1px #fff;
 		display: flex;
 		align-items: center;
 		gap: 1rem;
@@ -189,6 +193,13 @@
 		}
 	}
 
+	// the 2 main content svelte components
+	.content-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 4rem;
+	}
+
 	// slide-in-out instruction manual
 	.user-manual {
 		position: absolute;
@@ -232,16 +243,6 @@
 	@keyframes fadeIn {
 		100% {
 			opacity: 1;
-		}
-	}
-
-	.pagetop-icon {
-		text-align: center;
-		i {
-			font-size: 2rem;
-			color: var(--green);
-			filter: drop-shadow(0 0 0.3em var(--green));
-			margin: 0 auto;
 		}
 	}
 
