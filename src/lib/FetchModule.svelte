@@ -18,12 +18,19 @@
 
 	import { scrapes, urlHistory } from './store';
 	import type { Citation, Param } from '../ts/types';
+	import { browser } from '$app/environment';
+
+	let footer: HTMLElement | null;
+	if (browser) footer = document.querySelector('footer');
 
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
-	// finish formatting author names in Vancouver style for: Nature, Lancet, BMJ, JAMA
-	// Have author fields be scraped from metadata where possible.
-	// * Citation Display will have 'additional info' section below with full publish date, full unabbreviated journal name
+
+	// * finish affix support for NEJM, finish formatting author names in Vancouver style for NEJM
+	// * fix Citation top-level title to a copy that doesn't change when it's edited (the citation title state is tied to it currently)
+	// * create accordion-esque feature for citations, where they are openable/closeable, closed by default when they load
+	// * User manual should emphasize that scraped data won't be perfect, particularly author abbreviations
+	// * fix the autoscroll on citation load to go to the top of the loaded element rather than the footer - and diagnose the safari scrolling bug.
 
 	// *
 	// ** Fetch Module **
@@ -50,6 +57,7 @@
 	// sample JAMA urls
 	// https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2795976?resultClick=1
 	// https://jamanetwork.com/journals/jamaotolaryngology/article-abstract/2808807
+	// https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2807259?resultClick=3
 
 	// sample BMJ urls
 	// https://www.bmj.com/content/323/7322/1155
@@ -60,6 +68,9 @@
 	let buttonClass = 'dormant';
 	let buttonAnimation = 'none';
 	let inputWrap: HTMLDivElement;
+	let fetchStatusElement: HTMLParagraphElement;
+	let defaultFetchStatus: string | Element = 'Standby';
+	let loadingSymbol: HTMLDivElement;
 	let fetchErrorMessage = 'Nothing to see here.';
 	let loadSymbolClass = 'none';
 	let displayErrorClass = 'none';
@@ -71,6 +82,16 @@
 			buttonClass = 'dormant';
 		}
 	}
+
+	const placeholders: { [char: string]: string } = {
+		Select: 'Paste URL ( include https:// )',
+		PubMed: 'https://pubmed.ncbi.nlm.nih.gov/......',
+		Nature: 'https://www.nature.com/articles/......',
+		NEJM: 'https://www.nejm.org/doi/full/......',
+		Lancet: 'https://www.thelancet.com/journals/......',
+		JAMA: 'https://jamanetwork.com/journals/......',
+		BMJ: 'https://www.bmj.com/content/......'
+	};
 
 	function checkSource() {
 		if (source.value !== 'Select' && input.value !== '') {
@@ -93,6 +114,9 @@
 			input.value = '';
 			input.focus();
 			console.log('Fetched Data:', $scrapes);
+			setTimeout(() => {
+				scrollTo(0, footer?.getBoundingClientRect()?.bottom ?? 0);
+			}, 100);
 		}
 	}
 
@@ -104,8 +128,12 @@
 				console.error(errorMessage);
 				fetchErrorMessage = errorMessage;
 				displayErrorClass = 'display-error';
+				loadingSymbol.style.setProperty('--symbol-color', '#f84545');
+				loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em #f84545)');
 				setTimeout(() => {
 					displayErrorClass = 'none';
+					loadingSymbol.style.setProperty('--symbol-color', 'var(--green)');
+					loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--green))');
 				}, 2000);
 				input.focus();
 				buttonClass = 'dormant';
@@ -113,16 +141,19 @@
 			} else {
 				console.clear();
 				urlHistory.update((urlHistory) => [...urlHistory, url.href]);
-				// $urlHistory = [...$urlHistory, url.href];
 				console.log(`URL History:`, $urlHistory);
 				return true;
 			}
 		} catch (err) {
 			console.error(err);
 			fetchErrorMessage = 'Invalid URL.';
+			loadingSymbol.style.setProperty('--symbol-color', '#f84545');
+			loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em #f84545)');
 			displayErrorClass = 'display-error';
 			setTimeout(() => {
 				displayErrorClass = 'none';
+				loadingSymbol.style.setProperty('--symbol-color', 'var(--green)');
+				loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--green))');
 			}, 2000);
 			input.focus();
 			buttonClass = 'dormant';
@@ -135,42 +166,42 @@
 		switch (sourceSelect) {
 			case 'PubMed':
 				if (validateURL(input, pubmedPARAMS)) {
-					loadSymbolClass = 'animate-load';
+					loadSymbolClass = 'animation-load';
 					const PMresult = await parseData(input, pubmedPARAMS);
 					displayResults(PMresult);
 				}
 				break;
 			case 'Nature':
 				if (validateURL(input, naturePARAMS)) {
-					loadSymbolClass = 'animate-load';
+					loadSymbolClass = 'animation-load';
 					const NAresult = await parseData(input, naturePARAMS);
 					displayResults(NAresult);
 				}
 				break;
 			case 'NEJM':
 				if (validateURL(input, nejmPARAMS)) {
-					loadSymbolClass = 'animate-load';
+					loadSymbolClass = 'animation-load';
 					const NEresult = await parseData_NEJM(input);
 					displayResults(NEresult);
 				}
 				break;
 			case 'Lancet':
 				if (validateURL(input, lancetPARAMS)) {
-					loadSymbolClass = 'animate-load';
+					loadSymbolClass = 'animation-load';
 					const LAresult = await parseData_LANCET(input);
 					displayResults(LAresult);
 				}
 				break;
 			case 'JAMA':
 				if (validateURL(input, jamaPARAMS)) {
-					loadSymbolClass = 'animate-load';
+					loadSymbolClass = 'animation-load';
 					const JAresult = await parseData_JAMA(input);
 					displayResults(JAresult);
 				}
 				break;
 			case 'BMJ':
 				if (validateURL(input, bmjPARAMS)) {
-					loadSymbolClass = 'animate-load';
+					loadSymbolClass = 'animation-load';
 					const BMJresult = await parseData_BMJ(input);
 					displayResults(BMJresult);
 				}
@@ -206,7 +237,7 @@
 			}}
 			type="text"
 			class="url-input"
-			placeholder="Paste URL ( include https:// )"
+			placeholder={placeholders[sourceSelect]}
 		/>
 	</div>
 
@@ -230,10 +261,95 @@
 	>
 </div>
 
-<p class="loading-symbol"><i class="fa-solid fa-arrows-rotate {loadSymbolClass}" /></p>
-<p class="error-message {displayErrorClass}">{fetchErrorMessage}</p>
+<div class="loading-block">
+	<div bind:this={loadingSymbol} class="load-symbol-container">
+		<span class="dot dot1 {loadSymbolClass}" />
+		<span class="dot dot2 {loadSymbolClass}" />
+		<span class="dot dot3 {loadSymbolClass}" />
+	</div>
+	{#if displayErrorClass === 'none'}
+		<p class="fetchStatus">
+			<i class="fa-solid fa-diamond" />
+		</p>
+	{:else}
+		<p bind:this={fetchStatusElement} class="fetchStatus errorStatus {displayErrorClass}">
+			{fetchErrorMessage}
+		</p>
+	{/if}
+</div>
 
 <style lang="scss">
+	// Block with loading animation + error messaging
+	.loading-block {
+		padding-top: 1em;
+		padding-bottom: 1em;
+
+		.load-symbol-container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.4rem;
+			padding-top: 0.7em;
+			padding-bottom: 0.7em;
+			--symbol-color: var(--green);
+			--drop-shadow: drop-shadow(0 0 0.4em var(--green));
+
+			.dot {
+				transition: all 0.3s;
+				background-color: var(--symbol-color);
+				filter: var(--drop-shadow);
+				width: 11px;
+				min-height: 11px;
+				border-radius: 30px;
+
+				&.dot2 {
+					animation-delay: 0.3s;
+				}
+				&.dot3 {
+					animation-delay: 0.6s;
+				}
+			}
+		}
+
+		.fetchStatus {
+			transition: opacity 0.2s;
+			text-align: center;
+			margin: 0;
+
+			.fa-diamond {
+				font-size: 1rem;
+				color: var(--green);
+				filter: drop-shadow(0 0 0.4em var(--green));
+			}
+		}
+
+		.errorStatus {
+			font-weight: 800;
+			color: #ef9191;
+		}
+	}
+
+	.animation-load {
+		opacity: 1;
+		animation: load 1s linear infinite;
+	}
+
+	@keyframes load {
+		25% {
+			transform: translateY(-10px);
+		}
+		50% {
+			transform: translateY(0px);
+		}
+		75% {
+			transform: translateY(10px);
+		}
+		100% {
+			transform: translateY(0px);
+		}
+	}
+
+	// outermost wrap of input module
 	.input-wrap {
 		--line-color: #35fb9f;
 		position: relative;
@@ -275,7 +391,7 @@
 			font-size: 1rem;
 			outline: transparent;
 			transition: 0.2s border;
-			&:focus {
+			&:focus-visible {
 				border: solid 1.5px #fff;
 			}
 		}
@@ -356,9 +472,9 @@
 			cursor: pointer;
 		}
 
-		// &:focus {
-		// 	border: solid 1px #fff;
-		// }
+		&:focus-visible {
+			border: solid 1px #fff;
+		}
 	}
 
 	// fetch button lights up when a source is selected / url is input
@@ -374,41 +490,6 @@
 	// button animation when url is invalid
 	.rejectButton {
 		animation: shuffle 200ms linear 2;
-	}
-
-	// loading symbol (fa icon for now, will make custom asset)
-	.loading-symbol {
-		text-align: center;
-
-		.fa-arrows-rotate {
-			opacity: 0;
-			font-size: 2.2rem;
-			color: var(--green);
-			filter: drop-shadow(0 0 0.1em var(--green));
-			transition: opacity 0.3s;
-
-			&.animate-load {
-				opacity: 1;
-				animation: loading 1.2s linear infinite;
-			}
-		}
-	}
-
-	// error message
-	.error-message {
-		opacity: 0;
-		text-align: center;
-		font-size: 1rem;
-		padding: 0.3em 0.8em;
-		background-color: rgb(199, 46, 46);
-		border-radius: 30px;
-		max-width: 500px;
-		margin: 0 auto;
-		transition: opacity 0.5s;
-	}
-
-	.display-error {
-		opacity: 1;
 	}
 
 	@keyframes shuffle {
