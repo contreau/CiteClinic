@@ -6,7 +6,7 @@
 	{#if $scrapes.length === 0}
 		<div class="default-display">
 			<p class="default-display-icon"><i class="fa-solid fa-bookmark" /></p>
-			<p class="default-display-message">You haven't made any citations.</p>
+			<p class="default-display-message">Create your first citation.</p>
 		</div>
 	{:else}
 		<section class="display">
@@ -70,15 +70,19 @@
 
 <style lang="scss">
 	.citation-display-area {
-		border-top: solid 0.5px #484848;
-		border-bottom: solid 0.5px #484848;
+		// border-top: solid 0.5px #484848;
+		// border-bottom: solid 0.5px #484848;
+		border: solid 0.5px #484848;
 		-webkit-backdrop-filter: brightness(75%);
 		backdrop-filter: brightness(75%);
+		max-width: 650px;
+		border-radius: 20px;
+		margin: 0 auto;
 	}
 
 	// Display with citations
 	.default-display {
-		padding: 1.8em 0;
+		// padding: 1em 0;
 		p {
 			text-align: center;
 		}

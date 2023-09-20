@@ -69,7 +69,6 @@
 	let buttonAnimation = 'none';
 	let inputWrap: HTMLDivElement;
 	let fetchStatusElement: HTMLParagraphElement;
-	let defaultFetchStatus: string | Element = 'Standby';
 	let loadingSymbol: HTMLDivElement;
 	let fetchErrorMessage = 'Nothing to see here.';
 	let loadSymbolClass = 'none';
