@@ -38,8 +38,12 @@ export async function parseData_LANCET(input: HTMLInputElement) {
 		try {
 			const url = new URL(input.value);
 			const response = await fetch(`/api/lancet?url=${url}`);
-			const data = await response.json();
-			return data;
+			if (response.status === 404) {
+				throw new Error('Article not found.');
+			} else {
+				const data = await response.json();
+				return data;
+			}
 		} catch (err) {
 			return err;
 		}
