@@ -25,7 +25,7 @@
 
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
-
+	// * make error handling uniform like lancet's
 	// * finish affix support for NEJM, finish formatting author names in Vancouver style for NEJM
 	// * fix Citation top-level title to a copy that doesn't change when it's edited (the citation title state is tied to it currently)
 	// * create accordion-esque feature for citations, where they are openable/closeable, closed by default when they load
@@ -84,6 +84,19 @@
 		}
 	}
 
+	function showErrorUI(displayTime: number) {
+		// error display in UI
+		displayErrorClass = 'display-error';
+		loadingSymbol.style.setProperty('--symbol-color', '#f84545');
+		loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em #f84545)');
+		loadSymbolClass = 'none';
+		setTimeout(() => {
+			displayErrorClass = 'none';
+			loadingSymbol.style.setProperty('--symbol-color', 'var(--green)');
+			loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--green))');
+		}, displayTime);
+	}
+
 	const placeholders: { [char: string]: string } = {
 		Select: 'Paste URL ( include https:// )',
 		PubMed: 'https://pubmed.ncbi.nlm.nih.gov/......',
@@ -106,6 +119,7 @@
 		if (result instanceof Error) {
 			console.error(result.message);
 			fetchErrorMessage = result.message;
+			showErrorUI(4000);
 			buttonClass = 'dormant';
 			input.focus();
 		} else {
@@ -125,18 +139,11 @@
 	function validateURL(input: HTMLInputElement, params: Param): boolean {
 		try {
 			const url = new URL(input.value.trim());
-			if (url.host != params.host) {
+			if (url.host !== params.host) {
 				const errorMessage = 'The provided URL does not match your target.';
 				console.error(errorMessage);
 				fetchErrorMessage = errorMessage;
-				displayErrorClass = 'display-error';
-				loadingSymbol.style.setProperty('--symbol-color', '#f84545');
-				loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em #f84545)');
-				setTimeout(() => {
-					displayErrorClass = 'none';
-					loadingSymbol.style.setProperty('--symbol-color', 'var(--green)');
-					loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--green))');
-				}, 2000);
+				showErrorUI(2000);
 				input.focus();
 				buttonClass = 'dormant';
 				return false;
@@ -149,14 +156,7 @@
 		} catch (err) {
 			console.error(err);
 			fetchErrorMessage = 'Invalid URL.';
-			loadingSymbol.style.setProperty('--symbol-color', '#f84545');
-			loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em #f84545)');
-			displayErrorClass = 'display-error';
-			setTimeout(() => {
-				displayErrorClass = 'none';
-				loadingSymbol.style.setProperty('--symbol-color', 'var(--green)');
-				loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--green))');
-			}, 2000);
+			showErrorUI(2000);
 			input.focus();
 			buttonClass = 'dormant';
 			return false;
@@ -363,7 +363,6 @@
 		max-width: 1000px;
 		padding: 1em;
 		border-radius: 30px;
-		// background-color: #081118d6;
 
 		&::after {
 			content: '';
@@ -459,6 +458,9 @@
 			&::placeholder {
 				color: var(--green);
 			}
+			&:focus {
+				border: solid 1px #fff;
+			}
 		}
 	}
 
@@ -502,13 +504,13 @@
 
 	@keyframes shuffle {
 		25% {
-			transform: translateX(20px);
+			transform: translateX(25px);
 		}
 		50% {
 			transform: translateX(0px);
 		}
 		75% {
-			transform: translateX(-20px);
+			transform: translateX(-25px);
 		}
 		100% {
 			transform: translateX(0px);
