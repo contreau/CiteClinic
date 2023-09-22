@@ -1,5 +1,6 @@
 export interface Citation {
 	title: string;
+	displayTitle: string;
 	publishDate: string;
 	publishYear: string;
 	authors: string[];
