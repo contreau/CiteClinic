@@ -12,7 +12,9 @@
 		<section class="display">
 			{#each $scrapes as scrape, i}
 				<div class="block-wrap">
-					<h3>Citation {i + 1}<br /><a href={$urlHistory[i]} target="#">{scrape.title}</a></h3>
+					<h3>
+						Citation {i + 1}<br /><a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
+					</h3>
 					<div class="block--edit">
 						<div class="grid-item">
 							<p class="input-label">Authors</p>

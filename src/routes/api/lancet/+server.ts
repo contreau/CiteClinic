@@ -93,6 +93,7 @@ export async function GET({ url }) {
 
 			const citation: Citation = {
 				title: title + '.',
+				displayTitle: title,
 				publishDate: publishDate,
 				publishYear: publishYear + ';',
 				authors: authors,

@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 import { jamaPARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions.js';
 import type { Citation } from '../../../ts/types.js';
@@ -37,6 +37,7 @@ export async function GET({ url }) {
 
 			// Title
 			const title = retrieve(dom, jamaPARAMS.title);
+			if (title === 'null') throw new Error('Invalid URL.');
 
 			// Publish Date
 			let publishDate = retrieve(dom, jamaPARAMS.publishDate);
@@ -71,6 +72,7 @@ export async function GET({ url }) {
 
 			const citation: Citation = {
 				title: title + '.',
+				displayTitle: title,
 				publishDate: publishDate,
 				publishYear: publishYear + ';',
 				authors: authors,
@@ -82,6 +84,8 @@ export async function GET({ url }) {
 			return json(citation);
 		}
 	} catch (err) {
-		return new Response(`${err}`);
+		throw error(404, {
+			message: `${err}`
+		});
 	}
 }

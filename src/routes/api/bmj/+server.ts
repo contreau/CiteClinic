@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 import { bmjPARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions';
 import puppeteer from 'puppeteer-extra';
@@ -50,7 +50,7 @@ export async function GET({ url }) {
 
 			await page.waitForSelector('.highwire-cite-title', {
 				visible: true,
-				timeout: 5000
+				timeout: 3000
 			});
 
 			const html = await page.content();
@@ -91,6 +91,7 @@ export async function GET({ url }) {
 			// Citation Object
 			const citation: Citation = {
 				title: title + '.',
+				displayTitle: title,
 				publishDate: publishDate,
 				publishYear: publishYear + ';',
 				authors: authors,
@@ -102,6 +103,8 @@ export async function GET({ url }) {
 			return json(citation);
 		}
 	} catch (err) {
-		return new Response(`${err}`);
+		throw error(404, {
+			message: `${err}`
+		});
 	}
 }

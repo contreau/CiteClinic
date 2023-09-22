@@ -12,8 +12,12 @@ export async function parseData(input: HTMLInputElement, params: Param) {
 			} else {
 				throw new Error('Invalid Host.');
 			}
-			const data = await response.json();
-			return data;
+			if (response.status === 404) {
+				throw new Error('Invalid URL. Make sure you submit an article.');
+			} else {
+				const data = await response.json();
+				return data;
+			}
 		} catch (err) {
 			return err;
 		}
@@ -25,8 +29,12 @@ export async function parseData_NEJM(input: HTMLInputElement) {
 		try {
 			const url = new URL(input.value);
 			const response = await fetch(`/api/nejm?url=${url}`);
-			const data = await response.json();
-			return data;
+			if (response.status === 404) {
+				throw new Error('Invalid URL. Make sure you submit an article.');
+			} else {
+				const data = await response.json();
+				return data;
+			}
 		} catch (err) {
 			return err;
 		}
@@ -39,7 +47,7 @@ export async function parseData_LANCET(input: HTMLInputElement) {
 			const url = new URL(input.value);
 			const response = await fetch(`/api/lancet?url=${url}`);
 			if (response.status === 404) {
-				throw new Error('Article not found.');
+				throw new Error('Invalid URL. Make sure you submit an article.');
 			} else {
 				const data = await response.json();
 				return data;
@@ -55,8 +63,12 @@ export async function parseData_JAMA(input: HTMLInputElement) {
 		try {
 			const url = new URL(input.value);
 			const response = await fetch(`/api/jama?url=${url}`);
-			const data = await response.json();
-			return data;
+			if (response.status === 404) {
+				throw new Error('Invalid URL. Make sure you submit an article.');
+			} else {
+				const data = await response.json();
+				return data;
+			}
 		} catch (err) {
 			return err;
 		}
@@ -68,8 +80,12 @@ export async function parseData_BMJ(input: HTMLInputElement) {
 		try {
 			const url = new URL(input.value);
 			const response = await fetch(`/api/bmj?url=${url}`);
-			const data = await response.json();
-			return data;
+			if (response.status === 404) {
+				throw new Error('Invalid URL. Make sure you submit an article.');
+			} else {
+				const data = await response.json();
+				return data;
+			}
 		} catch (err) {
 			return err;
 		}
