@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 import { nejmPARAMS } from '$lib/parameters';
 import { retrieve } from '../../../ts/serverFunctions.js';
 import puppeteer from 'puppeteer-extra';
@@ -7,6 +7,32 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types.js';
 
 puppeteer.use(StealthPlugin());
+
+function formatName(name: string) {
+	let parts: string[] | string;
+	if (name.includes(',')) {
+		// handles author formatting 'surname,  given names'
+		parts = name.trim().split(',').reverse();
+		parts[0] = parts[0].trim();
+	} else parts = name.split('  '); // handles author formatting 'given names  surname'
+	const surname = parts.at(-1);
+	parts.pop();
+	parts = parts[0];
+	parts = parts.split(' ');
+	const givenNames: string = parts
+		.map((name) => {
+			if (name.includes('.')) {
+				// removes periods from initials
+				let initials = '';
+				for (let i = 0; i < name.length; i++) {
+					if (name[i] !== '.') initials += name[i];
+				}
+				return initials;
+			} else return name[0]; // get first letter only
+		})
+		.join('');
+	return `${surname} ${givenNames}`;
+}
 
 export async function GET({ url }) {
 	try {
@@ -19,7 +45,7 @@ export async function GET({ url }) {
 			await page.goto(target);
 			await page.waitForSelector('.m-article-header__authors', {
 				visible: true,
-				timeout: 5000
+				timeout: 3000
 			});
 
 			const html = await page.content();
@@ -55,67 +81,18 @@ export async function GET({ url }) {
 				}
 			}
 
-			// Authors
 			const rawAuthors: Element[] = Array.from(dom.querySelectorAll(nejmPARAMS.rawAuthors));
-			const authors: string[] = rawAuthors.map((el: Element) =>
-				(el as HTMLMetaElement).content.trim()
-			);
-			if (authors[0].includes(',')) {
-				// handles this format: <meta name="dc.Creator" content="Talmor, Daniel">
-				for (let i = 0; i < authors.length; i++) {
-					const splitName = authors[i].split(',');
-					const firstName = splitName[1].trim();
-					if (firstName.includes(' ')) {
-						// handles if author has middle initial
-						const firstLetter = firstName[0];
-						const middleInitial = firstName.split(' ')[1][0];
-						authors[i] = `${splitName[0]} ${firstLetter}${middleInitial}`;
-					} else {
-						// no middle initial
-						splitName[1] = splitName[1][1];
-						authors[i] = splitName.join(' ');
-					}
-					if (i >= 1) authors[i] = ' ' + authors[i];
-				}
-			} else {
-				// account for: no middle initial; up to two middle initials
-				for (let i = 0; i < authors.length; i++) {
-					const splitName = authors[i].split(' ');
-					splitName.splice(splitName.indexOf(''), 1);
-					// ["Larissa", "C." "Costa"]
-					// ["Giovanny", "V.A.", "França"]
-					// [ 'Rita', 'C.O.', 'de', 'Carvalho-Sauer' ]
-					// ["Liam", "Smeeth"]
-					const firstInitial = splitName[0][0];
-					let middleInitial = '';
-					let lastName = '';
-					// handles middle initials
-					if (splitName.length >= 3) {
-						if (splitName[1].length > 2) {
-							// two middle initials
-							middleInitial = `${splitName[1][0]}${splitName[1][2]}`;
-						} else {
-							// one middle initial
-							middleInitial = splitName[1][0];
-						}
-						if (splitName.length > 3) {
-							// handles two word last name
-							lastName = `${splitName[2]} ${splitName[splitName.length - 1]}`;
-						} else {
-							lastName = splitName[splitName.length - 1];
-						}
-					}
-					// handles last name, no middle initial
-					if (splitName.length < 3) lastName = splitName[splitName.length - 1];
-
-					if (i >= 1) {
-						authors[i] = ` ${lastName} ${firstInitial}${middleInitial}`;
-					} else {
-						authors[i] = `${lastName} ${firstInitial}${middleInitial}`;
-					}
-				}
+			let authors: string[] = rawAuthors.map((el: Element) => (el as HTMLMetaElement).content);
+			try {
+				authors.forEach((el: string, i) => {
+					authors[i] = formatName(el);
+					if (i > 0) authors[i] = ' ' + authors[i];
+				});
+				authors[authors.length - 1] += '.';
+			} catch (err) {
+				console.log(err);
+				authors = ['null'];
 			}
-			authors[authors.length - 1] += '.';
 
 			// Journal
 			let journal = retrieve(dom, nejmPARAMS.journal);
@@ -128,6 +105,7 @@ export async function GET({ url }) {
 
 			const citation: Citation = {
 				title: title + '.',
+				displayTitle: title,
 				publishDate: publishDate,
 				publishYear: publishYear + ';',
 				authors: authors,
@@ -139,6 +117,8 @@ export async function GET({ url }) {
 			return json(citation);
 		}
 	} catch (err) {
-		return new Response(`${err}`);
+		throw error(404, {
+			message: `${err}`
+		});
 	}
 }
