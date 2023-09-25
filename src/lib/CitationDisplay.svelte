@@ -1,5 +1,18 @@
 <script lang="ts">
 	import { scrapes, urlHistory, expandedClass } from './store';
+
+	async function copyRawText(event: Event, scrapeNumber: number) {
+		const citationText: string | null =
+			document.querySelector(`.citation-${scrapeNumber}-text`)?.textContent ?? null;
+		if (citationText !== null) {
+			await navigator.clipboard.writeText(citationText);
+			const button = event.target as HTMLElement;
+			button.textContent = 'Copied!';
+			setTimeout(() => {
+				button.textContent = 'Copy Raw Text';
+			}, 2000);
+		}
+	}
 </script>
 
 <section class="citation-display-area {$expandedClass}">
@@ -9,12 +22,32 @@
 			<p class="default-display-message">Create your first citation.</p>
 		</div>
 	{:else}
-		<section class="display">
-			{#each $scrapes as scrape, i}
-				<div class="block-wrap">
-					<h3>
-						Citation {i + 1}<br /><a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
-					</h3>
+		<div class="wrap">
+			<section class="display">
+				{#each $scrapes as scrape, i}
+					<div class="block-wrap">
+						<h3>
+							Citation {i + 1}<br /><a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
+						</h3>
+						<div class="block--display">
+							<p class={`citation-${i}-text`}>
+								{scrape.authors}
+								{scrape.title}
+								{scrape.journalAbbreviation}
+								{scrape.publishYear}{scrape.volumeAndPageRange}
+							</p>
+						</div>
+						<div class="copy-buttons">
+							<button
+								class="text-btn"
+								on:click={(event) => {
+									copyRawText(event, i);
+								}}>Copy Raw Text</button
+							>
+							<button class="html-btn">Copy HTML &lt;/&gt;</button>
+							<button class="css-btn">Copy CSS &lbrace; &rbrace;</button>
+						</div>
+					</div>
 					<div class="block--edit">
 						<div class="grid-item">
 							<p class="input-label">Authors</p>
@@ -50,27 +83,23 @@
 							<p class="input-label">Publish Year</p>
 							<textarea class="no-resize" spellcheck="false" bind:value={scrape.publishYear} />
 						</div>
-
 						<div class="grid-item">
 							<p class="input-label">Extra Information</p>
 							<textarea class="no-resize" spellcheck="false" readonly>DOI: {scrape.doi}</textarea>
 						</div>
 					</div>
-					<div class="block--display">
-						<p>
-							{scrape.authors}
-							{scrape.title}
-							{scrape.journalAbbreviation}
-							{scrape.publishYear}{scrape.volumeAndPageRange}
-						</p>
-					</div>
-				</div>
-			{/each}
-		</section>
+				{/each}
+			</section>
+		</div>
 	{/if}
 </section>
 
 <style lang="scss">
+	.wrap {
+		max-width: 1300px;
+		margin: 0 auto;
+	}
+
 	.citation-display-area {
 		transition: all 0.5s;
 		border: solid 0.5px #484848;
@@ -111,6 +140,61 @@
 	// Populated citation display container
 	.display {
 		padding-top: 1em;
+
+		.block--display {
+			max-width: 950px;
+			background-color: #ffffff;
+			padding: 0.5em 0.5em;
+			border-radius: 10px;
+			margin-top: 1rem;
+			margin-bottom: 1.5rem;
+			margin-right: auto;
+			margin-left: auto;
+			border: solid 3px #8d8d8d;
+			p {
+				max-width: 800px;
+				color: #000;
+				background-color: #eeeded;
+				box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+				border-radius: 10px;
+				padding: 0.8em;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
+	}
+
+	.copy-buttons {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 4rem;
+		padding-bottom: 2em;
+		button {
+			min-width: 10rem;
+			font-size: inherit;
+			padding: 0.4em 1em;
+			border-radius: 10px;
+			border: solid 2px transparent;
+			transition: all 0.3s;
+			background-color: #2b2a33;
+			cursor: pointer;
+			&:hover,
+			&:focus-visible {
+				outline: transparent;
+				background-color: #474747;
+			}
+
+			&.text-btn {
+				border-color: #e2e2e2;
+			}
+			&.html-btn {
+				border-color: #fe3e03;
+			}
+			&.css-btn {
+				border-color: #0073ff;
+			}
+		}
 	}
 
 	.no-resize {
@@ -129,17 +213,10 @@
 
 		h3 {
 			text-align: center;
-			background-color: rgba(8, 17, 24, 0.8392156863);
 			max-width: 75%;
 			margin: 0 auto;
-			margin-bottom: 2rem;
 			padding: 1em;
-			box-shadow: rgba(53, 255, 161, 0.396) 0px 0px 5px 0px,
-				rgba(53, 255, 161, 0.396) 0px 0px 1px 0px;
-
-			// border: solid 1px #565656;
 			border-radius: 30px;
-
 			a {
 				color: var(--green);
 				transition: color 0.2s;
