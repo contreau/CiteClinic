@@ -39,6 +39,7 @@
 <style lang="scss">
 	.extra-padding-container {
 		padding: 0 7em;
+		flex: 1 0 auto; // sticks footer to bottom
 	}
 	h2 {
 		text-align: center;
