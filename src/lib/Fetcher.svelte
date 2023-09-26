@@ -25,14 +25,13 @@
 
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
-	// * make error handling uniform like lancet's
-	// * finish affix support for NEJM, finish formatting author names in Vancouver style for NEJM
-	// * fix Citation top-level title to a copy that doesn't change when it's edited (the citation title state is tied to it currently)
+	// * add throttle to fetch button
 	// * create accordion-esque feature for citations, where they are openable/closeable, closed by default when they load
 	// * User manual should emphasize that scraped data won't be perfect, particularly author abbreviations
-	// * fix the autoscroll on citation load to go to the top of the loaded element rather than the footer - and diagnose the safari scrolling bug.
-	// highlight a "null." response in any textarea element that receives one.
-	// once a second citation is created, the first should become the first in a curtain of nav tabs. maximum 10 open tabs. tabs should be deletable.
+	// * highlight a "null." response by having a container below the citation in a yellow-orange color saying 'null fields: [list of fields]'
+	// * be able to bold any words in the citation by just clicking them
+	// * add copy buttons to citation (raw text, html, css)
+	// * once a second citation is created, the first should become the first in a curtain of nav tabs. maximum 10 open tabs. tabs should be deletable.
 
 	// *
 	// ** Fetcher **
@@ -115,7 +114,23 @@
 		}
 	}
 
-	function displayResults(result: Citation) {
+	function setNavTabsOnLoad() {
+		const allTabContents: HTMLElement[] = Array.from(document.querySelectorAll('.section-wrap'));
+		const allTabButtons: HTMLElement[] = Array.from(document.querySelectorAll('.content-tab'));
+		const activeContent: HTMLElement = document.querySelector(`.section-${$scrapes.length}`)!;
+
+		const sourceButton: HTMLElement = document.querySelector(`.tab-${$scrapes.length}`)!;
+
+		// tab content toggle
+		allTabContents.map((tab) => tab.classList.add('display-none'));
+		activeContent.classList.remove('display-none');
+
+		// nav tab active highlight toggle
+		allTabButtons.map((navtab) => navtab.classList.remove('active-tab'));
+		sourceButton.classList.add('active-tab');
+	}
+
+	async function displayResults(result: Citation) {
 		if (result instanceof Error) {
 			console.error(result.message);
 			fetchErrorMessage = result.message;
@@ -124,15 +139,13 @@
 			input.focus();
 		} else {
 			loadSymbolClass = 'none';
-			scrapes.update((scrapes) => [...scrapes, result]);
+			await scrapes.update((scrapes) => [...scrapes, result]); // code below must wait for this
 			$expandedClass = 'expanded'; // expands citationDisplay to full width
 			buttonClass = 'dormant';
 			input.value = '';
 			input.focus();
 			console.log('Fetched Data:', $scrapes);
-			setTimeout(() => {
-				scrollTo(0, footer?.getBoundingClientRect()?.bottom ?? 0);
-			}, 100);
+			if ($scrapes.length > 1) setNavTabsOnLoad();
 		}
 	}
 

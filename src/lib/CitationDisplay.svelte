@@ -13,7 +13,35 @@
 			}, 2000);
 		}
 	}
+
+	function navigateTabs(citationNumber: number, event: Event) {
+		const allTabContents: HTMLElement[] = Array.from(document.querySelectorAll('.section-wrap'));
+		const allTabButtons: HTMLElement[] = Array.from(document.querySelectorAll('.content-tab'));
+		const sourceButton = event.target as HTMLElement;
+		const activeContent: HTMLElement = document.querySelector(`.section-${citationNumber}`)!;
+
+		// sets active citation, hides rest
+		allTabContents.map((tab) => tab.classList.add('display-none'));
+		activeContent.classList.remove('display-none');
+
+		// highlights active nav tab, dims rest
+		allTabButtons.map((button) => button.classList.remove('active-tab'));
+		sourceButton.classList.add('active-tab');
+	}
 </script>
+
+<div class="tab-container">
+	{#if $scrapes.length > 1}
+		{#each $scrapes as scrape, i}
+			<button
+				on:click={(event) => {
+					navigateTabs(i + 1, event);
+				}}
+				class={`content-tab tab-${i + 1}`}>Citation {i + 1}</button
+			>
+		{/each}
+	{/if}
+</div>
 
 <section class="citation-display-area {$expandedClass}">
 	{#if $scrapes.length === 0}
@@ -25,67 +53,69 @@
 		<div class="wrap">
 			<section class="display">
 				{#each $scrapes as scrape, i}
-					<div class="block-wrap">
-						<h3>
-							Citation {i + 1}<br /><a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
-						</h3>
-						<div class="block--display">
-							<p class={`citation-${i}-text`}>
-								{scrape.authors}
-								{scrape.title}
-								{scrape.journalAbbreviation}
-								{scrape.publishYear}{scrape.volumeAndPageRange}
-							</p>
-						</div>
-						<div class="copy-buttons">
-							<button
-								class="text-btn"
-								on:click={(event) => {
-									copyRawText(event, i);
-								}}>Copy Raw Text</button
-							>
-							<button class="html-btn">Copy HTML &lt;/&gt;</button>
-							<button class="css-btn">Copy CSS &lbrace; &rbrace;</button>
-						</div>
-					</div>
-					<div class="block--edit">
-						<div class="grid-item">
-							<p class="input-label">Authors</p>
-							<div class="input-wrap">
-								<div class="resize-tab" />
-								<textarea spellcheck="false" bind:value={scrape.authors} />
+					<div class={`section-${i + 1} section-wrap`}>
+						<div class="block-wrap">
+							<h3>
+								Citation {i + 1}<br /><a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
+							</h3>
+							<div class="block--display">
+								<p class={`citation-${i}-text`}>
+									{scrape.authors}
+									{scrape.title}
+									{scrape.journalAbbreviation}
+									{scrape.publishYear}{scrape.volumeAndPageRange}
+								</p>
+							</div>
+							<div class="copy-buttons">
+								<button
+									class="text-btn"
+									on:click={(event) => {
+										copyRawText(event, i);
+									}}>Copy Raw Text</button
+								>
+								<button class="html-btn">Copy HTML &lt;/&gt;</button>
+								<button class="css-btn">Copy CSS &lbrace; &rbrace;</button>
 							</div>
 						</div>
-						<div class="grid-item">
-							<p class="input-label">Title</p>
-							<div class="input-wrap">
-								<div class="resize-tab" />
-								<textarea spellcheck="false" bind:value={scrape.title} />
+						<div class="block--edit">
+							<div class="grid-item">
+								<p class="input-label">Authors</p>
+								<div class="input-wrap">
+									<div class="resize-tab" />
+									<textarea spellcheck="false" bind:value={scrape.authors} />
+								</div>
 							</div>
-						</div>
-						<div class="grid-item">
-							<p class="input-label">Journal Abbreviation</p>
-							<textarea
-								class="no-resize"
-								spellcheck="false"
-								bind:value={scrape.journalAbbreviation}
-							/>
-						</div>
-						<div class="grid-item">
-							<p class="input-label">Volume, Issue, Page Range</p>
-							<textarea
-								class="no-resize"
-								spellcheck="false"
-								bind:value={scrape.volumeAndPageRange}
-							/>
-						</div>
-						<div class="grid-item">
-							<p class="input-label">Publish Year</p>
-							<textarea class="no-resize" spellcheck="false" bind:value={scrape.publishYear} />
-						</div>
-						<div class="grid-item">
-							<p class="input-label">Extra Information</p>
-							<textarea class="no-resize" spellcheck="false" readonly>DOI: {scrape.doi}</textarea>
+							<div class="grid-item">
+								<p class="input-label">Title</p>
+								<div class="input-wrap">
+									<div class="resize-tab" />
+									<textarea spellcheck="false" bind:value={scrape.title} />
+								</div>
+							</div>
+							<div class="grid-item">
+								<p class="input-label">Journal Abbreviation</p>
+								<textarea
+									class="no-resize"
+									spellcheck="false"
+									bind:value={scrape.journalAbbreviation}
+								/>
+							</div>
+							<div class="grid-item">
+								<p class="input-label">Volume, Issue, Page Range</p>
+								<textarea
+									class="no-resize"
+									spellcheck="false"
+									bind:value={scrape.volumeAndPageRange}
+								/>
+							</div>
+							<div class="grid-item">
+								<p class="input-label">Publish Year</p>
+								<textarea class="no-resize" spellcheck="false" bind:value={scrape.publishYear} />
+							</div>
+							<div class="grid-item">
+								<p class="input-label">Extra Information</p>
+								<textarea class="no-resize" spellcheck="false" readonly>DOI: {scrape.doi}</textarea>
+							</div>
 						</div>
 					</div>
 				{/each}
@@ -95,6 +125,24 @@
 </section>
 
 <style lang="scss">
+	.tab-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 2rem;
+		margin: 0 auto;
+	}
+
+	// toggled with js (part of navtabs)
+	.display-none {
+		display: none;
+	}
+
+	// toggled with js (part of navtabs)
+	.active-tab {
+		background-color: #aaaaaa;
+	}
+
 	.wrap {
 		max-width: 1300px;
 		margin: 0 auto;
