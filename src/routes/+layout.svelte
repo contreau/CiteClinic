@@ -1,4 +1,18 @@
 <script lang="ts">
+	import { onNavigate } from '$app/navigation';
+	// View Transition between pages (only works in Chrome rn)
+	onNavigate((navigation) => {
+		// @ts-ignore
+		if (!document.startViewTransition) return;
+		return new Promise((resolve) => {
+			// @ts-ignore
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
+
 	import { page } from '$app/stores';
 	let buttonText: string = 'User Guide';
 	let buttonRoute: string = '/user-guide';
@@ -23,7 +37,7 @@
 	</div>
 
 	<div class="links">
-		<a href={buttonRoute}><button class="instructions-tab"> {buttonText} </button></a>
+		<a href={buttonRoute}><button class="user-guide"> {buttonText} </button></a>
 		<a href="https://github.com/zenDev-2/ScholarFetch" target="#"
 			><i class="fa-brands fa-github" /></a
 		>
@@ -163,7 +177,7 @@
 	}
 
 	@media (min-width: 900px) {
-		button {
+		button.user-guide {
 			min-width: 119px;
 		}
 	}
