@@ -29,7 +29,7 @@
 
 <nav class="padding-container">
 	<div class="masthead">
-		<h1>ScholarFetch</h1>
+		<h1>CiteClinic</h1>
 		<img src="/green-scroll.png" alt="Green Scroll" />
 	</div>
 	<div class="tagline">

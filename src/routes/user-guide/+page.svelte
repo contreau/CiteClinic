@@ -1,10 +1,10 @@
 <script lang="ts"></script>
 
 <div class="extra-padding-container">
-	<h2>Using ScholarFetch</h2>
+	<h2>Using CiteClinic</h2>
 
 	<p>
-		<em>ScholarFetch</em> is an in-development web application that allows users to easily
+		<em>CiteClinic</em> is an in-development web application that allows users to easily
 		<b> scrape citation information </b> from research journal sites and
 		<b> generate modifiable, styled UI citation components </b> for use on their sites.
 	</p>
@@ -30,7 +30,7 @@
 	<p>
 		Got a feature or specific support you'd like to see in ScholarFetch? Encountered a bug or issue?
 		Post it on the GitHub repository's <a
-			href="https://github.com/zenDev-2/ScholarFetch/issues"
+			href="https://github.com/zenDev-2/CiteClinic/issues"
 			target="#">issues section</a
 		>.
 	</p>

@@ -1,6 +1,6 @@
-# ScholarFetch ![scroll](./static/favicon-32x32.png)
+# CiteClinic ![scroll](./static/favicon-32x32.png)
 
-_ScholarFetch_ is an in-development web application that allows users to easily **scrape citation information** from research journal sites and **generate modifiable, styled UI citation components** for use on their sites.
+_CiteClinic_ is an in-development web application that allows users to easily **scrape citation information** from medical-focused research journal sites and **generate modifiable, styled UI citation components** for use on their sites.
 
 👩‍💻 **Intended Userbase:** Web developers/web content managers for research institutions or universities that frequently update publications for resident doctors or researchers.
 
@@ -17,15 +17,15 @@ _ScholarFetch_ is an in-development web application that allows users to easily 
 
 ## Notable Features
 
-- Users can scrape one URL at a time or provide a .csv file of multiple URLs to be scraped from asynchronously.
 - Scraped citation data is editable and the preview of users' components will update as they are modified.
 - Component cosmetics (primarily colors and shadows) will be modifiable.
+- Users can scrape one URL at a time or provide a .csv file of multiple URLs to be scraped from asynchronously.
 - Pure citation text can be used if no styled component is desired.
 - A sleek and intuitive user interface.
 
 ## Feature Requests / Issues
 
-Got a feature or specific support you'd like to see in ScholarFetch? Encountered a bug or issue? Post it on this repository's [issues](https://github.com/zenDev-2/ScholarFetch/issues) section.
+Got a feature or specific support you'd like to see in ScholarFetch? Encountered a bug or issue? Post it on this repository's [issues](https://github.com/zenDev-2/CiteClinic/issues) section.
 
 ---
 
