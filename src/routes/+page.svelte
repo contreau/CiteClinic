@@ -19,7 +19,7 @@
 	.content-grid {
 		display: flex;
 		flex-direction: column;
-		gap: 4rem;
+		gap: 1rem;
 	}
 
 	main {

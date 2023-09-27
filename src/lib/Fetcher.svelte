@@ -90,8 +90,8 @@
 		loadSymbolClass = 'none';
 		setTimeout(() => {
 			displayErrorClass = 'none';
-			loadingSymbol.style.setProperty('--symbol-color', 'var(--green)');
-			loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--green))');
+			loadingSymbol.style.setProperty('--symbol-color', 'var(--blue)');
+			loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--blue))');
 		}, displayTime);
 	}
 
@@ -263,7 +263,7 @@
 				inputWrap.style.setProperty('--line-color', '#ff4646');
 				setTimeout(() => {
 					buttonAnimation = 'none';
-					inputWrap.style.setProperty('--line-color', '#35fb9f');
+					inputWrap.style.setProperty('--line-color', '#387dfe');
 				}, 500);
 			} else {
 				buttonAnimation = 'none';
@@ -282,9 +282,7 @@
 		<span class="dot dot3 {loadSymbolClass}" />
 	</div>
 	{#if displayErrorClass === 'none'}
-		<p class="fetchStatus">
-			<i class="fa-solid fa-book-open-reader" />
-		</p>
+		<p class="fetchStatus" />
 	{:else}
 		<p bind:this={fetchStatusElement} class="fetchStatus errorStatus {displayErrorClass}">
 			{fetchErrorMessage}
@@ -295,7 +293,7 @@
 <style lang="scss">
 	// Block with loading animation + error messaging
 	.loading-block {
-		padding-top: 3em;
+		padding-top: 1.5em;
 		padding-bottom: 1em;
 
 		.load-symbol-container {
@@ -305,8 +303,8 @@
 			gap: 0.4rem;
 			padding-top: 0.7em;
 			padding-bottom: 0.7em;
-			--symbol-color: var(--green);
-			--drop-shadow: drop-shadow(0 0 0.4em var(--green));
+			--symbol-color: var(--blue);
+			--drop-shadow: drop-shadow(0 0 0.4em var(--blue));
 
 			.dot {
 				transition: all 0.3s;
@@ -329,12 +327,13 @@
 			transition: opacity 0.2s;
 			text-align: center;
 			margin: 0;
+			min-height: 45px;
 			font-size: 1.2rem;
 
 			.fa-book-open-reader {
 				font-size: 1.6rem;
-				color: var(--green);
-				filter: drop-shadow(0 0 0.4em var(--green));
+				color: var(--blue);
+				filter: drop-shadow(0 0 0.4em var(--blue));
 			}
 		}
 
@@ -366,7 +365,7 @@
 
 	// outermost wrap of input module
 	.input-wrap {
-		--line-color: #35fb9f;
+		--line-color: #387dfe;
 		position: relative;
 		margin: 0 auto;
 		margin-top: 0.8rem;
@@ -468,10 +467,10 @@
 			background-color: #2b2a33;
 			width: 60%;
 			border: solid 1px transparent;
-			color: var(--green);
+			color: var(--blue);
 			font-weight: 400;
 			&::placeholder {
-				color: var(--green);
+				color: var(--blue);
 			}
 			&:focus {
 				border: solid 1px #fff;
@@ -504,8 +503,8 @@
 
 	// fetch button lights up when a source is selected / url is input
 	.ready {
-		background-color: #2d955f;
-		filter: drop-shadow(0 0 0.6em #2d955f);
+		background-color: #387dfe;
+		filter: drop-shadow(0 0 0.6em #387dfe);
 	}
 	.dormant {
 		background-color: #2b2a33;

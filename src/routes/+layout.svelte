@@ -30,7 +30,7 @@
 <nav class="padding-container">
 	<div class="masthead">
 		<h1>CiteClinic</h1>
-		<img src="/green-scroll.png" alt="Green Scroll" />
+		<img class="logo" src="/logo.svg" alt="Blue Cross" />
 	</div>
 	<div class="tagline">
 		<h2>Generate <span><em>styled</em></span> citations with a url.</h2>
@@ -57,6 +57,7 @@
 		color: rgba(255, 255, 255, 0.87);
 		--bg-color: #000e18;
 		--green: #35fb9f;
+		--blue: #387dfe;
 		--overlay-top: 0;
 	}
 
@@ -71,6 +72,7 @@
 		margin: 0;
 		padding: 0;
 		scroll-behavior: smooth;
+		// overflow: hidden;
 	}
 
 	.padding-container {
@@ -79,7 +81,7 @@
 
 	body {
 		background-color: var(--bg-color);
-		background-image: url('/green-scatter-bg.svg');
+		background-image: url('/blue-scatter-bg.svg');
 		min-height: 100vh;
 		-webkit-backdrop-filter: blur(0.4em) brightness(55%);
 		backdrop-filter: blur(0.4em) brightness(55%);
@@ -98,9 +100,14 @@
 		display: block;
 	}
 
+	.logo {
+		min-width: 45px;
+		height: auto;
+	}
+
 	nav {
-		position: sticky;
-		top: 0;
+		// position: sticky;
+		// top: 0;
 		z-index: 4;
 		display: flex;
 		align-items: center;
@@ -124,7 +131,7 @@
 		h2 {
 			margin: 0;
 			span {
-				color: var(--green);
+				color: var(--blue);
 			}
 		}
 	}
@@ -141,15 +148,15 @@
 			border: transparent;
 			border-radius: 10px;
 			padding: 0.5em;
-			background-color: #018849;
+			background-color: #164aad;
 			color: #fff;
 			&:hover {
 				cursor: pointer;
-				background-color: #004424;
+				background-color: #002364;
 			}
 			&:focus {
 				outline: transparent;
-				background-color: #004424;
+				background-color: #002364;
 			}
 		}
 		a {

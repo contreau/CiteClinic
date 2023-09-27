@@ -40,23 +40,21 @@
 </script>
 
 <div class="tab-container">
-	{#if $scrapes.length > 1}
-		{#each $scrapes as scrape, i}
+	{#each $scrapes as scrape, i}
+		<button
+			on:click={(event) => {
+				navigateTabs(i + 1, event);
+			}}
+			class={`content-tab tab-${i + 1}`}
+			>Citation {i + 1}
 			<button
-				on:click={(event) => {
-					navigateTabs(i + 1, event);
+				on:click={() => {
+					deleteCitation(i);
 				}}
-				class={`content-tab tab-${i + 1}`}
-				>Citation {i + 1}
-				<button
-					on:click={() => {
-						deleteCitation(i);
-					}}
-					class="deleteTab"><i class="fa-solid fa-circle-xmark" /></button
-				></button
-			>
-		{/each}
-	{/if}
+				class="deleteTab"><i class="fa-solid fa-circle-xmark" /></button
+			></button
+		>
+	{/each}
 </div>
 
 <section class="citation-display-area {$expandedClass}">
@@ -318,7 +316,7 @@
 			padding: 1em;
 			border-radius: 30px;
 			a {
-				color: var(--green);
+				color: var(--blue);
 				transition: color 0.2s;
 				&:hover,
 				&:focus {
@@ -332,8 +330,8 @@
 		text-align: center;
 		font-size: 1.4rem;
 		margin-bottom: 0;
-		color: var(--green);
-		filter: drop-shadow(0 0 0.3em var(--green));
+		color: var(--blue);
+		filter: drop-shadow(0 0 0.3em var(--blue));
 	}
 
 	textarea {
@@ -362,12 +360,12 @@
 	}
 
 	.resize-tab {
-		border-top: 18.5px solid var(--green);
+		border-top: 18.5px solid var(--blue);
 		border-left: 18.5px solid transparent;
 		border-right: 18.5px solid transparent;
 		border-bottom: 18.5px solid transparent;
 		border-radius: 100%;
-		filter: drop-shadow(0 0 0.3em var(--green));
+		filter: drop-shadow(0 0 0.3em var(--blue));
 		transform: rotate(135deg);
 		position: absolute;
 		bottom: -2px;
