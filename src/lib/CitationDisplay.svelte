@@ -28,6 +28,15 @@
 		allTabButtons.map((button) => button.classList.remove('active-tab'));
 		sourceButton.classList.add('active-tab');
 	}
+
+	function deleteCitation(citationNumber: number) {
+		$scrapes.splice(citationNumber, 1);
+		$scrapes = $scrapes; // reactivity (rerenders the {#each} blocks)
+		if ($scrapes.length === 1) {
+			const activeContent: HTMLElement = document.querySelector(`.section-1`)!;
+			activeContent.classList.remove('display-none');
+		}
+	}
 </script>
 
 <div class="tab-container">
@@ -37,16 +46,23 @@
 				on:click={(event) => {
 					navigateTabs(i + 1, event);
 				}}
-				class={`content-tab tab-${i + 1}`}>Citation {i + 1}</button
+				class={`content-tab tab-${i + 1}`}
+				>Citation {i + 1}
+				<button
+					on:click={() => {
+						deleteCitation(i);
+					}}
+					class="deleteTab"><i class="fa-solid fa-circle-xmark" /></button
+				></button
 			>
 		{/each}
 	{/if}
 </div>
 
 <section class="citation-display-area {$expandedClass}">
+	<p class="default-display-icon"><i class="fa-solid fa-bookmark" /></p>
 	{#if $scrapes.length === 0}
 		<div class="default-display">
-			<p class="default-display-icon"><i class="fa-solid fa-bookmark" /></p>
 			<p class="default-display-message">Create your first citation.</p>
 		</div>
 	{:else}
@@ -56,7 +72,7 @@
 					<div class={`section-${i + 1} section-wrap`}>
 						<div class="block-wrap">
 							<h3>
-								Citation {i + 1}<br /><a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
+								<a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
 							</h3>
 							<div class="block--display">
 								<p class={`citation-${i}-text`}>
@@ -129,8 +145,47 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 2rem;
+		gap: 0.8rem;
 		margin: 0 auto;
+		min-height: 40px;
+		transition: min-width 0.3s;
+	}
+
+	.content-tab {
+		opacity: 0;
+		animation: fadeIn 0.2s linear forwards;
+		font-size: 1.25rem;
+		background-color: #000e18;
+		border-bottom: none;
+		border: solid 2px rgb(115, 115, 115);
+		border-bottom: none;
+		border-top-right-radius: 25px;
+		border-top-left-radius: 25px;
+		padding: 0.2em 0.3em 0.3em 0.7em;
+		cursor: pointer;
+		transition: 0.2s all;
+		&:hover,
+		&:focus-visible {
+			background-color: #03375a;
+			outline: transparent;
+			color: #fff;
+		}
+
+		i {
+			font-size: 0.95rem;
+			vertical-align: 1px;
+			color: rgb(163, 163, 163);
+			padding: 0 0.2em;
+			&:hover {
+				color: #fb6565;
+			}
+		}
+	}
+
+	.deleteTab {
+		background: transparent;
+		border: transparent;
+		cursor: pointer;
 	}
 
 	// toggled with js (part of navtabs)
@@ -140,7 +195,10 @@
 
 	// toggled with js (part of navtabs)
 	.active-tab {
-		background-color: #aaaaaa;
+		// background-color: #fff;
+		// color: #000e18;
+		background-color: #03375a;
+		color: #fff;
 	}
 
 	.wrap {
@@ -176,12 +234,6 @@
 		p.default-display-message {
 			font-size: 1.25rem;
 			font-weight: 600;
-		}
-
-		p.default-display-icon {
-			font-size: 1.4rem;
-			color: var(--green);
-			filter: drop-shadow(0 0 0.3em var(--green));
 		}
 	}
 
@@ -274,6 +326,14 @@
 				}
 			}
 		}
+	}
+
+	.default-display-icon {
+		text-align: center;
+		font-size: 1.4rem;
+		margin-bottom: 0;
+		color: var(--green);
+		filter: drop-shadow(0 0 0.3em var(--green));
 	}
 
 	textarea {
