@@ -26,12 +26,10 @@
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
 	// * add throttle to fetch button
-	// * create accordion-esque feature for citations, where they are openable/closeable, closed by default when they load
 	// * User manual should emphasize that scraped data won't be perfect, particularly author abbreviations
 	// * highlight a "null." response by having a container below the citation in a yellow-orange color saying 'null fields: [list of fields]'
 	// * be able to bold any words in the citation by just clicking them
 	// * add copy buttons to citation (raw text, html, css)
-	// * once a second citation is created, the first should become the first in a curtain of nav tabs. maximum 10 open tabs. tabs should be deletable.
 
 	// *
 	// ** Fetcher **
@@ -83,8 +81,9 @@
 		}
 	}
 
-	function showErrorUI(displayTime: number) {
+	function showErrorUI(displayTime: number, errorMessage: string) {
 		// error display in UI
+		fetchErrorMessage = errorMessage;
 		displayErrorClass = 'display-error';
 		loadingSymbol.style.setProperty('--symbol-color', '#f84545');
 		loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em #f84545)');
@@ -133,8 +132,7 @@
 	async function displayResults(result: Citation) {
 		if (result instanceof Error) {
 			console.error(result.message);
-			fetchErrorMessage = result.message;
-			showErrorUI(4000);
+			showErrorUI(4000, result.message);
 			buttonClass = 'dormant';
 			input.focus();
 		} else {
@@ -155,8 +153,7 @@
 			if (url.host !== params.host) {
 				const errorMessage = 'The provided URL does not match your target.';
 				console.error(errorMessage);
-				fetchErrorMessage = errorMessage;
-				showErrorUI(2000);
+				showErrorUI(2000, errorMessage);
 				input.focus();
 				buttonClass = 'dormant';
 				return false;
@@ -168,8 +165,7 @@
 			}
 		} catch (err) {
 			console.error(err);
-			fetchErrorMessage = 'Invalid URL.';
-			showErrorUI(2000);
+			showErrorUI(2000, 'Invalid URL.');
 			input.focus();
 			buttonClass = 'dormant';
 			return false;
@@ -245,6 +241,7 @@
 			<option value="JAMA">JAMA Network</option>
 			<option value="BMJ">British Medical Journal</option>
 		</select>
+
 		<input
 			bind:this={input}
 			on:input={() => {
@@ -258,7 +255,9 @@
 
 	<button
 		on:click={() => {
-			if (input.value === null || input.value === '' || source.value === 'Select') {
+			if ($scrapes.length === 10) {
+				showErrorUI(3000, 'Maximum of 10 citations. Delete one to continue.');
+			} else if (input.value === null || input.value === '' || source.value === 'Select') {
 				console.log('invalid input');
 				buttonAnimation = 'rejectButton';
 				inputWrap.style.setProperty('--line-color', '#ff4646');
@@ -423,6 +422,9 @@
 			--lancet: #088798;
 			--jama: #d21f72;
 			--bmj: #034796;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none; // gets rid of default select element gloss on safari / dropdown arrows everywhere
 			width: 35%;
 			border-radius: 30px;
 			background-color: #0e6db1;
