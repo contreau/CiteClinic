@@ -5,7 +5,7 @@
 
 	<p>
 		<em>CiteClinic</em> is an in-development web application that allows users to easily
-		<b> scrape citation information </b> from research journal sites and
+		<b> scrape citation information </b> from medical journal sites and
 		<b> generate modifiable, styled UI citation components </b> for use on their sites.
 	</p>
 	👩‍💻<b>Intended Userbase:</b> Web developers/web content managers for research institutions or
