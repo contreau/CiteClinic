@@ -30,12 +30,32 @@
 	}
 
 	function deleteCitation(citationNumber: number) {
-		$scrapes.splice(citationNumber, 1);
-		$scrapes = $scrapes; // reactivity (rerenders the {#each} blocks)
+		scrapes.update((scrapes) => {
+			// reactivity - updates the store and then rerenders the {#each} blocks
+			scrapes.splice(citationNumber, 1);
+			return scrapes;
+		});
 		if ($scrapes.length === 1) {
 			const activeContent: HTMLElement = document.querySelector(`.section-1`)!;
 			activeContent.classList.remove('display-none');
+			document.querySelector('.tab-1')!.classList.add('active-tab');
 		}
+		// if currently active tab is deleted, and it is the first one, the next active tab should be the second one
+
+		// if currently active tab is deleted and it has at least one neighbor on both sides, then the next active tab should be to the left
+
+		// if currently active tab is the right most one and deleted, next active one is the tab immediately before it
+		if ($scrapes.length > 1) {
+			const newActiveTab = document.querySelector(`.tab-${$scrapes.length}`)!;
+			newActiveTab.classList.add('active-tab');
+			const newActiveContent = document.querySelector(`.section-${$scrapes.length}`);
+			newActiveContent?.classList.remove('display-none');
+		}
+
+		// if a non-active tab is deleted, the active tab should not change to a different tab
+
+		// contracts citation display when there are none
+		if ($scrapes.length === 0) $expandedClass = '';
 	}
 </script>
 
@@ -51,7 +71,7 @@
 				on:click={() => {
 					deleteCitation(i);
 				}}
-				class="deleteTab"><i class="fa-solid fa-circle-xmark" /></button
+				class="deleteTab"><i class="delete-icon fa-solid fa-circle-xmark" /></button
 			></button
 		>
 	{/each}
@@ -180,10 +200,20 @@
 		}
 	}
 
-	.deleteTab {
+	button.deleteTab {
 		background: transparent;
 		border: transparent;
 		cursor: pointer;
+		&:focus-visible {
+			outline-color: #fb6565;
+			outline-style: solid;
+			border-radius: 30px;
+		}
+	}
+
+	.content-tab .deleteTab .delete-icon {
+		// ensures delete button does not gain a background color when active tabs are styled
+		background-color: transparent;
 	}
 
 	// toggled with js (part of navtabs)
