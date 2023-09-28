@@ -33,13 +33,12 @@
 		<img class="logo" src="/logo.svg" alt="Blue Cross" />
 	</div>
 	<div class="tagline">
-		<h2>Generate <span><em>styled</em></span> citations with a url.</h2>
+		<h2>Generate <span><em>styled</em></span> medical journal citations.</h2>
 	</div>
 
 	<div class="links">
 		<a href={buttonRoute}><button class="user-guide"> {buttonText} </button></a>
-		<a href="https://github.com/zenDev-2/ScholarFetch" target="#"
-			><i class="fa-brands fa-github" /></a
+		<a href="https://github.com/zenDev-2/CiteClinic" target="#"><i class="fa-brands fa-github" /></a
 		>
 	</div>
 </nav>
@@ -106,9 +105,6 @@
 	}
 
 	nav {
-		// position: sticky;
-		// top: 0;
-		z-index: 4;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -165,7 +161,7 @@
 				font-size: 2.5rem;
 				transition: 0.3s all;
 				&:hover {
-					color: #016b5e;
+					color: #164aad;
 				}
 			}
 		}
