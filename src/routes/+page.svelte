@@ -3,6 +3,14 @@
 	import CitationDisplay from '$lib/CitationDisplay.svelte';
 </script>
 
+<svelte:head>
+	<title>Your Citations • CiteClinic</title>
+	<meta
+		name="description"
+		content="CiteClinic allows users to easily scrape citation information from medical journal sites and generate modifiable, styled UI components."
+	/>
+</svelte:head>
+
 <main>
 	<div class="content-grid">
 		<div class="grid-item item1">

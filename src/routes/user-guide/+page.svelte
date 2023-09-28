@@ -1,5 +1,13 @@
 <script lang="ts"></script>
 
+<svelte:head>
+	<title>User Guide • CiteClinic</title>
+	<meta
+		name="description"
+		content="Learn how to best use CiteClinic and its important features in this user guide."
+	/>
+</svelte:head>
+
 <div class="extra-padding-container">
 	<h2>Using CiteClinic</h2>
 
