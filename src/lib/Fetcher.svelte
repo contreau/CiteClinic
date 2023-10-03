@@ -536,4 +536,23 @@
 			transform: rotate(360deg);
 		}
 	}
+
+	@media (max-width: 400px) {
+		.input-wrap .input-fields .url-input {
+			width: 100%;
+		}
+
+		.input-fields {
+			flex-direction: column;
+			gap: 1.2rem;
+		}
+
+		.input-wrap::after {
+			bottom: 17%;
+		}
+
+		#source-select {
+			width: 65%;
+		}
+	}
 </style>

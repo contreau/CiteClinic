@@ -44,7 +44,8 @@
 </nav>
 <slot />
 <footer>
-	<p><i class="fa-solid fa-laptop-code" /> made by CK</p>
+	<img class="footer-img" src="/footer-img-min.png" alt="Wolf" />
+	<p>made by CK</p>
 </footer>
 
 <style lang="scss" global>
@@ -125,6 +126,7 @@
 
 	.tagline {
 		h2 {
+			font-size: clamp(1rem, 4vw, 1.5rem);
 			margin: 0;
 			span {
 				color: var(--blue);
@@ -168,20 +170,44 @@
 	}
 
 	footer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
 		text-align: center;
 		flex-shrink: 0; // sticks footer to bottom (see rule on main element)
 		background-color: #000e18;
 		border-top: solid 0.5px #232323;
 		p {
-			margin: 0 auto;
+			margin: 0;
 			padding: 0.5em 0em;
 			font-weight: 400;
+		}
+
+		img {
+			max-width: 22.5px;
+			height: auto;
 		}
 	}
 
 	@media (min-width: 900px) {
 		button.user-guide {
 			min-width: 119px;
+		}
+	}
+
+	@media (max-width: 1200px) {
+		nav {
+			flex-direction: column;
+			gap: 1rem;
+
+			&.padding-container {
+				padding: 0.5em 1em;
+			}
+		}
+
+		.tagline {
+			text-align: center;
 		}
 	}
 </style>

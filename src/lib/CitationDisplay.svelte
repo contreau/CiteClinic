@@ -29,13 +29,14 @@
 		sourceButton.classList.add('active-tab');
 	}
 
-	function deleteCitation(citationNumber: number) {
+	function deleteCitation(event: Event, citationNumber: number) {
 		scrapes.update((scrapes) => {
 			// reactivity - updates the store and then rerenders the {#each} blocks
 			scrapes.splice(citationNumber, 1);
 			return scrapes;
 		});
 		if ($scrapes.length === 1) {
+			// ensures the tab's content does not have display: none
 			const activeContent: HTMLElement = document.querySelector(`.section-1`)!;
 			activeContent.classList.remove('display-none');
 			document.querySelector('.tab-1')!.classList.add('active-tab');
@@ -45,7 +46,12 @@
 		// if currently active tab is deleted and it has at least one neighbor on both sides, then the next active tab should be to the left
 
 		// if currently active tab is the right most one and deleted, next active one is the tab immediately before it
-		if ($scrapes.length > 1) {
+		// TODO: need to rework this
+		const deleteIcon = event.target as HTMLElement;
+		if (
+			$scrapes.length > 1 &&
+			deleteIcon.parentElement!.parentElement!.classList.contains('active-tab')
+		) {
 			const newActiveTab = document.querySelector(`.tab-${$scrapes.length}`)!;
 			newActiveTab.classList.add('active-tab');
 			const newActiveContent = document.querySelector(`.section-${$scrapes.length}`);
@@ -68,8 +74,8 @@
 			class={`content-tab tab-${i + 1}`}
 			>Citation {i + 1}
 			<button
-				on:click={() => {
-					deleteCitation(i);
+				on:click={(event) => {
+					deleteCitation(event, i);
 				}}
 				class="deleteTab"><i class="delete-icon fa-solid fa-circle-xmark" /></button
 			></button
@@ -412,6 +418,26 @@
 	@keyframes fadeIn {
 		100% {
 			opacity: 1;
+		}
+	}
+
+	@media (max-width: 740px) {
+		.expanded {
+			padding: 0.5em;
+		}
+
+		.block-wrap h3 {
+			padding: 0;
+			max-width: 100%;
+		}
+
+		.copy-buttons {
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		.block--edit {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>
