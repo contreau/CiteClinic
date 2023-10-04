@@ -25,11 +25,10 @@
 
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
-	// * add throttle to fetch button
+	// * figure out responsive nav tabs on mobile
 	// * User manual should emphasize that scraped data won't be perfect, particularly author abbreviations
 	// * highlight a "null." response by having a container below the citation in a yellow-orange color saying 'null fields: [list of fields]'
-	// * be able to bold any words in the citation by just clicking them
-	// * add copy buttons to citation (raw text, html, css)
+	// * finish copy buttons (html, css)
 
 	// *
 	// ** Fetcher **
@@ -72,6 +71,7 @@
 	let fetchErrorMessage = 'Nothing to see here.';
 	let loadSymbolClass = 'none';
 	let displayErrorClass = 'none';
+	let throttleRequest = false;
 
 	function lightFetchButton() {
 		if (sourceSelect !== 'Select' && input.value !== '') {
@@ -131,13 +131,16 @@
 
 	async function displayResults(result: Citation) {
 		if (result instanceof Error) {
+			throttleRequest = false; // reset throttle
 			console.error(result.message);
 			showErrorUI(4000, result.message);
 			buttonClass = 'dormant';
+			input.value = '';
 			input.focus();
 		} else {
 			loadSymbolClass = 'none';
 			await scrapes.update((scrapes) => [...scrapes, result]); // code below must wait for this
+			throttleRequest = false; // reset throttle
 			$expandedClass = 'expanded'; // expands citationDisplay to full width
 			buttonClass = 'dormant';
 			input.value = '';
@@ -255,6 +258,7 @@
 
 	<button
 		on:click={() => {
+			// console.log(`throttle is ${throttleRequest}`);
 			if ($scrapes.length === 10) {
 				showErrorUI(3000, 'Maximum of 10 citations. Delete one to continue.');
 			} else if (input.value === null || input.value === '' || source.value === 'Select') {
@@ -265,9 +269,10 @@
 					buttonAnimation = 'none';
 					inputWrap.style.setProperty('--line-color', '#387dfe');
 				}, 500);
-			} else {
+			} else if (!throttleRequest) {
 				buttonAnimation = 'none';
 				launchFetch(input);
+				throttleRequest = true; // enables throttle
 			}
 		}}
 		type="submit"
