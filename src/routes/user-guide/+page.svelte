@@ -16,9 +16,9 @@
 			<ul>
 				<li><a href="#how-it-works">How it works</a></li>
 
-				<li><a href="">Editable Example</a></li>
+				<li><a href="#example-edit">Editable Example</a></li>
 
-				<li><a href="">Supported Sites</a></li>
+				<li><a href="#supported-sites">Supported Sites</a></li>
 
 				<li><a href="#submit-feedback">Submit Feedback</a></li>
 			</ul>
@@ -29,12 +29,25 @@
 				<b> scrape citation information </b> from medical journal sites and
 				<b> generate modifiable, styled UI citation components </b> for use on their sites.
 			</p>
-			👩‍💻<b>Intended Userbase:</b> Web developers/web content managers for research institutions or
+			<b>Intended Userbase:</b> Web developers/web content managers for research institutions or
 			universities that frequently update publications for resident doctors or researchers.
 			<p />
+
 			<h3 id="how-it-works">How it Works</h3>
-			<p>CiteClinic scrapes primarily from page metadata.</p>
-			<h3>Supported Journal Sites</h3>
+			<p>
+				In an effort to perform well, CiteClinic scrapes citation data primarily from the target
+				page's metadata. Depending on the site, a few of the citation fields are gathered from live
+				page elements.
+			</p>
+
+			<p>
+				Because of this application's focus on medical journals, the produced citation format
+				generated is <a href="https://library.viu.ca/citing/vancouver" target="#">Vancouver Style</a
+				>. This may change if there is specific user demand for other citation formats.
+			</p>
+
+			<h3 id="example-edit">Editable Example</h3>
+			<h3 id="supported-sites">Supported Journal Sites</h3>
 			<ul>
 				<li>New England Journal of Medicine</li>
 				<li>PubMed</li>
@@ -43,14 +56,8 @@
 				<li>JAMA Network</li>
 				<li>British Medical Journal</li>
 			</ul>
-			<h3>Citation Format</h3>
-			<p>
-				Because several of the supported journal sites are medical-focused, the citation format
-				generated is in <a href="https://library.viu.ca/citing/vancouver" target="#"
-					>Vancouver Style</a
-				>. This may change if there is specific user demand for other citation formats.
-			</p>
-			<h3 id="submit-feedback">Feature Requests & Issues</h3>
+
+			<h3 id="submit-feedback">Submit Feedback</h3>
 			<p>
 				Got a feature or specific support you'd like to see in ScholarFetch? Encountered a bug or
 				issue? Post it on the GitHub repository's <a
@@ -69,6 +76,18 @@
 	}
 	h2 {
 		text-align: center;
+	}
+
+	h3 {
+		text-decoration: underline;
+	}
+
+	p a {
+		color: var(--blue);
+		transition: 0.2s all;
+		&:hover {
+			color: #fff;
+		}
 	}
 
 	.content-grid {
@@ -99,12 +118,47 @@
 		}
 	}
 
+	.sidenav,
+	.guide-content p {
+		padding-top: 1em;
+	}
+
 	.guide-content {
+		background-color: #01111d;
 		border-left: solid 1px #fff;
-		padding-left: 2rem;
+		border-top-right-radius: 15px;
+		border-bottom-right-radius: 15px;
+		padding: 0 2em;
+		box-shadow: #ffffff8b 1px 1px;
 
 		p:first-of-type {
 			margin-top: 0;
+		}
+	}
+
+	@media (max-width: 950px) {
+		.extra-padding-container {
+			padding: 0 2em;
+		}
+
+		.content-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.sidenav {
+			position: static;
+			ul {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-wrap: wrap;
+				gap: 1.4rem;
+				padding-bottom: 1.2em;
+
+				li + li {
+					margin-top: 0;
+				}
+			}
 		}
 	}
 </style>
