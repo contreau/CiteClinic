@@ -1,5 +1,28 @@
 <script lang="ts">
 	import { scrapes, urlHistory, expandedClass } from './store';
+	import { fly, fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
+
+	// * Color Picker Component
+	onMount(async () => {
+		await import('vanilla-colorful');
+	});
+
+	let color = '#1e88e5';
+
+	function handleColorChanged(event: any) {
+		color = event.detail.value;
+	}
+	// *
+
+	let borderThickness: number = 0;
+	let styleDropdownVisible: boolean = false;
+	let optionsText: string = 'Style Options';
+
+	$: {
+		if (styleDropdownVisible) optionsText = 'Close Options';
+		else optionsText = 'Style Options';
+	}
 
 	async function copyRawText(event: Event, scrapeNumber: number) {
 		const citationText: string | null =
@@ -106,6 +129,40 @@
 									{scrape.publishYear}{scrape.volumeAndPageRange}
 								</p>
 							</div>
+							<button
+								class="style-dropdown"
+								on:click={() => {
+									styleDropdownVisible = !styleDropdownVisible;
+								}}>{optionsText}</button
+							>
+							{#if styleDropdownVisible}
+								<div
+									class="style-options-wrap"
+									in:fly={{ x: -200, duration: 650 }}
+									out:fade={{ duration: 200 }}
+								>
+									<div class="border-thickness grid-item">
+										<p><b>Border Thickness: {borderThickness}px</b></p>
+										<input type="range" bind:value={borderThickness} min="0" max="20" step="0.1" />
+									</div>
+									<div class="border-color grid-item">
+										<output><p><b>Border Color: </b>{color}</p></output>
+										<hex-color-picker {color} on:color-changed={handleColorChanged} />
+									</div>
+
+									<div class="style-input shadow-control grid-item">
+										<p><b>Shadow Type</b></p>
+										<input name="shadow-options" id="shadow1" type="radio" />
+										<label for="shadow1">Shadow 1</label>
+										<br />
+										<input name="shadow-options" id="shadow2" type="radio" />
+										<label for="shadow2">Shadow 2</label>
+										<br />
+										<input name="shadow-options" id="shadow3" type="radio" />
+										<label for="shadow3">Shadow 3</label>
+									</div>
+								</div>
+							{/if}
 							<div class="copy-buttons">
 								<button
 									class="text-btn"
@@ -304,6 +361,7 @@
 		justify-content: center;
 		gap: 4rem;
 		padding-bottom: 2em;
+		padding-top: 2em;
 		button {
 			min-width: 10rem;
 			font-size: inherit;
@@ -404,7 +462,7 @@
 		filter: drop-shadow(0 0 0.3em var(--blue));
 		transform: rotate(135deg);
 		position: absolute;
-		bottom: -2px;
+		bottom: -3.8px;
 		right: -3px;
 		pointer-events: none;
 		z-index: 2;
@@ -413,6 +471,44 @@
 	.input-label {
 		margin-top: 0;
 		margin-bottom: 0.5rem;
+	}
+
+	// Color Picker
+	hex-color-picker {
+		width: 150px;
+		height: 150px;
+		margin: 0 auto;
+	}
+
+	button.style-dropdown {
+		display: block;
+		margin: 0 auto;
+		font-size: inherit;
+		padding: 0.4em 1em;
+		border-radius: 10px;
+		border: solid 2px transparent;
+		transition: all 0.3s;
+		background-color: #2b2a33;
+		cursor: pointer;
+		&:hover,
+		&:focus-visible {
+			outline: transparent;
+			background-color: #474747;
+		}
+	}
+
+	.style-options-wrap {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		justify-content: center;
+		margin: 0 auto;
+		padding-bottom: 2em;
+		padding-top: 1em;
+		// align-items: center;
+
+		.grid-item {
+			justify-self: center;
+		}
 	}
 
 	@keyframes fadeIn {
