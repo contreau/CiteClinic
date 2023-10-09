@@ -276,7 +276,7 @@
 			}
 		}}
 		type="submit"
-		class="submit {buttonClass} {buttonAnimation}">FETCH</button
+		class="submit {buttonClass} {buttonAnimation}">CITE</button
 	>
 </div>
 
