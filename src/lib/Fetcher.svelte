@@ -16,7 +16,7 @@
 		bmjPARAMS
 	} from './parameters';
 
-	import { scrapes, urlHistory, expandedClass } from './store';
+	import { scrapes, urlHistory, expandedClass, firstCitationMade } from './store';
 	import type { Citation, Param } from '../ts/types';
 	import { browser } from '$app/environment';
 
@@ -26,9 +26,8 @@
 	// TODO:
 	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
 	// * figure out responsive nav tabs on mobile
-	// * User manual should emphasize that scraped data won't be perfect, particularly author abbreviations
-	// * highlight a "null." response by having a container below the citation in a yellow-orange color saying 'null fields: [list of fields]'
 	// * finish copy buttons (html, css)
+	// * create two more alternate citation styles
 
 	// *
 	// ** Fetcher **
@@ -142,6 +141,7 @@
 			await scrapes.update((scrapes) => [...scrapes, result]); // code below must wait for this
 			throttleRequest = false; // reset throttle
 			$expandedClass = 'expanded'; // expands citationDisplay to full width
+			$firstCitationMade = true;
 			buttonClass = 'dormant';
 			input.value = '';
 			input.focus();
@@ -294,6 +294,12 @@
 		</p>
 	{/if}
 </div>
+
+{#if !$firstCitationMade}
+	<p class="new-user-message">
+		<em>New to CiteClinic? Check out the <a href="/user-guide">User Guide</a> first.</em>
+	</p>
+{/if}
 
 <style lang="scss">
 	// Block with loading animation + error messaging
@@ -558,6 +564,20 @@
 
 		#source-select {
 			width: 65%;
+		}
+	}
+
+	.new-user-message {
+		text-align: center;
+		margin-top: 0;
+
+		font-size: 1.05rem;
+		a {
+			transition: 0.2s all;
+			color: var(--blue);
+			&:hover {
+				color: #fff;
+			}
 		}
 	}
 </style>
