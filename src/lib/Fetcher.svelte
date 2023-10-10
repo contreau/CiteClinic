@@ -24,10 +24,9 @@
 	if (browser) footer = document.querySelector('footer');
 
 	// TODO:
-	// Vancouver Citation Reference: https://library.viu.ca/citing/vancouver
-	// * figure out responsive nav tabs on mobile
+	// * fix nav tab behavior, then figure out responsive nav tabs on mobile
 	// * finish copy buttons (html, css)
-	// * create two more alternate citation styles
+	// * finish citation style customization
 
 	// *
 	// ** Fetcher **
@@ -128,6 +127,7 @@
 		sourceButton.classList.add('active-tab');
 	}
 
+	// triggers citation display
 	async function displayResults(result: Citation) {
 		if (result instanceof Error) {
 			throttleRequest = false; // reset throttle
@@ -150,6 +150,7 @@
 		}
 	}
 
+	// URL validation
 	function validateURL(input: HTMLInputElement, params: Param): boolean {
 		try {
 			const url = new URL(input.value.trim());
@@ -175,50 +176,58 @@
 		}
 	}
 
-	// submit button event function
+	// cite button handler
+	function citeButtonActions() {
+		// console.log(`throttle is ${throttleRequest}`);
+		if ($scrapes.length === 10) {
+			showErrorUI(3000, 'Maximum of 10 citations. Delete one to continue.');
+		} else if (input.value === null || input.value === '' || source.value === 'Select') {
+			console.log('invalid input');
+			buttonAnimation = 'rejectButton';
+			inputWrap.style.setProperty('--line-color', '#ff4646');
+			setTimeout(() => {
+				buttonAnimation = 'none';
+				inputWrap.style.setProperty('--line-color', '#387dfe');
+			}, 500);
+		} else if (!throttleRequest) {
+			buttonAnimation = 'none';
+			launchFetch(input);
+		}
+	}
+
+	async function retrieveAndDisplay(
+		input: HTMLInputElement,
+		param: Param,
+		parseDataCallback: Promise<Citation>
+	) {
+		if (validateURL(input, param)) {
+			throttleRequest = true;
+			loadSymbolClass = 'animation-load';
+			const result = await parseDataCallback;
+			displayResults(result);
+		}
+	}
+
+	// server interaction + page scraping
 	async function launchFetch(input: HTMLInputElement) {
 		switch (sourceSelect) {
 			case 'PubMed':
-				if (validateURL(input, pubmedPARAMS)) {
-					loadSymbolClass = 'animation-load';
-					const PMresult = await parseData(input, pubmedPARAMS);
-					displayResults(PMresult);
-				}
+				retrieveAndDisplay(input, pubmedPARAMS, parseData(input, pubmedPARAMS));
 				break;
 			case 'Nature':
-				if (validateURL(input, naturePARAMS)) {
-					loadSymbolClass = 'animation-load';
-					const NAresult = await parseData(input, naturePARAMS);
-					displayResults(NAresult);
-				}
+				retrieveAndDisplay(input, naturePARAMS, parseData(input, naturePARAMS));
 				break;
 			case 'NEJM':
-				if (validateURL(input, nejmPARAMS)) {
-					loadSymbolClass = 'animation-load';
-					const NEresult = await parseData_NEJM(input);
-					displayResults(NEresult);
-				}
+				retrieveAndDisplay(input, nejmPARAMS, parseData_NEJM(input));
 				break;
 			case 'Lancet':
-				if (validateURL(input, lancetPARAMS)) {
-					loadSymbolClass = 'animation-load';
-					const LAresult = await parseData_LANCET(input);
-					displayResults(LAresult);
-				}
+				retrieveAndDisplay(input, lancetPARAMS, parseData_LANCET(input));
 				break;
 			case 'JAMA':
-				if (validateURL(input, jamaPARAMS)) {
-					loadSymbolClass = 'animation-load';
-					const JAresult = await parseData_JAMA(input);
-					displayResults(JAresult);
-				}
+				retrieveAndDisplay(input, jamaPARAMS, parseData_JAMA(input));
 				break;
 			case 'BMJ':
-				if (validateURL(input, bmjPARAMS)) {
-					loadSymbolClass = 'animation-load';
-					const BMJresult = await parseData_BMJ(input);
-					displayResults(BMJresult);
-				}
+				retrieveAndDisplay(input, bmjPARAMS, parseData_BMJ(input));
 				break;
 		}
 	}
@@ -258,22 +267,7 @@
 
 	<button
 		on:click={() => {
-			// console.log(`throttle is ${throttleRequest}`);
-			if ($scrapes.length === 10) {
-				showErrorUI(3000, 'Maximum of 10 citations. Delete one to continue.');
-			} else if (input.value === null || input.value === '' || source.value === 'Select') {
-				console.log('invalid input');
-				buttonAnimation = 'rejectButton';
-				inputWrap.style.setProperty('--line-color', '#ff4646');
-				setTimeout(() => {
-					buttonAnimation = 'none';
-					inputWrap.style.setProperty('--line-color', '#387dfe');
-				}, 500);
-			} else if (!throttleRequest) {
-				buttonAnimation = 'none';
-				launchFetch(input);
-				throttleRequest = true; // enables throttle
-			}
+			citeButtonActions();
 		}}
 		type="submit"
 		class="submit {buttonClass} {buttonAnimation}">CITE</button
