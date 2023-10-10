@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	let exampleInput: string = 'This text field will update as you type.';
 </script>
 
@@ -10,7 +11,11 @@
 	/>
 </svelte:head>
 
-<div class="extra-padding-container">
+<div
+	class="extra-padding-container"
+	in:fly={{ x: 200, duration: 200, delay: 200 }}
+	out:fly={{ x: 200, duration: 200 }}
+>
 	<h2>User Guide</h2>
 
 	<div class="content-grid">

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Fetcher from '$lib/Fetcher.svelte';
 	import CitationDisplay from '$lib/CitationDisplay.svelte';
+	import { fade } from 'svelte/transition';
 </script>
 
 <svelte:head>
@@ -11,7 +12,7 @@
 	/>
 </svelte:head>
 
-<main>
+<main in:fade={{ duration: 200, delay: 200 }} out:fade={{ duration: 200 }}>
 	<div class="content-grid">
 		<div class="grid-item item1">
 			<Fetcher />
