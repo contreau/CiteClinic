@@ -157,6 +157,7 @@
 			if (url.host !== params.host) {
 				const errorMessage = 'The provided URL does not match your target.';
 				console.error(errorMessage);
+				invalidSubmissionAnimation();
 				showErrorUI(2000, errorMessage);
 				input.focus();
 				buttonClass = 'dormant';
@@ -169,11 +170,22 @@
 			}
 		} catch (err) {
 			console.error(err);
+			invalidSubmissionAnimation();
 			showErrorUI(2000, 'Invalid URL.');
 			input.focus();
 			buttonClass = 'dormant';
 			return false;
 		}
+	}
+
+	// invalid submission animation on cite button
+	function invalidSubmissionAnimation() {
+		buttonAnimation = 'rejectButton';
+		inputWrap.style.setProperty('--line-color', '#ff4646');
+		setTimeout(() => {
+			buttonAnimation = 'none';
+			inputWrap.style.setProperty('--line-color', '#387dfe');
+		}, 500);
 	}
 
 	// cite button handler
@@ -183,12 +195,8 @@
 			showErrorUI(3000, 'Maximum of 10 citations. Delete one to continue.');
 		} else if (input.value === null || input.value === '' || source.value === 'Select') {
 			console.log('invalid input');
-			buttonAnimation = 'rejectButton';
-			inputWrap.style.setProperty('--line-color', '#ff4646');
-			setTimeout(() => {
-				buttonAnimation = 'none';
-				inputWrap.style.setProperty('--line-color', '#387dfe');
-			}, 500);
+			showErrorUI(2000, 'Missing fields.');
+			invalidSubmissionAnimation();
 		} else if (!throttleRequest) {
 			buttonAnimation = 'none';
 			launchFetch(input);
