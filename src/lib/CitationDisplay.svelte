@@ -1,41 +1,6 @@
 <script lang="ts">
-	import { scrapes, urlHistory, expandedClass } from './store';
-	import { fly, fade } from 'svelte/transition';
-	import { onMount } from 'svelte';
-
-	// * Color Picker Component
-	onMount(async () => {
-		await import('vanilla-colorful');
-	});
-
-	let color = '#1e88e5';
-
-	function handleColorChanged(event: any) {
-		color = event.detail.value;
-	}
-	// *
-
-	let borderThickness: number = 0;
-	let styleDropdownVisible: boolean = false;
-	let optionsText: string = 'Style Options';
-
-	$: {
-		if (styleDropdownVisible) optionsText = 'Close Options';
-		else optionsText = 'Style Options';
-	}
-
-	async function copyRawText(event: Event, scrapeNumber: number) {
-		const citationText: string | null =
-			document.querySelector(`.citation-${scrapeNumber}-text`)?.textContent ?? null;
-		if (citationText !== null) {
-			await navigator.clipboard.writeText(citationText);
-			const button = event.target as HTMLElement;
-			button.textContent = 'Copied!';
-			setTimeout(() => {
-				button.textContent = 'Copy Raw Text';
-			}, 2000);
-		}
-	}
+	import { scrapes, expandedClass } from './store';
+	import StyleLayer from './StyleLayer.svelte';
 
 	function navigateTabs(citationNumber: number, event: Event) {
 		const allTabContents: HTMLElement[] = Array.from(document.querySelectorAll('.section-wrap'));
@@ -117,63 +82,7 @@
 			<section class="display">
 				{#each $scrapes as scrape, i}
 					<div class={`section-${i + 1} section-wrap`}>
-						<div class="block-wrap">
-							<h3>
-								<a href={$urlHistory[i]} target="#">{scrape.displayTitle}</a>
-							</h3>
-							<div class="block--display">
-								<p class={`citation-${i}-text`}>
-									{scrape.authors}
-									{scrape.title}
-									{scrape.journalAbbreviation}
-									{scrape.publishYear}{scrape.volumeAndPageRange}
-								</p>
-							</div>
-							<button
-								class="style-dropdown"
-								on:click={() => {
-									styleDropdownVisible = !styleDropdownVisible;
-								}}>{optionsText}</button
-							>
-							{#if styleDropdownVisible}
-								<div
-									class="style-options-wrap"
-									in:fly={{ x: -200, duration: 650 }}
-									out:fade={{ duration: 200 }}
-								>
-									<div class="border-thickness grid-item">
-										<p><b>Border Thickness: {borderThickness}px</b></p>
-										<input type="range" bind:value={borderThickness} min="0" max="20" step="0.1" />
-									</div>
-									<div class="border-color grid-item">
-										<output><p><b>Border Color: </b>{color}</p></output>
-										<hex-color-picker {color} on:color-changed={handleColorChanged} />
-									</div>
-
-									<div class="style-input shadow-control grid-item">
-										<p><b>Shadow Type</b></p>
-										<input name="shadow-options" id="shadow1" type="radio" />
-										<label for="shadow1">Shadow 1</label>
-										<br />
-										<input name="shadow-options" id="shadow2" type="radio" />
-										<label for="shadow2">Shadow 2</label>
-										<br />
-										<input name="shadow-options" id="shadow3" type="radio" />
-										<label for="shadow3">Shadow 3</label>
-									</div>
-								</div>
-							{/if}
-							<div class="copy-buttons">
-								<button
-									class="text-btn"
-									on:click={(event) => {
-										copyRawText(event, i);
-									}}>Copy Raw Text</button
-								>
-								<button class="html-btn">Copy HTML &lt;/&gt;</button>
-								<button class="css-btn">Copy CSS &lbrace; &rbrace;</button>
-							</div>
-						</div>
+						<StyleLayer citationObject={scrape} itemIndex={i} />
 						<div class="block--edit">
 							<div class="grid-item">
 								<p class="input-label">Authors</p>
@@ -343,48 +252,17 @@
 			margin-left: auto;
 			border: solid 3px #8d8d8d;
 			p {
+				--border-var: 0px;
 				max-width: 800px;
 				color: #000;
 				background-color: #eeeded;
 				box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 				border-radius: 10px;
+				border-style: solid;
+				border-width: var(--border-var);
 				padding: 0.8em;
 				margin-left: auto;
 				margin-right: auto;
-			}
-		}
-	}
-
-	.copy-buttons {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 4rem;
-		padding-bottom: 2em;
-		padding-top: 2em;
-		button {
-			min-width: 10rem;
-			font-size: inherit;
-			padding: 0.4em 1em;
-			border-radius: 10px;
-			border: solid 2px transparent;
-			transition: all 0.3s;
-			background-color: #2b2a33;
-			cursor: pointer;
-			&:hover,
-			&:focus-visible {
-				outline: transparent;
-				background-color: #474747;
-			}
-
-			&.text-btn {
-				border-color: #e2e2e2;
-			}
-			&.html-btn {
-				border-color: #fe3e03;
-			}
-			&.css-btn {
-				border-color: #0073ff;
 			}
 		}
 	}
@@ -397,27 +275,6 @@
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: 1.2rem;
-	}
-
-	.block-wrap {
-		opacity: 0;
-		animation: fadeIn 0.4s ease-in forwards;
-
-		h3 {
-			text-align: center;
-			max-width: 75%;
-			margin: 0 auto;
-			padding: 1em;
-			border-radius: 30px;
-			a {
-				color: var(--blue);
-				transition: color 0.2s;
-				&:hover,
-				&:focus {
-					color: #fff;
-				}
-			}
-		}
 	}
 
 	.default-display-icon {
@@ -473,44 +330,6 @@
 		margin-bottom: 0.5rem;
 	}
 
-	// Color Picker
-	hex-color-picker {
-		width: 150px;
-		height: 150px;
-		margin: 0 auto;
-	}
-
-	button.style-dropdown {
-		display: block;
-		margin: 0 auto;
-		font-size: inherit;
-		padding: 0.4em 1em;
-		border-radius: 10px;
-		border: solid 2px transparent;
-		transition: all 0.3s;
-		background-color: #2b2a33;
-		cursor: pointer;
-		&:hover,
-		&:focus-visible {
-			outline: transparent;
-			background-color: #474747;
-		}
-	}
-
-	.style-options-wrap {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		justify-content: center;
-		margin: 0 auto;
-		padding-bottom: 2em;
-		padding-top: 1em;
-		// align-items: center;
-
-		.grid-item {
-			justify-self: center;
-		}
-	}
-
 	@keyframes fadeIn {
 		100% {
 			opacity: 1;
@@ -520,16 +339,6 @@
 	@media (max-width: 740px) {
 		.expanded {
 			padding: 0.5em;
-		}
-
-		.block-wrap h3 {
-			padding: 0;
-			max-width: 100%;
-		}
-
-		.copy-buttons {
-			flex-direction: column;
-			gap: 1rem;
 		}
 
 		.block--edit {
