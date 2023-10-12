@@ -17,6 +17,27 @@
 	}
 	// *
 
+	// TODO: fix:
+	// a radio button 'checked' state is lost when a different tab's radio button selects an option
+	// 'checked state' disappears when style options are collapsed on any tab other than the very first one
+	async function toggleStyleDropdown(shadowID: string) {
+		if (firstDropdownReveal) {
+			styleDropdownVisible = !styleDropdownVisible;
+			await styleDropdownVisible;
+			const lastShadowInput: HTMLInputElement | null = document.querySelector(`#${shadowID}`);
+			console.log(shadowID);
+			if (lastShadowInput !== null) lastShadowInput.checked = true;
+			console.log(lastShadowInput);
+		} else {
+			styleDropdownVisible = !styleDropdownVisible;
+			await styleDropdownVisible;
+			const defaultShadowInput: HTMLInputElement | null = document.querySelector('#shadow1');
+			console.log(defaultShadowInput);
+			if (defaultShadowInput !== null) defaultShadowInput.checked = true;
+			firstDropdownReveal = true;
+		}
+	}
+
 	$: {
 		if (styleDropdownVisible) optionsText = 'Close Options';
 		else optionsText = 'Style Options';
@@ -35,10 +56,26 @@
 		}
 	}
 
+	function selectShadow(event: Event, shadows: Record<string, string>) {
+		const button = event.currentTarget as HTMLInputElement;
+		button.checked = true;
+		citationParagraph.style.setProperty('--box-shadow', `${shadows[button.id]}`);
+		lastCheckedRadioButton = button.id;
+	}
+
+	const shadows: Record<string, string> = {
+		noShadow: 'none',
+		shadow1: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px',
+		shadow2: 'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
+		shadow3:
+			'rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset'
+	};
 	let borderThickness: number = 0;
 	let styleDropdownVisible: boolean = false;
 	let optionsText: string = 'Style Options';
 	let citationParagraph: HTMLParagraphElement;
+	let firstDropdownReveal: boolean = false;
+	let lastCheckedRadioButton: string;
 
 	// Props
 	export let itemIndex: number;
@@ -60,7 +97,7 @@
 	<button
 		class="btn-grad"
 		on:click={() => {
-			styleDropdownVisible = !styleDropdownVisible;
+			toggleStyleDropdown(lastCheckedRadioButton);
 		}}>{optionsText}</button
 	>
 	{#if styleDropdownVisible}
@@ -97,22 +134,48 @@
 
 			<div class="shadow-control grid-item">
 				<div class="radio-input-block">
-					<div>
-						<input name="shadow-options" id="shadow1" type="radio" />
+					<div class="form-control">
+						<input
+							on:input={(event) => {
+								selectShadow(event, shadows);
+							}}
+							name="shadow-options"
+							id="shadow1"
+							type="radio"
+						/>
 						<label for="shadow1">Shadow 1</label>
 					</div>
-					<br />
-					<div>
-						<input name="shadow-options" id="shadow2" type="radio" />
+					<div class="form-control">
+						<input
+							on:input={(event) => {
+								selectShadow(event, shadows);
+							}}
+							name="shadow-options"
+							id="shadow2"
+							type="radio"
+						/>
 						<label for="shadow2">Shadow 2</label>
 					</div>
-					<br />
-					<div>
-						<input name="shadow-options" id="shadow3" type="radio" />
+					<div class="form-control">
+						<input
+							on:input={(event) => {
+								selectShadow(event, shadows);
+							}}
+							name="shadow-options"
+							id="shadow3"
+							type="radio"
+						/>
 						<label for="shadow3">Shadow 3</label>
 					</div>
-					<div>
-						<input name="shadow-options" id="noshadow" type="radio" />
+					<div class="form-control">
+						<input
+							on:input={(event) => {
+								selectShadow(event, shadows);
+							}}
+							name="shadow-options"
+							id="noShadow"
+							type="radio"
+						/>
 						<label for="noshadow">None</label>
 					</div>
 				</div>
@@ -167,10 +230,11 @@
 		p {
 			--border-width: 0px;
 			--border-color: none;
+			--box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 			max-width: 800px;
 			color: #000;
 			background-color: #eeeded;
-			box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+			box-shadow: var(--box-shadow);
 			border-radius: 10px;
 			border-style: solid;
 			border-width: var(--border-width);
@@ -178,6 +242,7 @@
 			padding: 0.8em;
 			margin-left: auto;
 			margin-right: auto;
+			transition: box-shadow 0.3s;
 		}
 	}
 
@@ -271,6 +336,15 @@
 		margin-bottom: 0.8rem;
 	}
 
+	input[type='range']::-webkit-slider-runnable-track {
+		background-color: #fff;
+		border-radius: 30px;
+	}
+
+	input[type='range']::-webkit-slider-thumb {
+		color: var(--blue);
+	}
+
 	.border-thickness {
 		.border-value-text {
 			text-align: center;
@@ -294,11 +368,60 @@
 		flex-direction: column;
 		align-items: center;
 		div {
-			min-width: 127px;
+			min-width: 154px;
 			label {
 				font-size: 1.25rem;
 			}
 		}
+	}
+
+	.form-control {
+		font-size: 1.1rem;
+		line-height: 1;
+		display: grid;
+		grid-template-columns: 1em auto;
+		align-items: center;
+		gap: 1em;
+	}
+
+	.form-control + .form-control {
+		margin-top: 0.8rem;
+	}
+
+	input[type='radio'] {
+		--button-color: var(--blue);
+		-webkit-appearance: none;
+		appearance: none;
+		background-color: #1e1e1ed2;
+		margin: 0;
+		font: inherit;
+		color: var(--button-color);
+		width: 1.15em;
+		height: 1.15em;
+		border: 0.15em solid var(--button-color);
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+	}
+
+	input[type='radio']::before {
+		content: '';
+		width: 0.6em;
+		height: 0.6em;
+		border-radius: 50%;
+		transform: scale(0);
+		transition: 120ms transform ease-in-out;
+		box-shadow: inset 1em 1em #fff;
+	}
+
+	input[type='radio']:checked::before {
+		transform: scale(1);
+	}
+
+	input[type='radio']:focus-visible {
+		outline: max(2px, 0.15em) solid var(--button-color);
+		outline-offset: max(2px, 0.15em);
 	}
 
 	// Color Picker
