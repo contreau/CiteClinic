@@ -17,22 +17,21 @@
 	}
 	// *
 
-	// TODO: fix:
-	// a radio button 'checked' state is lost when a different tab's radio button selects an option
-	// 'checked state' disappears when style options are collapsed on any tab other than the very first one
 	async function toggleStyleDropdown(shadowID: string) {
 		if (firstDropdownReveal) {
 			styleDropdownVisible = !styleDropdownVisible;
 			await styleDropdownVisible;
-			const lastShadowInput: HTMLInputElement | null = document.querySelector(`#${shadowID}`);
-			console.log(shadowID);
+			const lastShadowInput: HTMLInputElement | null = document.querySelector(
+				`#component${itemIndex + 1}-${shadowID}`
+			);
+			// console.log(shadowID);
 			if (lastShadowInput !== null) lastShadowInput.checked = true;
-			console.log(lastShadowInput);
 		} else {
 			styleDropdownVisible = !styleDropdownVisible;
 			await styleDropdownVisible;
-			const defaultShadowInput: HTMLInputElement | null = document.querySelector('#shadow1');
-			console.log(defaultShadowInput);
+			const defaultShadowInput: HTMLInputElement | null = document.querySelector(
+				`#component${itemIndex + 1}-shadow1`
+			);
 			if (defaultShadowInput !== null) defaultShadowInput.checked = true;
 			firstDropdownReveal = true;
 		}
@@ -59,8 +58,10 @@
 	function selectShadow(event: Event, shadows: Record<string, string>) {
 		const button = event.currentTarget as HTMLInputElement;
 		button.checked = true;
-		citationParagraph.style.setProperty('--box-shadow', `${shadows[button.id]}`);
-		lastCheckedRadioButton = button.id;
+		if (button.dataset.name) {
+			citationParagraph.style.setProperty('--box-shadow', `${shadows[button.dataset.name]}`);
+			lastCheckedRadioButton = button.dataset.name;
+		}
 	}
 
 	const shadows: Record<string, string> = {
@@ -96,6 +97,7 @@
 	</div>
 	<button
 		class="btn-grad"
+		id={`dropdown-btn-${itemIndex + 1}`}
 		on:click={() => {
 			toggleStyleDropdown(lastCheckedRadioButton);
 		}}>{optionsText}</button
@@ -139,44 +141,48 @@
 							on:input={(event) => {
 								selectShadow(event, shadows);
 							}}
-							name="shadow-options"
-							id="shadow1"
+							name={`shadow-options-${itemIndex + 1}`}
+							id={`component${itemIndex + 1}-shadow1`}
+							data-name="shadow1"
 							type="radio"
 						/>
-						<label for="shadow1">Shadow 1</label>
+						<label for={`component${itemIndex + 1}-shadow1`}>Shadow 1</label>
 					</div>
 					<div class="form-control">
 						<input
 							on:input={(event) => {
 								selectShadow(event, shadows);
 							}}
-							name="shadow-options"
-							id="shadow2"
+							name={`shadow-options-${itemIndex + 1}`}
+							id={`component${itemIndex + 1}-shadow2`}
+							data-name="shadow2"
 							type="radio"
 						/>
-						<label for="shadow2">Shadow 2</label>
+						<label for={`component${itemIndex + 1}-shadow2`}>Shadow 2</label>
 					</div>
 					<div class="form-control">
 						<input
 							on:input={(event) => {
 								selectShadow(event, shadows);
 							}}
-							name="shadow-options"
-							id="shadow3"
+							name={`shadow-options-${itemIndex + 1}`}
+							id={`component${itemIndex + 1}-shadow3`}
+							data-name="shadow3"
 							type="radio"
 						/>
-						<label for="shadow3">Shadow 3</label>
+						<label for={`component${itemIndex + 1}-shadow3`}>Shadow 3</label>
 					</div>
 					<div class="form-control">
 						<input
 							on:input={(event) => {
 								selectShadow(event, shadows);
 							}}
-							name="shadow-options"
-							id="noShadow"
+							name={`shadow-options-${itemIndex + 1}`}
+							id={`component${itemIndex + 1}-noShadow`}
+							data-name="noShadow"
 							type="radio"
 						/>
-						<label for="noshadow">None</label>
+						<label for={`component${itemIndex + 1}-noShadow`}>None</label>
 					</div>
 				</div>
 			</div>
