@@ -14,9 +14,11 @@
 	function handleColorChanged(event: any) {
 		color = event.detail.value;
 		citationParagraph.style.setProperty('--border-color', `${color}`);
+		cssText.borderColor = color;
 	}
 	// *
 
+	// toggles reveal of styling options
 	async function toggleStyleDropdown(shadowID: string) {
 		if (firstDropdownReveal) {
 			styleDropdownVisible = !styleDropdownVisible;
@@ -42,6 +44,7 @@
 		else optionsText = 'Style Options';
 	}
 
+	// copy raw text to clipboard
 	async function copyRawText(event: Event, scrapeNumber: number) {
 		const citationText: string | null =
 			document.querySelector(`.citation-${scrapeNumber}-text`)?.textContent ?? null;
@@ -55,21 +58,66 @@
 		}
 	}
 
+	// copy html to clipboard
+	async function copyHTML(event: Event, scrapeNumber: number) {
+		const citationText: string | null =
+			document.querySelector(`.citation-${scrapeNumber}-text`)?.textContent ?? null;
+		const htmlString: string = `<p class="styled-citation">${citationText}</p>`;
+		if (citationText !== null) {
+			await navigator.clipboard.writeText(htmlString);
+			const button = event.target as HTMLElement;
+			button.textContent = 'Copied!';
+			setTimeout(() => {
+				button.innerHTML = 'Copy HTML &lt;/&gt;';
+			}, 2000);
+		}
+	}
+
+	// copy css to clipboard
+	async function copyCSS(event: Event) {
+		const cssString: string = `
+		.styled-citation {
+			border-width: ${cssText.borderWidth};
+			border-color: ${cssText.borderColor};
+			box-shadow: ${cssText.boxShadow};
+			border-radius: 10px;
+			border-style: solid;
+			color: #000;
+			background-color: #eeeded;
+			padding: 0.8em;
+		}`;
+		await navigator.clipboard.writeText(cssString);
+		const button = event.target as HTMLElement;
+		button.textContent = 'Copied!';
+		setTimeout(() => {
+			button.innerHTML = 'Copy CSS &lbrace; &rbrace;';
+		}, 2000);
+	}
+
+	// box-shadow select function
 	function selectShadow(event: Event, shadows: Record<string, string>) {
 		const button = event.currentTarget as HTMLInputElement;
 		button.checked = true;
 		if (button.dataset.name) {
 			citationParagraph.style.setProperty('--box-shadow', `${shadows[button.dataset.name]}`);
+			cssText.boxShadow = shadows[button.dataset.name];
 			lastCheckedRadioButton = button.dataset.name;
 		}
 	}
 
+	// box-shadow options
 	const shadows: Record<string, string> = {
 		noShadow: 'none',
 		shadow1: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px',
 		shadow2: 'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
 		shadow3:
 			'rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset'
+	};
+	// modifiable css properties
+	const cssText: Record<string, string> = {
+		borderWidth: '0px',
+		borderColor: 'none',
+		boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
 	};
 	let borderThickness: number = 0;
 	let styleDropdownVisible: boolean = false;
@@ -126,6 +174,7 @@
 					step="0.1"
 					on:input={() => {
 						citationParagraph.style.setProperty('--border-width', `${borderThickness}px`);
+						cssText.borderWidth = `${borderThickness}px`;
 					}}
 				/>
 			</div>
@@ -195,8 +244,18 @@
 				copyRawText(event, itemIndex);
 			}}>Copy Raw Text</button
 		>
-		<button class="html-btn">Copy HTML &lt;/&gt;</button>
-		<button class="css-btn">Copy CSS &lbrace; &rbrace;</button>
+		<button
+			class="html-btn"
+			on:click={(event) => {
+				copyHTML(event, itemIndex);
+			}}>Copy HTML &lt;/&gt;</button
+		>
+		<button
+			class="css-btn"
+			on:click={(event) => {
+				copyCSS(event);
+			}}>Copy CSS &lbrace; &rbrace;</button
+		>
 	</div>
 </div>
 
