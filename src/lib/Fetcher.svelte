@@ -24,39 +24,11 @@
 	if (browser) footer = document.querySelector('footer');
 
 	// TODO:
-	// * fix nav tab behavior, then figure out responsive nav tabs on mobile
-	// * finish copy buttons (html, css)
-	// * finish citation style customization
-
-	// *
-	// ** Fetcher **
-	// *
-
-	// sample PubMed urls
-	// https://pubmed.ncbi.nlm.nih.gov/36184560/
-	// https://pubmed.ncbi.nlm.nih.gov/31379367/
-	// https://pubmed.ncbi.nlm.nih.gov/35298278/
-
-	// sample Nature urls
-	// https://www.nature.com/articles/s41591-023-02392-7
-	// https://www.nature.com/articles/s41598-023-32742-x
-
-	// sample NEJM urls
-	// https://www.nejm.org/doi/full/10.1056/NEJMoa2101195
-	// https://www.nejm.org/doi/full/10.1056/NEJMoa0708638
-	// https://www.nejm.org/doi/full/10.1056/NEJMoa2303062?query=featured_home
-
-	// sample Lancet urls
-	// https://www.thelancet.com/journals/landia/article/PIIS2213-8587(23)00191-2/fulltext
-	// https://www.thelancet.com/journals/laneur/article/PIIS1474-4422(23)00246-6/fulltext
-
-	// sample JAMA urls
-	// https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2795976?resultClick=1
-	// https://jamanetwork.com/journals/jamaotolaryngology/article-abstract/2808807
-	// https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2807259?resultClick=3
-
-	// sample BMJ urls
-	// https://www.bmj.com/content/323/7322/1155
+	// * fix nav tab behavior, then figure out responsive nav tabs on mobile (honestly just limit mobile users to 1 citation at a time)
+	// * restyle select dropdown to look better cross-browser
+	// * some sort of state retention for citation when users navigate to the user guide and then return. right now it wipes styles upon page navigation. can probably do this with a writable store and tweaking of toggleStyleDropdown()
+	// * consider: rework loading icon animation?
+	// * consider: light theme / theme toggle
 
 	let input: HTMLInputElement;
 	let source: HTMLSelectElement;

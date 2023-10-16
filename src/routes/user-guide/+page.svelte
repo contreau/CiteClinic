@@ -57,10 +57,17 @@
 					slightly slower process.
 				</p>
 
-				<p>
-					A ready-to-copy citation is then generated. You can copy its raw text, or choose between a
-					few different CSS styles.
-				</p>
+				<p>A citation is then generated. You can:</p>
+
+				<ul>
+					<li>Edit the text fields to see live changes to your citation.</li>
+					<li>Modify border thickness, border color, and box shadow styles.</li>
+					<li>
+						Copy the HTML and CSS of your styled citation, which are regenerated with each change.
+					</li>
+					<li>Copy just the raw text, if desired.</li>
+				</ul>
+
 				<p>
 					Because of CiteClinic's focus on medical journals, it produces citations in <a
 						href="https://library.viu.ca/citing/vancouver"
