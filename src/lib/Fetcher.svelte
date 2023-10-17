@@ -18,13 +18,20 @@
 
 	import { scrapes, urlHistory, expandedClass, firstCitationMade } from './store';
 	import type { Citation, Param } from '../ts/types';
-	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
 	let footer: HTMLElement | null;
-	if (browser) footer = document.querySelector('footer');
+	let mobileView: boolean;
+	onMount(() => {
+		footer = document.querySelector('footer');
+		if (window.innerWidth < 810) {
+			console.log(window.innerWidth);
+			mobileView = true;
+		} else mobileView = false;
+	});
 
 	// TODO:
-	// * fix nav tab behavior, then figure out responsive nav tabs on mobile (honestly just limit mobile users to 1 citation at a time)
+	// * fix nav tab behavior
 	// * restyle select dropdown to look better cross-browser
 	// * some sort of state retention for citation when users navigate to the user guide and then return. right now it wipes styles upon page navigation. can probably do this with a writable store and tweaking of toggleStyleDropdown()
 	// * consider: rework loading icon animation?
@@ -163,7 +170,9 @@
 	// cite button handler
 	function citeButtonActions() {
 		// console.log(`throttle is ${throttleRequest}`);
-		if ($scrapes.length === 10) {
+		if ($scrapes.length === 1 && mobileView) {
+			showErrorUI(3000, 'Use CiteClinic on a desktop to generate more citations.');
+		} else if ($scrapes.length === 10) {
 			showErrorUI(3000, 'Maximum of 10 citations. Delete one to continue.');
 		} else if (input.value === null || input.value === '' || source.value === 'Select') {
 			console.log('invalid input');
@@ -294,9 +303,9 @@
 			.dot {
 				transition: all 0.3s;
 				background-color: var(--symbol-color);
-				filter: var(--drop-shadow);
-				width: 11px;
-				min-height: 11px;
+				// filter: var(--drop-shadow);
+				width: 13.5px;
+				min-height: 13.5px;
 				border-radius: 30px;
 
 				&.dot2 {
@@ -336,6 +345,7 @@
 	@keyframes load {
 		25% {
 			transform: translateY(-10px);
+			background-color: #fff;
 		}
 		50% {
 			transform: translateY(0px);
@@ -345,6 +355,7 @@
 		}
 		100% {
 			transform: translateY(0px);
+			background-color: var(--symbol-color);
 		}
 	}
 
@@ -410,9 +421,10 @@
 			-moz-appearance: none;
 			appearance: none; // gets rid of default select element gloss on safari / dropdown arrows everywhere
 			width: 35%;
-			border-radius: 30px;
+			border-radius: 15px;
 			background-color: #0e6db1;
 			text-align: center;
+			text-align-last: center; // centers text in safari
 			transition: 0.3s all;
 			font-weight: 700;
 			&:hover {
@@ -425,37 +437,37 @@
 		}
 		.NEJM {
 			background-color: var(--nejm);
-			filter: drop-shadow(0 0 0.5em var(--nejm));
+			// filter: drop-shadow(0 0 0.5em var(--nejm));
 		}
 		.PubMed {
 			background-color: var(pubmed);
-			filter: drop-shadow(0 0 0.5em var(--pubmed));
+			// filter: drop-shadow(0 0 0.5em var(--pubmed));
 		}
 		.Nature {
 			background-color: var(--nature);
-			filter: drop-shadow(0 0 0.5em var(--nature));
+			// filter: drop-shadow(0 0 0.5em var(--nature));
 		}
 		.Lancet {
 			background-color: var(--lancet);
-			filter: drop-shadow(0 0 0.5em var(--lancet));
+			// filter: drop-shadow(0 0 0.5em var(--lancet));
 		}
 		.JAMA {
 			background-color: var(--jama);
-			filter: drop-shadow(0 0 0.5em var(--jama));
+			// filter: drop-shadow(0 0 0.5em var(--jama));
 		}
 		.BMJ {
 			background-color: var(--bmj);
-			filter: drop-shadow(0 0 0.5em var(--bmj));
+			// filter: drop-shadow(0 0 0.5em var(--bmj));
 		}
 
 		.url-input {
 			background-color: #2b2a33;
 			width: 60%;
 			border: solid 1px transparent;
-			color: var(--blue);
+			color: #82c5ff;
 			font-weight: 400;
 			&::placeholder {
-				color: var(--blue);
+				color: #68b1fa88;
 			}
 			&:focus {
 				border: solid 1px #fff;
@@ -470,7 +482,7 @@
 		margin: 0 auto;
 		margin-top: 2rem;
 		padding: 0.5em 2em;
-		border-radius: 20px;
+		border-radius: 10px;
 		border: solid 1px transparent;
 		outline: transparent;
 		font-size: 1rem;

@@ -29,11 +29,11 @@
 
 <nav class="padding-container">
 	<div class="masthead">
-		<h1>CiteClinic</h1>
+		<p class="logotext"><span>Cite</span>Clinic</p>
 		<img class="logo" src="/logo.svg" alt="Blue Cross" />
 	</div>
 	<div class="tagline">
-		<h2>Generate <span><em>styled</em></span> medical journal citations.</h2>
+		<h1>Generate <span><em>styled</em></span> medical journal citations.</h1>
 	</div>
 
 	<div class="links">
@@ -90,9 +90,13 @@
 		flex-direction: column;
 	}
 
-	h1 {
+	p.logotext {
 		margin: 0;
-		font-size: 2.2rem;
+		font-size: 2rem;
+		font-weight: 600;
+		span {
+			color: var(--blue);
+		}
 	}
 
 	img {
@@ -124,8 +128,8 @@
 	}
 
 	.tagline {
-		h2 {
-			font-size: clamp(1rem, 4vw, 1.5rem);
+		h1 {
+			font-size: clamp(1rem, 4vw, 1.6rem);
 			margin: 0;
 			span {
 				color: var(--blue);
