@@ -16,7 +16,7 @@
 		bmjPARAMS
 	} from './parameters';
 
-	import { scrapes, urlHistory, expandedClass, firstCitationMade } from './store';
+	import { scrapes, urlHistory, expandedClass, firstCitationMade, activeTabIndex } from './store';
 	import type { Citation, Param } from '../ts/types';
 	import { onMount } from 'svelte';
 
@@ -93,9 +93,9 @@
 	function setNavTabsOnLoad() {
 		const allTabContents: HTMLElement[] = Array.from(document.querySelectorAll('.section-wrap'));
 		const allTabButtons: HTMLElement[] = Array.from(document.querySelectorAll('.content-tab'));
-		const activeContent: HTMLElement = document.querySelector(`.section-${$scrapes.length}`)!;
+		const activeContent: HTMLElement = document.querySelector(`.section-${$scrapes.length - 1}`)!;
 
-		const sourceButton: HTMLElement = document.querySelector(`.tab-${$scrapes.length}`)!;
+		const sourceButton: HTMLElement = document.querySelector(`.tab-${$scrapes.length - 1}`)!;
 
 		// tab content toggle
 		allTabContents.map((tab) => tab.classList.add('display-none'));
@@ -119,6 +119,7 @@
 			loadSymbolClass = 'none';
 			await scrapes.update((scrapes) => [...scrapes, result]); // code below must wait for this
 			throttleRequest = false; // reset throttle
+			$activeTabIndex = $scrapes.length - 1;
 			$expandedClass = 'expanded'; // expands citationDisplay to full width
 			$firstCitationMade = true;
 			buttonClass = 'dormant';

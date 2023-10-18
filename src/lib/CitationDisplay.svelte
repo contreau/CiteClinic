@@ -1,6 +1,9 @@
 <script lang="ts">
-	import { scrapes, expandedClass } from './store';
+	import { scrapes, expandedClass, activeTabIndex } from './store';
 	import StyleLayer from './StyleLayer.svelte';
+
+	// contracts citation display when there are none
+	$: if ($scrapes.length === 0) $expandedClass = '';
 
 	function navigateTabs(citationNumber: number, event: Event) {
 		const allTabContents: HTMLElement[] = Array.from(document.querySelectorAll('.section-wrap'));
@@ -15,41 +18,76 @@
 		// highlights active nav tab, dims rest
 		allTabButtons.map((button) => button.classList.remove('active-tab'));
 		sourceButton.classList.add('active-tab');
+		$activeTabIndex = citationNumber;
 	}
 
 	function deleteCitation(event: Event, citationNumber: number) {
+		event.stopPropagation();
 		scrapes.update((scrapes) => {
 			// reactivity - updates the store and then rerenders the {#each} blocks
 			scrapes.splice(citationNumber, 1);
 			return scrapes;
 		});
+
+		const allTabButtons: HTMLElement[] = Array.from(document.querySelectorAll('.content-tab'));
+
+		// ensures that both the first and last active tabs' content does not have display: none when deleted
 		if ($scrapes.length === 1) {
-			// ensures the tab's content does not have display: none
-			const activeContent: HTMLElement = document.querySelector(`.section-1`)!;
+			const activeContent: HTMLElement = document.querySelector(`.section-0`)!;
 			activeContent.classList.remove('display-none');
-			document.querySelector('.tab-1')!.classList.add('active-tab');
+		} else if (citationNumber === $scrapes.length) {
+			const activeContent: HTMLElement = document.querySelector(`.section-${$scrapes.length - 1}`)!;
+			activeContent.classList.remove('display-none');
 		}
-		// if currently active tab is deleted, and it is the first one, the next active tab should be the second one
 
-		// if currently active tab is deleted and it has at least one neighbor on both sides, then the next active tab should be to the left
-
-		// if currently active tab is the right most one and deleted, next active one is the tab immediately before it
-		// TODO: need to rework this
 		const deleteIcon = event.target as HTMLElement;
-		if (
-			$scrapes.length > 1 &&
-			deleteIcon.parentElement!.parentElement!.classList.contains('active-tab')
-		) {
-			const newActiveTab = document.querySelector(`.tab-${$scrapes.length}`)!;
-			newActiveTab.classList.add('active-tab');
-			const newActiveContent = document.querySelector(`.section-${$scrapes.length}`);
-			newActiveContent?.classList.remove('display-none');
+
+		// if non-active tab is deleted, active tab remains active even as it is shifted
+		if (!deleteIcon.parentElement!.parentElement!.classList.contains('active-tab')) {
+			// for below active tab:
+			if (citationNumber < $activeTabIndex) {
+				const recalculatedTabIndex = $activeTabIndex - 1;
+				$activeTabIndex = recalculatedTabIndex;
+				allTabButtons.map((button) => button.classList.remove('active-tab'));
+				// ensures visible display
+				const allTabContents: HTMLElement[] = Array.from(
+					document.querySelectorAll('.section-wrap')
+				);
+				allTabContents.map((tab) => tab.classList.add('display-none'));
+				const activeContent: HTMLElement = document.querySelector(
+					`.section-${recalculatedTabIndex}`
+				)!;
+				activeContent.classList.remove('display-none');
+				setTimeout(() => {
+					document.querySelector(`.tab-${recalculatedTabIndex}`)!.classList.add('active-tab');
+				}, 5);
+			}
 		}
 
-		// if a non-active tab is deleted, the active tab should not change to a different tab
-
-		// contracts citation display when there are none
-		if ($scrapes.length === 0) $expandedClass = '';
+		// if currently active tab is deleted, and it is the first one, the next active tab should be the second one. otherwise, the tab to its left becomes the active one.
+		if (
+			citationNumber === 0 &&
+			deleteIcon.parentElement!.parentElement!.classList.contains('active-tab') &&
+			$scrapes.length > 1
+		) {
+			allTabButtons.map((button) => button.classList.remove('active-tab'));
+			setTimeout(() => {
+				document.querySelector(`.tab-${citationNumber}`)!.classList.add('active-tab');
+			}, 5);
+		} else if (
+			// tab being deleted is active and there is at least 1 tab present
+			deleteIcon.parentElement!.parentElement!.classList.contains('active-tab') &&
+			$scrapes.length >= 1
+		) {
+			if (citationNumber - 1 < 0 === false) {
+				const activeContent: HTMLElement = document.querySelector(`.section-${citationNumber}`)!;
+				activeContent.classList.remove('display-none');
+				allTabButtons.map((button) => button.classList.remove('active-tab'));
+				setTimeout(() => {
+					document.querySelector(`.tab-${citationNumber - 1}`)!.classList.add('active-tab');
+				}, 5);
+			}
+		}
 	}
 </script>
 
@@ -57,10 +95,10 @@
 	{#each $scrapes as scrape, i}
 		<button
 			on:click={(event) => {
-				navigateTabs(i + 1, event);
+				navigateTabs(i, event);
 			}}
-			class={`content-tab tab-${i + 1}`}
-			>Citation {i + 1}
+			class={`content-tab tab-${i}`}
+			>Citation {i}
 			<button
 				on:click={(event) => {
 					deleteCitation(event, i);
@@ -81,7 +119,7 @@
 		<div class="wrap">
 			<section class="display">
 				{#each $scrapes as scrape, i}
-					<div class={`section-${i + 1} section-wrap`}>
+					<div class={`section-${i} section-wrap`}>
 						<StyleLayer citationObject={scrape} itemIndex={i} />
 						<div class="block--edit">
 							<div class="grid-item">
