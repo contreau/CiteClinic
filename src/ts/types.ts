@@ -8,6 +8,9 @@ export interface Citation {
 	volumeAndPageRange: string;
 	journal: string;
 	journalAbbreviation: string;
+	borderWidth: number;
+	borderColor: string;
+	boxShadow: string;
 }
 
 export interface Param {
