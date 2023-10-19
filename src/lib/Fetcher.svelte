@@ -31,9 +31,8 @@
 	});
 
 	// TODO:
-	// * fix nav tab behavior
-	// * restyle select dropdown to look better cross-browser
-	// * some sort of state retention for citation when users navigate to the user guide and then return. right now it wipes styles upon page navigation. can probably do this with a writable store and tweaking of toggleStyleDropdown()
+	// * state preservation for style layer on each citation. styles are currently wiped when tabs are deleted
+	// * state preservation for style layer when users navigate to the user guide and back. Can probably kill two birds with one stone by doing the above task.
 	// * consider: rework loading icon animation?
 	// * consider: light theme / theme toggle
 

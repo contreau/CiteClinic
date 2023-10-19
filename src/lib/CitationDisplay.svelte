@@ -37,7 +37,7 @@
 			activeContent.classList.remove('display-none');
 		} else if (citationNumber === $scrapes.length) {
 			const activeContent: HTMLElement = document.querySelector(`.section-${$scrapes.length - 1}`)!;
-			activeContent.classList.remove('display-none');
+			if (activeContent !== null) activeContent.classList.remove('display-none');
 		}
 
 		const deleteIcon = event.target as HTMLElement;
@@ -80,6 +80,7 @@
 			$scrapes.length >= 1
 		) {
 			if (citationNumber - 1 < 0 === false) {
+				$activeTabIndex = $activeTabIndex - 1;
 				const activeContent: HTMLElement = document.querySelector(`.section-${citationNumber}`)!;
 				activeContent.classList.remove('display-none');
 				allTabButtons.map((button) => button.classList.remove('active-tab'));
