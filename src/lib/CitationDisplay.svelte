@@ -121,7 +121,9 @@
 			<section class="display">
 				{#each $scrapes as scrape, i}
 					<div class={`section-${i} section-wrap`}>
-						<StyleLayer citationObject={scrape} itemIndex={i} />
+						{#key $scrapes}
+							<StyleLayer citationObject={scrape} itemIndex={i} />
+						{/key}
 						<div class="block--edit">
 							<div class="grid-item">
 								<p class="input-label">Authors</p>

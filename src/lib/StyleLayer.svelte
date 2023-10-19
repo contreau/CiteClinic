@@ -7,14 +7,23 @@
 	// * Color Picker Component
 	onMount(async () => {
 		await import('vanilla-colorful');
+		// component is reinstantiated with updates to props. Copiable cssText is updated.
+		cssText.borderWidth = `${citationObject.borderWidth}px`;
+		cssText.borderColor = citationObject.borderColor;
+		cssText.boxShadow = citationObject.boxShadow;
+		citationParagraph.style.setProperty('--border-color', `${citationObject.borderColor}`);
+		citationParagraph.style.setProperty('--box-shadow', `${citationObject.boxShadow}`);
+		citationParagraph.style.setProperty('--border-width', `${citationObject.borderWidth}px`);
 	});
 
-	let color = '#000000';
+	// Props
+	export let itemIndex: number;
+	export let citationObject: Citation;
 
 	function handleColorChanged(event: any) {
-		color = event.detail.value;
-		citationParagraph.style.setProperty('--border-color', `${color}`);
-		cssText.borderColor = color;
+		citationObject.borderColor = event.detail.value;
+		citationParagraph.style.setProperty('--border-color', `${citationObject.borderColor}`);
+		cssText.borderColor = citationObject.borderColor;
 	}
 	// *
 
@@ -100,8 +109,10 @@
 		button.checked = true;
 		if (button.dataset.name) {
 			citationParagraph.style.setProperty('--box-shadow', `${shadows[button.dataset.name]}`);
-			cssText.boxShadow = shadows[button.dataset.name];
+			citationObject.boxShadow = `${shadows[button.dataset.name]}`;
+			cssText.boxShadow = `${citationObject.boxShadow}`;
 			lastCheckedRadioButton = button.dataset.name;
+			// TODO: figure out UI update to radio buttons
 		}
 	}
 
@@ -116,7 +127,7 @@
 	// modifiable css properties
 	const cssText: Record<string, string> = {
 		borderWidth: '0px',
-		borderColor: 'none',
+		borderColor: '#000000',
 		boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
 	};
 	let borderThickness: number = 0;
@@ -125,10 +136,6 @@
 	let citationParagraph: HTMLParagraphElement;
 	let firstDropdownReveal: boolean = false;
 	let lastCheckedRadioButton: string;
-
-	// Props
-	export let itemIndex: number;
-	export let citationObject: Citation;
 </script>
 
 <div class="block-wrap">
@@ -165,22 +172,28 @@
 			<hr />
 
 			<div class="border-thickness grid-item">
-				<p class="border-value-text">{borderThickness}px</p>
+				<p class="border-value-text">{citationObject.borderWidth}px</p>
 				<input
 					type="range"
-					bind:value={borderThickness}
+					bind:value={citationObject.borderWidth}
 					min="0"
 					max="20"
 					step="0.1"
 					on:input={() => {
-						citationParagraph.style.setProperty('--border-width', `${borderThickness}px`);
-						cssText.borderWidth = `${borderThickness}px`;
+						citationParagraph.style.setProperty(
+							'--border-width',
+							`${citationObject.borderWidth}px`
+						);
+						cssText.borderWidth = `${citationObject.borderWidth}px`;
 					}}
 				/>
 			</div>
 			<div class="border-color grid-item">
-				<output class="color-value-text">{color}</output>
-				<hex-color-picker {color} on:color-changed={handleColorChanged} />
+				<output class="color-value-text">{citationObject.borderColor}</output>
+				<hex-color-picker
+					color={citationObject.borderColor}
+					on:color-changed={handleColorChanged}
+				/>
 			</div>
 
 			<div class="shadow-control grid-item">
@@ -261,8 +274,8 @@
 
 <style lang="scss">
 	.block-wrap {
-		opacity: 0;
-		animation: fadeIn 0.4s ease-in forwards;
+		// opacity: 0;
+		// animation: fadeIn 0.3s ease-in forwards;
 
 		h3 {
 			font-size: 1.5rem;
