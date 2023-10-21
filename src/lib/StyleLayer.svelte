@@ -4,15 +4,15 @@
 	import { urlHistory } from './store';
 	import { onMount } from 'svelte';
 
-	// * Color Picker Component
 	onMount(async () => {
 		await import('vanilla-colorful');
 		// component is reinstantiated with updates to props. Copiable cssText is updated.
+		lastCheckedRadioButton = citationObject.boxShadow;
 		cssText.borderWidth = `${citationObject.borderWidth}px`;
 		cssText.borderColor = citationObject.borderColor;
-		cssText.boxShadow = citationObject.boxShadow;
+		cssText.boxShadow = `${shadows[citationObject.boxShadow]}`;
 		citationParagraph.style.setProperty('--border-color', `${citationObject.borderColor}`);
-		citationParagraph.style.setProperty('--box-shadow', `${citationObject.boxShadow}`);
+		citationParagraph.style.setProperty('--box-shadow', `${shadows[citationObject.boxShadow]}`);
 		citationParagraph.style.setProperty('--border-width', `${citationObject.borderWidth}px`);
 	});
 
@@ -25,27 +25,15 @@
 		citationParagraph.style.setProperty('--border-color', `${citationObject.borderColor}`);
 		cssText.borderColor = citationObject.borderColor;
 	}
-	// *
 
 	// toggles reveal of styling options
-	async function toggleStyleDropdown(shadowID: string) {
-		if (firstDropdownReveal) {
-			styleDropdownVisible = !styleDropdownVisible;
-			await styleDropdownVisible;
-			const lastShadowInput: HTMLInputElement | null = document.querySelector(
-				`#component${itemIndex + 1}-${shadowID}`
-			);
-			// console.log(shadowID);
-			if (lastShadowInput !== null) lastShadowInput.checked = true;
-		} else {
-			styleDropdownVisible = !styleDropdownVisible;
-			await styleDropdownVisible;
-			const defaultShadowInput: HTMLInputElement | null = document.querySelector(
-				`#component${itemIndex + 1}-shadow1`
-			);
-			if (defaultShadowInput !== null) defaultShadowInput.checked = true;
-			firstDropdownReveal = true;
-		}
+	async function toggleStyleDropdown(lastCheckedRadioButton: string) {
+		styleDropdownVisible = !styleDropdownVisible;
+		await styleDropdownVisible;
+		const lastShadowInput: HTMLInputElement | null = document.querySelector(
+			`#component${itemIndex + 1}-${lastCheckedRadioButton}`
+		);
+		if (lastShadowInput !== null) lastShadowInput.checked = true;
 	}
 
 	$: {
@@ -109,10 +97,9 @@
 		button.checked = true;
 		if (button.dataset.name) {
 			citationParagraph.style.setProperty('--box-shadow', `${shadows[button.dataset.name]}`);
-			citationObject.boxShadow = `${shadows[button.dataset.name]}`;
+			citationObject.boxShadow = `${button.dataset.name}`;
 			cssText.boxShadow = `${citationObject.boxShadow}`;
 			lastCheckedRadioButton = button.dataset.name;
-			// TODO: figure out UI update to radio buttons
 		}
 	}
 
@@ -130,11 +117,9 @@
 		borderColor: '#000000',
 		boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
 	};
-	let borderThickness: number = 0;
 	let styleDropdownVisible: boolean = false;
 	let optionsText: string = 'Style Options';
 	let citationParagraph: HTMLParagraphElement;
-	let firstDropdownReveal: boolean = false;
 	let lastCheckedRadioButton: string;
 </script>
 
@@ -205,6 +190,7 @@
 							}}
 							name={`shadow-options-${itemIndex + 1}`}
 							id={`component${itemIndex + 1}-shadow1`}
+							value="shadow1"
 							data-name="shadow1"
 							type="radio"
 						/>
@@ -217,6 +203,7 @@
 							}}
 							name={`shadow-options-${itemIndex + 1}`}
 							id={`component${itemIndex + 1}-shadow2`}
+							value="shadow2"
 							data-name="shadow2"
 							type="radio"
 						/>
@@ -229,6 +216,7 @@
 							}}
 							name={`shadow-options-${itemIndex + 1}`}
 							id={`component${itemIndex + 1}-shadow3`}
+							value="shadow3"
 							data-name="shadow3"
 							type="radio"
 						/>
@@ -241,6 +229,7 @@
 							}}
 							name={`shadow-options-${itemIndex + 1}`}
 							id={`component${itemIndex + 1}-noShadow`}
+							value="noShadow"
 							data-name="noShadow"
 							type="radio"
 						/>
