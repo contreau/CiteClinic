@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scrapes, expandedClass, activeTabIndex } from './store';
+	import { scrapes, expandedClass, activeTabIndex, deleteNotification } from './store';
 	import StyleLayer from './StyleLayer.svelte';
 
 	// contracts citation display when there are none
@@ -89,6 +89,7 @@
 				}, 5);
 			}
 		}
+		$deleteNotification++;
 	}
 </script>
 
@@ -121,7 +122,7 @@
 			<section class="display">
 				{#each $scrapes as scrape, i}
 					<div class={`section-${i} section-wrap`}>
-						{#key $scrapes}
+						{#key $deleteNotification}
 							<StyleLayer citationObject={scrape} itemIndex={i} />
 						{/key}
 						<div class="block--edit">
