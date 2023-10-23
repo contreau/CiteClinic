@@ -9,6 +9,13 @@
 		name="description"
 		content="Learn how to best use CiteClinic and its important features in this user guide."
 	/>
+	<meta name="title" content="User Guide • CiteClinic" />
+	<meta property="og:title" content="User Guide • CiteClinic" />
+	<meta property="og:url" content="https://citeclinic.app/user-guide" />
+	<meta
+		property="og:description"
+		content="Learn how to best use CiteClinic and its important features in this user guide."
+	/>
 </svelte:head>
 
 <div
