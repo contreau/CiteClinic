@@ -1,17 +1,27 @@
 import type { Param } from './types';
 
-export async function parseData(input: HTMLInputElement, params: Param) {
+export async function parseData_PUBMED(input: HTMLInputElement) {
 	if (input.value != '') {
 		try {
 			const url = new URL(input.value);
-			let response;
-			if (params.host === 'pubmed.ncbi.nlm.nih.gov') {
-				response = await fetch(`/api/pubmed?url=${url}`);
-			} else if (params.host === 'www.nature.com') {
-				response = await fetch(`/api/nature?url=${url}`);
+			const response = await fetch(`/api/pubmed?url=${url}`);
+			if (response.status === 404) {
+				throw new Error('Invalid URL. Make sure you submit an article.');
 			} else {
-				throw new Error('Invalid Host.');
+				const data = await response.json();
+				return data;
 			}
+		} catch (err) {
+			return err;
+		}
+	}
+}
+
+export async function parseData_NATURE(input: HTMLInputElement) {
+	if (input.value != '') {
+		try {
+			const url = new URL(input.value);
+			const response = await fetch(`/api/nature?url=${url}`);
 			if (response.status === 404) {
 				throw new Error('Invalid URL. Make sure you submit an article.');
 			} else {

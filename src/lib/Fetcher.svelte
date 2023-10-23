@@ -1,10 +1,11 @@
 <script lang="ts">
 	import {
-		parseData,
 		parseData_NEJM,
 		parseData_LANCET,
 		parseData_JAMA,
-		parseData_BMJ
+		parseData_BMJ,
+		parseData_NATURE,
+		parseData_PUBMED
 	} from '../ts/serverFunctions';
 
 	import {
@@ -20,10 +21,8 @@
 	import type { Citation, Param } from '../ts/types';
 	import { onMount } from 'svelte';
 
-	let footer: HTMLElement | null;
 	let mobileView: boolean;
 	onMount(() => {
-		footer = document.querySelector('footer');
 		if (window.innerWidth < 810) {
 			console.log(window.innerWidth);
 			mobileView = true;
@@ -31,8 +30,7 @@
 	});
 
 	// TODO:
-	// * state preservation for style layer on each citation. styles are currently wiped when tabs are deleted
-	// * state preservation for style layer when users navigate to the user guide and back. Can probably kill two birds with one stone by doing the above task.
+	// * add a check for whether or not the style layer was opened, and if it was, retain that state when deletions happen
 	// * consider: rework loading icon animation?
 	// * consider: light theme / theme toggle
 
@@ -42,7 +40,6 @@
 	let buttonClass = 'dormant';
 	let buttonAnimation = 'none';
 	let inputWrap: HTMLDivElement;
-	let fetchStatusElement: HTMLParagraphElement;
 	let loadingSymbol: HTMLDivElement;
 	let fetchErrorMessage = 'Nothing to see here.';
 	let loadSymbolClass = 'none';
@@ -187,12 +184,12 @@
 	async function retrieveAndDisplay(
 		input: HTMLInputElement,
 		param: Param,
-		parseDataCallback: Promise<Citation>
+		parseDataCallback: (input: HTMLInputElement) => Promise<Citation>
 	) {
 		if (validateURL(input, param)) {
 			throttleRequest = true;
 			loadSymbolClass = 'animation-load';
-			const result = await parseDataCallback;
+			const result = await parseDataCallback(input);
 			displayResults(result);
 		}
 	}
@@ -201,22 +198,22 @@
 	async function launchFetch(input: HTMLInputElement) {
 		switch (sourceSelect) {
 			case 'PubMed':
-				retrieveAndDisplay(input, pubmedPARAMS, parseData(input, pubmedPARAMS));
+				retrieveAndDisplay(input, pubmedPARAMS, parseData_PUBMED);
 				break;
 			case 'Nature':
-				retrieveAndDisplay(input, naturePARAMS, parseData(input, naturePARAMS));
+				retrieveAndDisplay(input, naturePARAMS, parseData_NATURE);
 				break;
 			case 'NEJM':
-				retrieveAndDisplay(input, nejmPARAMS, parseData_NEJM(input));
+				retrieveAndDisplay(input, nejmPARAMS, parseData_NEJM);
 				break;
 			case 'Lancet':
-				retrieveAndDisplay(input, lancetPARAMS, parseData_LANCET(input));
+				retrieveAndDisplay(input, lancetPARAMS, parseData_LANCET);
 				break;
 			case 'JAMA':
-				retrieveAndDisplay(input, jamaPARAMS, parseData_JAMA(input));
+				retrieveAndDisplay(input, jamaPARAMS, parseData_JAMA);
 				break;
 			case 'BMJ':
-				retrieveAndDisplay(input, bmjPARAMS, parseData_BMJ(input));
+				retrieveAndDisplay(input, bmjPARAMS, parseData_BMJ);
 				break;
 		}
 	}
@@ -272,7 +269,7 @@
 	{#if displayErrorClass === 'none'}
 		<p class="fetchStatus" />
 	{:else}
-		<p bind:this={fetchStatusElement} class="fetchStatus errorStatus {displayErrorClass}">
+		<p class="fetchStatus errorStatus {displayErrorClass}">
 			{fetchErrorMessage}
 		</p>
 	{/if}
@@ -303,7 +300,6 @@
 			.dot {
 				transition: all 0.3s;
 				background-color: var(--symbol-color);
-				// filter: var(--drop-shadow);
 				width: 13.5px;
 				min-height: 13.5px;
 				border-radius: 30px;
@@ -437,27 +433,21 @@
 		}
 		.NEJM {
 			background-color: var(--nejm);
-			// filter: drop-shadow(0 0 0.5em var(--nejm));
 		}
 		.PubMed {
 			background-color: var(pubmed);
-			// filter: drop-shadow(0 0 0.5em var(--pubmed));
 		}
 		.Nature {
 			background-color: var(--nature);
-			// filter: drop-shadow(0 0 0.5em var(--nature));
 		}
 		.Lancet {
 			background-color: var(--lancet);
-			// filter: drop-shadow(0 0 0.5em var(--lancet));
 		}
 		.JAMA {
 			background-color: var(--jama);
-			// filter: drop-shadow(0 0 0.5em var(--jama));
 		}
 		.BMJ {
 			background-color: var(--bmj);
-			// filter: drop-shadow(0 0 0.5em var(--bmj));
 		}
 
 		.url-input {
