@@ -250,7 +250,7 @@
 
 	.citation-display-area {
 		transition: all 0.5s;
-		border: solid 0.5px #484848;
+		border: solid 0.5px transparent;
 		-webkit-backdrop-filter: brightness(75%);
 		backdrop-filter: brightness(65%);
 		max-width: 650px;
@@ -261,10 +261,8 @@
 
 	.expanded {
 		border: none;
-		border-top: solid 0.5px #484848;
-		border-bottom: solid 0.5px #484848;
 		max-width: 100%;
-		padding: 0.5em 5em;
+		padding: 0.5em 5em 2em 5em;
 		border-radius: 0;
 	}
 

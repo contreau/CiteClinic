@@ -406,7 +406,7 @@
 		}
 
 		select {
-			--select: #2b2a33;
+			--select: #051a2ac2;
 			--nejm: #bb2f39;
 			--pubmed: #1872c0;
 			--nature: #007c3c;
@@ -451,7 +451,7 @@
 		}
 
 		.url-input {
-			background-color: #2b2a33;
+			background-color: #051a2a;
 			width: 60%;
 			border: solid 1px transparent;
 			color: #82c5ff;
@@ -494,7 +494,7 @@
 		filter: drop-shadow(0 0 0.6em #387dfe);
 	}
 	.dormant {
-		background-color: #2b2a33;
+		background-color: #061c2d;
 		filter: none;
 	}
 

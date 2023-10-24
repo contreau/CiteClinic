@@ -19,7 +19,7 @@
 	/>
 </svelte:head>
 
-<main in:fade={{ duration: 200, delay: 200 }} out:fade={{ duration: 200 }}>
+<main in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
 	<div class="content-grid">
 		<div class="grid-item item1">
 			<Fetcher />

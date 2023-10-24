@@ -80,10 +80,11 @@
 
 	body {
 		background-color: var(--bg-color);
-		background-image: url('/blue-scatter-bg.svg');
+		background-image: linear-gradient(to right bottom, #04365a, #042d4a, #04243b, #041b2d, #01121f);
+		// background-image: url('/blue-scatter-bg.svg');
 		min-height: 100vh;
-		-webkit-backdrop-filter: blur(0.4em) brightness(55%);
-		backdrop-filter: blur(0.4em) brightness(55%);
+		// -webkit-backdrop-filter: blur(0.4em) brightness(55%);
+		// backdrop-filter: blur(0.4em) brightness(55%);
 		margin: 0 auto;
 		position: relative;
 		display: flex;
@@ -113,8 +114,9 @@
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
-		background-color: #000e18;
-		border-bottom: solid 0.5px #232323;
+		background-color: #032741;
+		box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+			rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 	}
 	.masthead {
 		display: flex;
@@ -179,8 +181,9 @@
 		gap: 0.5rem;
 		text-align: center;
 		flex-shrink: 0; // sticks footer to bottom (see rule on main element)
-		background-color: #000e18;
-		border-top: solid 0.5px #232323;
+		background-color: #032741;
+		box-shadow: rgba(0, 0, 0, 0.4) 0px -2px 20px, rgba(0, 0, 0, 0.2) 0px 3px 0px inset;
+
 		p {
 			margin: 0;
 			padding: 0.5em 0em;
