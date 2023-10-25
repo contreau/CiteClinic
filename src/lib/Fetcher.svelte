@@ -59,12 +59,10 @@
 		fetchErrorMessage = errorMessage;
 		displayErrorClass = 'display-error';
 		loadingSymbol.style.setProperty('--symbol-color', '#f84545');
-		loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em #f84545)');
 		loadSymbolClass = 'none';
 		setTimeout(() => {
 			displayErrorClass = 'none';
 			loadingSymbol.style.setProperty('--symbol-color', 'var(--blue)');
-			loadingSymbol.style.setProperty('--drop-shadow', 'drop-shadow(0 0 0.4em var(--blue))');
 		}, displayTime);
 	}
 
@@ -256,7 +254,8 @@
 			citeButtonActions();
 		}}
 		type="submit"
-		class="submit {buttonClass} {buttonAnimation}">CITE</button
+		class="submit {buttonClass} {buttonAnimation}"
+		>CITE <i class="fa-solid fa-angles-right" /></button
 	>
 </div>
 
@@ -329,7 +328,7 @@
 
 		.errorStatus {
 			font-weight: 800;
-			color: #ef9191;
+			color: #f84545;
 		}
 	}
 
@@ -366,22 +365,6 @@
 		max-width: 1000px;
 		padding: 1em;
 		border-radius: 30px;
-
-		&::after {
-			content: '';
-			position: absolute;
-			width: 2px;
-			height: 2px;
-			background-color: var(--line-color);
-			transition: 0.4s all;
-			width: 90%;
-			left: 5%;
-			bottom: 24%;
-			z-index: 0;
-			filter: blur(0.8px);
-			border-radius: 30px;
-			filter: drop-shadow(0 0 0.4em var(--line-color));
-		}
 	}
 
 	.input-fields {
@@ -391,14 +374,14 @@
 
 		select,
 		input {
-			border: solid 1.5px transparent;
+			border: solid 3px transparent;
 			padding: 0.5em;
 			font-size: 1rem;
 			outline: transparent;
 			transition: 0.2s border;
-			&:focus-visible {
-				border: solid 1.5px #fff;
-			}
+			// &:focus-visible {
+			// 	border: solid 3px #fff;
+			// }
 		}
 
 		input {
@@ -406,7 +389,7 @@
 		}
 
 		select {
-			--select: #051a2ac2;
+			--select: var(--primary);
 			--nejm: #bb2f39;
 			--pubmed: #1872c0;
 			--nature: #007c3c;
@@ -451,16 +434,17 @@
 		}
 
 		.url-input {
-			background-color: #051a2a;
+			background-color: var(--background);
+			color: #fff;
 			width: 60%;
-			border: solid 1px transparent;
-			color: #82c5ff;
+			border: solid 3px var(--primary);
+			color: var(--text);
 			font-weight: 400;
 			&::placeholder {
-				color: #68b1fa88;
+				color: var(--placeholder);
 			}
-			&:focus {
-				border: solid 1px #fff;
+			&:focus-visible {
+				border: solid 3px var(--text);
 			}
 		}
 	}
@@ -479,6 +463,7 @@
 		font-weight: 800;
 		letter-spacing: 1px;
 		transition: 0.3s all;
+		color: var(--text);
 		&:hover {
 			cursor: pointer;
 		}
@@ -490,11 +475,13 @@
 
 	// fetch button lights up when a source is selected / url is input
 	.ready {
-		background-color: #387dfe;
-		filter: drop-shadow(0 0 0.6em #387dfe);
+		color: #fff;
+		background-color: var(--accent);
+		filter: drop-shadow(0 0 0.6em var(--accent));
 	}
 	.dormant {
-		background-color: #061c2d;
+		color: #fff;
+		background-color: var(--primary);
 		filter: none;
 	}
 
@@ -534,10 +521,6 @@
 			gap: 1.2rem;
 		}
 
-		.input-wrap::after {
-			bottom: 17%;
-		}
-
 		#source-select {
 			width: 65%;
 		}
@@ -551,9 +534,6 @@
 		a {
 			transition: 0.2s all;
 			color: var(--blue);
-			&:hover {
-				color: #fff;
-			}
 		}
 	}
 </style>

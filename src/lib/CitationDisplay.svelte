@@ -100,7 +100,7 @@
 				navigateTabs(i, event);
 			}}
 			class={`content-tab tab-${i}`}
-			>Citation {i}
+			>Citation {i + 1}
 			<button
 				on:click={(event) => {
 					deleteCitation(event, i);
@@ -187,9 +187,9 @@
 		opacity: 0;
 		animation: fadeIn 0.2s linear forwards;
 		font-size: 1.25rem;
-		background-color: #000e18;
+		background-color: #3b3b3b;
 		border-bottom: none;
-		border: solid 2px rgb(115, 115, 115);
+		border: solid 2px transparent;
 		border-bottom: none;
 		border-top-right-radius: 25px;
 		border-top-left-radius: 25px;
@@ -198,7 +198,7 @@
 		transition: 0.2s all;
 		&:hover,
 		&:focus-visible {
-			background-color: #03375a;
+			background-color: var(--accent);
 			outline: transparent;
 			color: #fff;
 		}
@@ -206,7 +206,7 @@
 		i {
 			font-size: 0.95rem;
 			vertical-align: 1px;
-			color: rgb(163, 163, 163);
+			color: #fff;
 			padding: 0 0.2em;
 			&:hover {
 				color: #fb6565;
@@ -240,6 +240,7 @@
 		// background-color: #fff;
 		// color: #000e18;
 		background-color: #03375a;
+		background-color: var(--accent);
 		color: #fff;
 	}
 
@@ -251,6 +252,7 @@
 	.citation-display-area {
 		transition: all 0.5s;
 		border: solid 0.5px transparent;
+		background-color: var(--secondary);
 		-webkit-backdrop-filter: brightness(75%);
 		backdrop-filter: brightness(65%);
 		max-width: 650px;
@@ -290,7 +292,7 @@
 			margin-bottom: 1.5rem;
 			margin-right: auto;
 			margin-left: auto;
-			border: solid 3px #8d8d8d;
+			border: solid 3px var(--secondary);
 			p {
 				--border-var: 0px;
 				max-width: 800px;
@@ -326,7 +328,8 @@
 	}
 
 	textarea {
-		background-color: #201f26;
+		background-color: var(--textarea);
+		color: var(--text);
 		display: block;
 		font-size: 0.9rem;
 		width: 100%;
@@ -341,7 +344,7 @@
 		&:focus,
 		&:hover {
 			outline: none;
-			background-color: #2b2a33;
+			// background-color: #2b2a33;
 		}
 	}
 

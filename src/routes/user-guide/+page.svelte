@@ -75,6 +75,11 @@
 					<li>Copy just the raw text, if desired.</li>
 				</ul>
 
+				<p class="null-warning">
+					<i class="fa-solid fa-triangle-exclamation" /> If a field reads 'null', CiteClinic could not
+					generate it from your provided URL.
+				</p>
+
 				<p>
 					Because of CiteClinic's focus on medical journals, it produces citations in <a
 						href="https://library.viu.ca/citing/vancouver"
@@ -101,11 +106,6 @@
 				<div class="example-display">
 					<p>{exampleInput}</p>
 				</div>
-
-				<p class="null-warning">
-					<i class="fa-solid fa-triangle-exclamation" /> Note: if a generated field reads 'null', it
-					indicates that CiteClinic could not determine it from your provided URL.
-				</p>
 			</section>
 
 			<hr class="section-break-symbol" />
@@ -152,16 +152,13 @@
 
 	.section-break-symbol {
 		margin: 3rem auto;
-		border: solid 1px #5e96fd;
+		border: solid 0.5px var(--accent);
 		border-radius: 15px;
 	}
 
 	a {
 		color: var(--blue);
 		transition: 0.2s all;
-		&:hover {
-			color: #fff;
-		}
 	}
 
 	.content-grid {
@@ -183,7 +180,7 @@
 			}
 
 			a {
-				color: #fff;
+				color: var(--text);
 				text-decoration: none;
 				&:hover {
 					text-decoration: underline;
@@ -198,12 +195,12 @@
 	}
 
 	.guide-content {
-		background-color: #01111d;
-		border-left: solid 1px #fff;
+		background-color: var(--background);
+		border-left: solid 1px var(--accent);
 		border-top-right-radius: 15px;
 		border-bottom-right-radius: 15px;
 		padding: 0 2em;
-		box-shadow: #ffffffc4 1px 1px;
+		box-shadow: var(--accent) 1px 1px;
 	}
 
 	.guide-content > section:first-of-type h3 {
@@ -260,7 +257,7 @@
 		background-color: #ffffff;
 		color: #000;
 		border-radius: 10px;
-		border: solid 3px #8d8d8d;
+		border: solid 3px var(--primary);
 
 		p {
 			margin: 0;

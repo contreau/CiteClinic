@@ -263,9 +263,6 @@
 
 <style lang="scss">
 	.block-wrap {
-		// opacity: 0;
-		// animation: fadeIn 0.3s ease-in forwards;
-
 		h3 {
 			font-size: 1.5rem;
 			text-align: center;
@@ -274,11 +271,11 @@
 			padding: 1em;
 			border-radius: 30px;
 			a {
-				color: var(--blue);
+				color: var(--text);
 				transition: color 0.2s;
 				&:hover,
 				&:focus {
-					color: #fff;
+					color: var(--accent);
 				}
 			}
 		}
@@ -335,7 +332,7 @@
 	}
 
 	.style-options-wrap {
-		background-color: #1e1e1ed2;
+		background-color: var(--primary);
 		border-radius: 15px;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -344,7 +341,6 @@
 		margin-top: 1rem;
 		padding-bottom: 1.5em;
 		padding-top: 0.8em;
-		// align-items: center;
 
 		.grid-item {
 			justify-self: center;
@@ -362,26 +358,42 @@
 		button {
 			min-width: 10rem;
 			font-size: inherit;
+			font-weight: 600;
 			padding: 0.4em 1em;
 			border-radius: 10px;
-			border: solid 2px transparent;
+			border: solid 3px transparent;
 			transition: all 0.3s;
-			background-color: #2b2a33;
+			background-color: var(--textarea);
+			color: #fff;
 			cursor: pointer;
 			&:hover,
 			&:focus-visible {
 				outline: transparent;
-				background-color: #474747;
 			}
 
 			&.text-btn {
-				border-color: #e2e2e2;
+				border-color: #201f26;
+				background-color: #201f26;
+				&:hover,
+				&:focus-visible {
+					box-shadow: 20px -8px rgb(253, 253, 253);
+				}
 			}
 			&.html-btn {
-				border-color: #fe3e03;
+				border-color: #d93300;
+				background-color: #d93300;
+				&:hover,
+				&:focus-visible {
+					box-shadow: 20px -8px #fe6c40;
+				}
 			}
 			&.css-btn {
 				border-color: #0073ff;
+				background-color: #0073ff;
+				&:hover,
+				&:focus-visible {
+					box-shadow: 20px -8px #519fff;
+				}
 			}
 		}
 	}
@@ -397,7 +409,7 @@
 
 	.style-option-title {
 		font-size: 1.5rem;
-		color: #56a8ff;
+		color: #fff;
 		text-align: center;
 		margin-top: 0;
 		margin-bottom: 0.8rem;
@@ -456,7 +468,7 @@
 	}
 
 	input[type='radio'] {
-		--button-color: var(--blue);
+		--button-color: #fff;
 		-webkit-appearance: none;
 		appearance: none;
 		background-color: #1e1e1ed2;
