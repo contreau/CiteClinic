@@ -98,7 +98,7 @@
 		if (button.dataset.name) {
 			citationParagraph.style.setProperty('--box-shadow', `${shadows[button.dataset.name]}`);
 			citationObject.boxShadow = `${button.dataset.name}`;
-			cssText.boxShadow = `${citationObject.boxShadow}`;
+			cssText.boxShadow = `${shadows[citationObject.boxShadow]}`;
 			lastCheckedRadioButton = button.dataset.name;
 		}
 	}
@@ -290,7 +290,6 @@
 		margin-bottom: 1.5rem;
 		margin-right: auto;
 		margin-left: auto;
-		border: solid 3px #8d8d8d;
 		p {
 			--border-width: 0px;
 			--border-color: none;
@@ -332,7 +331,8 @@
 	}
 
 	.style-options-wrap {
-		background-color: var(--primary);
+		background-color: var(--background);
+		color: var(--text);
 		border-radius: 15px;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -404,12 +404,13 @@
 		margin-bottom: 0.5rem;
 		width: 100%;
 		border-radius: 15px;
-		color: #4a4a4a;
+		border: solid 1px;
+		color: #ffffff;
 	}
 
 	.style-option-title {
 		font-size: 1.5rem;
-		color: #fff;
+		color: var(--text);
 		text-align: center;
 		margin-top: 0;
 		margin-bottom: 0.8rem;
@@ -477,7 +478,7 @@
 		color: var(--button-color);
 		width: 1.15em;
 		height: 1.15em;
-		border: 0.15em solid var(--button-color);
+		border: 0.15em solid var(--primary);
 		border-radius: 50%;
 		display: grid;
 		place-items: center;

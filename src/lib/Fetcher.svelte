@@ -120,7 +120,7 @@
 			input.value = '';
 			input.focus();
 			console.log('Fetched Data:', $scrapes);
-			if ($scrapes.length > 1) setNavTabsOnLoad();
+			setNavTabsOnLoad();
 		}
 	}
 
@@ -167,8 +167,8 @@
 		// console.log(`throttle is ${throttleRequest}`);
 		if ($scrapes.length === 1 && mobileView) {
 			showErrorUI(3000, 'Use CiteClinic on a desktop to generate more citations.');
-		} else if ($scrapes.length === 10) {
-			showErrorUI(3000, 'Maximum of 10 citations. Delete one to continue.');
+		} else if ($scrapes.length === 8) {
+			showErrorUI(3000, 'Maximum of 8 citations. Delete one to continue.');
 		} else if (input.value === null || input.value === '' || source.value === 'Select') {
 			console.log('invalid input');
 			showErrorUI(2000, 'Missing fields.');
@@ -340,7 +340,7 @@
 	@keyframes load {
 		25% {
 			transform: translateY(-10px);
-			background-color: #fff;
+			background-color: #00ff73;
 		}
 		50% {
 			transform: translateY(0px);
@@ -379,9 +379,9 @@
 			font-size: 1rem;
 			outline: transparent;
 			transition: 0.2s border;
-			// &:focus-visible {
-			// 	border: solid 3px #fff;
-			// }
+			&:focus-visible {
+				border: solid 3px #fff;
+			}
 		}
 
 		input {
@@ -442,9 +442,6 @@
 			font-weight: 400;
 			&::placeholder {
 				color: var(--placeholder);
-			}
-			&:focus-visible {
-				border: solid 3px var(--text);
 			}
 		}
 	}

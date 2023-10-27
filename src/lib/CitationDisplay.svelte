@@ -177,7 +177,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 0.8rem;
+		gap: 0.6rem;
 		margin: 0 auto;
 		min-height: 40px;
 		transition: min-width 0.3s;
@@ -237,8 +237,6 @@
 
 	// toggled with js (part of navtabs)
 	.active-tab {
-		// background-color: #fff;
-		// color: #000e18;
 		background-color: #03375a;
 		background-color: var(--accent);
 		color: #fff;
@@ -282,31 +280,6 @@
 	// Populated citation display container
 	.display {
 		padding-top: 1em;
-
-		.block--display {
-			max-width: 950px;
-			background-color: #ffffff;
-			padding: 0.5em 0.5em;
-			border-radius: 10px;
-			margin-top: 1rem;
-			margin-bottom: 1.5rem;
-			margin-right: auto;
-			margin-left: auto;
-			border: solid 3px var(--secondary);
-			p {
-				--border-var: 0px;
-				max-width: 800px;
-				color: #000;
-				background-color: #eeeded;
-				box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-				border-radius: 10px;
-				border-style: solid;
-				border-width: var(--border-var);
-				padding: 0.8em;
-				margin-left: auto;
-				margin-right: auto;
-			}
-		}
 	}
 
 	.no-resize {
@@ -344,7 +317,6 @@
 		&:focus,
 		&:hover {
 			outline: none;
-			// background-color: #2b2a33;
 		}
 	}
 

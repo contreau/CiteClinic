@@ -74,16 +74,9 @@
 		font-size: 1.125rem;
 		color-scheme: light dark;
 		color: rgba(255, 255, 255, 0.87);
-		--bg-color: #000e18;
 		--green: #35fb9f;
 		--blue: #387dfe;
 		--overlay-top: 0;
-
-		--text: #030a11;
-		--background: #d8e8f8;
-		--primary: #3c6e9f;
-		--secondary: #a9ccef;
-		--accent: #2066ac;
 	}
 
 	:root[data-theme='light'] {
@@ -92,7 +85,7 @@
 		--primary: #3c6e9f;
 		--secondary: #a9ccef;
 		--accent: #2066ac;
-		--placeholder: #000000ca;
+		--placeholder: #00000079;
 		--textarea: #fff;
 	}
 	:root[data-theme='dark'] {
@@ -125,11 +118,7 @@
 	body {
 		background-color: var(--background);
 		color: var(--text);
-		// background-image: linear-gradient(to right bottom, #04365a, #042d4a, #04243b, #041b2d, #01121f);
-		// background-image: url('/blue-scatter-bg.svg');
 		min-height: 100vh;
-		// -webkit-backdrop-filter: blur(0.4em) brightness(55%);
-		// backdrop-filter: blur(0.4em) brightness(55%);
 		margin: 0 auto;
 		position: relative;
 		display: flex;
@@ -187,16 +176,20 @@
 
 	.theme-switch {
 		margin: 0;
-		min-height: 40px;
-		width: 40px;
+		min-height: 42px;
+		width: 42px;
 		font-weight: 600;
 		font-size: 1rem;
 		transition: all 0.4s;
-		border: transparent;
+		border: solid 1px transparent;
 		border-radius: 50%;
 		padding: 0.5em;
 		background-color: var(--accent);
 		cursor: pointer;
+		&:focus-visible {
+			outline: transparent;
+			background-color: var(--secondary);
+		}
 	}
 
 	.links {
@@ -217,7 +210,7 @@
 				cursor: pointer;
 				background-color: var(--secondary);
 			}
-			&:focus {
+			&:focus-visible {
 				outline: transparent;
 				background-color: var(--secondary);
 			}

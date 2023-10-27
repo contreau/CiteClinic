@@ -234,7 +234,8 @@
 	}
 
 	textarea {
-		background-color: #201f26;
+		background-color: var(--textarea);
+		color: var(--text);
 		display: block;
 		font-size: 0.9rem;
 		width: 100%;
@@ -249,7 +250,6 @@
 		&:focus,
 		&:hover {
 			outline: none;
-			background-color: #2b2a33;
 		}
 	}
 
