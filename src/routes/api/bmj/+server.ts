@@ -3,6 +3,7 @@ import { json, error } from '@sveltejs/kit';
 import { bmjPARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions';
 import puppeteer from 'puppeteer-extra';
+import 'puppeteer-extra-plugin-stealth/evasions/chrome.app';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types';
 import { affixes } from '../../../ts/serverFunctions';

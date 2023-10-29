@@ -3,6 +3,7 @@ import { json, error } from '@sveltejs/kit';
 import { nejmPARAMS } from '$lib/parameters';
 import { retrieve } from '../../../ts/serverFunctions.js';
 import puppeteer from 'puppeteer-extra';
+import 'puppeteer-extra-plugin-stealth/evasions/chrome.app';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types.js';
 
