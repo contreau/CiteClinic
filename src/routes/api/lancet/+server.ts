@@ -3,10 +3,8 @@ import { json, error } from '@sveltejs/kit';
 import { lancetPARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions.js';
 import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types.js';
 import { affixes } from '../../../ts/serverFunctions.js';
-puppeteer.use(StealthPlugin());
 
 // Formats author names
 function formatName(name: string, affixes: string[]) {
