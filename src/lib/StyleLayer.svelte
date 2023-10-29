@@ -14,6 +14,10 @@
 		citationParagraph.style.setProperty('--border-color', `${citationObject.borderColor}`);
 		citationParagraph.style.setProperty('--box-shadow', `${shadows[citationObject.boxShadow]}`);
 		citationParagraph.style.setProperty('--border-width', `${citationObject.borderWidth}px`);
+		const lastShadowInput: HTMLInputElement | null = document.querySelector(
+			`#component${itemIndex + 1}-${lastCheckedRadioButton}`
+		);
+		if (lastShadowInput !== null) lastShadowInput.checked = true;
 	});
 
 	// Props
@@ -117,7 +121,7 @@
 		borderColor: '#000000',
 		boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
 	};
-	let styleDropdownVisible: boolean = false;
+	let styleDropdownVisible: boolean = true;
 	let optionsText: string = 'Style Options';
 	let citationParagraph: HTMLParagraphElement;
 	let lastCheckedRadioButton: string;
