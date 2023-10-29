@@ -20,6 +20,8 @@ import 'puppeteer-extra-plugin-stealth/evasions/sourceurl';
 import 'puppeteer-extra-plugin-stealth/evasions/user-agent-override';
 import 'puppeteer-extra-plugin-stealth/evasions/webgl.vendor';
 import 'puppeteer-extra-plugin-stealth/evasions/window.outerdimensions';
+import 'puppeteer-extra-plugin-user-preferences';
+import 'puppeteer-extra-plugin-user-data-dir';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types';
 import { affixes } from '../../../ts/serverFunctions';
