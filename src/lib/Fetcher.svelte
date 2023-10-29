@@ -29,10 +29,7 @@
 		} else mobileView = false;
 	});
 
-	// TODO:
-	// * add a check for whether or not the style layer was opened, and if it was, retain that state when deletions happen
-	// * consider: rework loading icon animation?
-	// * consider: light theme / theme toggle
+	// TODO: * any final touch-ups
 
 	let input: HTMLInputElement;
 	let source: HTMLSelectElement;

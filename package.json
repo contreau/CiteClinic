@@ -30,6 +30,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-vercel": "^3.0.3",
+		"@vercel/analytics": "^1.1.1",
 		"jsdom": "^22.1.0",
 		"puppeteer": "^21.1.0",
 		"puppeteer-extra": "^3.3.6",
