@@ -43,6 +43,7 @@ export async function parseData_NEJM(input: HTMLInputElement) {
 				throw new Error('Invalid URL. Make sure you submit an article.');
 			} else {
 				const data = await response.json();
+				console.log(data);
 				return data;
 			}
 		} catch (err) {
