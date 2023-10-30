@@ -42,11 +42,8 @@ export async function parseData_NEJM(input: HTMLInputElement) {
 			if (response.status === 404) {
 				throw new Error('Invalid URL. Make sure you submit an article.');
 			} else {
-				// const data = await response.json();
-				const data = await response.text();
-				console.log(data);
-				const jsondata = await response.json();
-				return jsondata;
+				const data = await response.json();
+				return data;
 			}
 		} catch (err) {
 			return err;
