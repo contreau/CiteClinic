@@ -44,8 +44,8 @@ export async function parseData_NEJM(input: HTMLInputElement) {
 			} else {
 				// const data = await response.json();
 				const data = await response.text();
-				const jsondata = await response.json();
 				console.log(data);
+				const jsondata = await response.json();
 				return jsondata;
 			}
 		} catch (err) {
