@@ -73,6 +73,8 @@ export async function GET({ url }) {
 			const page = await browser.newPage();
 
 			await page.goto(target);
+			const precontent = await page.content();
+			console.log(precontent);
 			await page.waitForSelector('.m-article-header__authors', {
 				visible: true,
 				timeout: 3000
