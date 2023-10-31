@@ -2,6 +2,7 @@ import { JSDOM } from 'jsdom';
 import { json, error } from '@sveltejs/kit';
 import { lancetPARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions.js';
+import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-extra';
 import 'puppeteer-extra-plugin-stealth/evasions/chrome.app';
 import 'puppeteer-extra-plugin-stealth/evasions/chrome.csi';
@@ -53,7 +54,14 @@ export async function GET({ url }) {
 	try {
 		const target = url.searchParams.get('url');
 		if (target !== null) {
-			const browser = await puppeteer.launch({ headless: 'new' });
+			const browser = await puppeteer.launch({
+				args: chromium.args,
+				defaultViewport: chromium.defaultViewport,
+				executablePath: await chromium.executablePath(
+					`https://github.com/Sparticuz/chromium/releases/download/v112.0.0/chromium-v112.0.0-pack.tar`
+				),
+				headless: chromium.headless
+			});
 			console.log('launching puppeteer');
 			const page = await browser.newPage();
 			await page.goto(target);
