@@ -69,7 +69,7 @@ export async function GET({ url }) {
 			console.log('launching puppeteer');
 			const page = await browser.newPage();
 
-			await page.goto(target);
+			await page.goto(target, { waitUntil: 'networkidle0' });
 			await page.waitForSelector('.m-article-header__authors', {
 				visible: true,
 				timeout: 3000
