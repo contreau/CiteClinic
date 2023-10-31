@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import { json, error } from '@sveltejs/kit';
 import { nejmPARAMS } from '$lib/parameters';
 import { retrieve } from '../../../ts/serverFunctions.js';
-import chromium from '@sparticuz/chromium-min';
+import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-extra';
 import 'puppeteer-extra-plugin-stealth/evasions/chrome.app';
 import 'puppeteer-extra-plugin-stealth/evasions/chrome.csi';
@@ -63,11 +63,8 @@ export async function GET({ url }) {
 		if (target !== null) {
 			const browser = await puppeteer.launch({
 				args: chromium.args,
-				defaultViewport: chromium.defaultViewport,
-				executablePath: await chromium.executablePath(
-					`https://github.com/Sparticuz/chromium/releases/download/v112.0.0/chromium-v112.0.0-pack.tar`
-				),
-				headless: chromium.headless
+				executablePath: await chromium.executablePath,
+				headless: true
 			});
 			console.log('launching puppeteer');
 			const page = await browser.newPage();
