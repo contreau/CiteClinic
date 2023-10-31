@@ -56,8 +56,8 @@ export async function GET({ url }) {
 		if (target !== null) {
 			const browser = await puppeteer.launch({
 				args: chromium.args,
-				executablePath: await chromium.executablePath,
-				headless: true
+				executablePath: await chromium.executablePath(),
+				headless: chromium.headless
 			});
 			console.log('launching puppeteer');
 			const page = await browser.newPage();

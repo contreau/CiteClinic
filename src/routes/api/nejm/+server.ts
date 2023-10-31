@@ -25,10 +25,6 @@ import 'puppeteer-extra-plugin-user-preferences';
 import 'puppeteer-extra-plugin-user-data-dir';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types.js';
-
-// chromium.setHeadlessMode = 'new';
-// chromium.setGraphicsMode = false;
-
 puppeteer.use(StealthPlugin());
 
 function formatName(name: string) {
@@ -63,13 +59,13 @@ export async function GET({ url }) {
 		if (target !== null) {
 			const browser = await puppeteer.launch({
 				args: chromium.args,
-				executablePath: await chromium.executablePath,
-				headless: true
+				executablePath: await chromium.executablePath(),
+				headless: chromium.headless
 			});
 			console.log('launching puppeteer');
 			const page = await browser.newPage();
 
-			await page.goto(target, { waitUntil: 'networkidle0' });
+			await page.goto(target);
 			await page.waitForSelector('.m-article-header__authors', {
 				visible: true,
 				timeout: 3000
