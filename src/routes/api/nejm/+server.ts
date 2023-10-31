@@ -26,8 +26,8 @@ import puppeteer from 'puppeteer-core';
 // import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types.js';
 
-chromium.setHeadlessMode = 'new';
-chromium.setGraphicsMode = false;
+// chromium.setHeadlessMode = 'new';
+// chromium.setGraphicsMode = false;
 
 // puppeteer.use(StealthPlugin());
 
@@ -65,7 +65,7 @@ export async function GET({ url }) {
 				args: chromium.args,
 				defaultViewport: chromium.defaultViewport,
 				executablePath: await chromium.executablePath(
-					`https://github.com/Sparticuz/chromium/releases/download/v117.0.0/chromium-v117.0.0-pack.tar`
+					`https://github.com/Sparticuz/chromium/releases/download/v112.0.0/chromium-v112.0.0-pack.tar`
 				),
 				headless: chromium.headless
 			});
