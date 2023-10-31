@@ -2,27 +2,7 @@ import { JSDOM } from 'jsdom';
 import { json, error } from '@sveltejs/kit';
 import { lancetPARAMS } from '$lib/parameters';
 import { getVolumeAndPageRange, retrieve } from '../../../ts/serverFunctions.js';
-import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-extra';
-import 'puppeteer-extra-plugin-stealth/evasions/chrome.app';
-import 'puppeteer-extra-plugin-stealth/evasions/chrome.csi';
-import 'puppeteer-extra-plugin-stealth/evasions/chrome.loadTimes';
-import 'puppeteer-extra-plugin-stealth/evasions/chrome.runtime';
-import 'puppeteer-extra-plugin-stealth/evasions/defaultArgs';
-import 'puppeteer-extra-plugin-stealth/evasions/iframe.contentWindow';
-import 'puppeteer-extra-plugin-stealth/evasions/media.codecs';
-import 'puppeteer-extra-plugin-stealth/evasions/navigator.hardwareConcurrency';
-import 'puppeteer-extra-plugin-stealth/evasions/navigator.languages';
-import 'puppeteer-extra-plugin-stealth/evasions/navigator.permissions';
-import 'puppeteer-extra-plugin-stealth/evasions/navigator.plugins';
-import 'puppeteer-extra-plugin-stealth/evasions/navigator.vendor';
-import 'puppeteer-extra-plugin-stealth/evasions/navigator.webdriver';
-import 'puppeteer-extra-plugin-stealth/evasions/sourceurl';
-import 'puppeteer-extra-plugin-stealth/evasions/user-agent-override';
-import 'puppeteer-extra-plugin-stealth/evasions/webgl.vendor';
-import 'puppeteer-extra-plugin-stealth/evasions/window.outerdimensions';
-import 'puppeteer-extra-plugin-user-preferences';
-import 'puppeteer-extra-plugin-user-data-dir';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import type { Citation } from '../../../ts/types.js';
 import { affixes } from '../../../ts/serverFunctions.js';
@@ -54,11 +34,7 @@ export async function GET({ url }) {
 	try {
 		const target = url.searchParams.get('url');
 		if (target !== null) {
-			const browser = await puppeteer.launch({
-				args: chromium.args,
-				executablePath: await chromium.executablePath(),
-				headless: chromium.headless
-			});
+			const browser = await puppeteer.launch({ headless: 'new' });
 			console.log('launching puppeteer');
 			const page = await browser.newPage();
 			await page.goto(target);
