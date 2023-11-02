@@ -32,14 +32,6 @@
 	"type": "module",
 	"dependencies": {
 		"@vercel/analytics": "^1.1.1",
-		"bufferutil": "^4.0.8",
-		"encoding": "^0.1.13",
-		"jsdom": "^22.1.0",
-		"puppeteer": "^21.4.1",
-		"puppeteer-core": "^21.4.1",
-		"puppeteer-extra": "^3.3.6",
-		"puppeteer-extra-plugin-stealth": "^2.11.2",
-		"utf-8-validate": "^6.0.3",
 		"vanilla-colorful": "^0.7.2"
 	}
 }
