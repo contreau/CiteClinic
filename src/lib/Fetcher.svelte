@@ -13,18 +13,17 @@
 
 	// TODO:
 	// * Make UI adjustments given changes to server config
-	// * consider removing URL history store? probably don't need it.
+	// * some kind of DOI validation (for '10.'), also trim big empty strings before submitting to server
 	// * reference the netlify project copy when building out the name cleaning algorithm
-	// * address dealing with loading animation, since there really is no need for one now.
-	// * Update User Guide content.
+	// * Look into possibility of generating formatted citation using crossref: https://citation.crosscite.org/docs.html#sec-4-1
 
 	let input: HTMLInputElement;
-	let source: HTMLSelectElement;
 	let buttonClass = 'dormant';
 	let buttonAnimation = 'none';
 	let loadingSymbol: HTMLDivElement;
 	let fetchErrorMessage = 'Nothing to see here.';
-	let loadSymbolClass = 'none';
+	let loadSymbolClass1 = 'none';
+	let loadSymbolClass2 = 'none';
 	let displayErrorClass = 'none';
 	let throttleRequest = false;
 
@@ -41,19 +40,12 @@
 		fetchErrorMessage = errorMessage;
 		displayErrorClass = 'display-error';
 		loadingSymbol.style.setProperty('--symbol-color', '#f84545');
-		loadSymbolClass = 'none';
+		loadSymbolClass1 = 'none';
+		loadSymbolClass2 = 'none';
 		setTimeout(() => {
 			displayErrorClass = 'none';
 			loadingSymbol.style.setProperty('--symbol-color', 'var(--blue)');
 		}, displayTime);
-	}
-
-	function checkSource() {
-		if (source.value !== 'Select' && input.value !== '') {
-			buttonClass = 'ready';
-		} else {
-			buttonClass = 'dormant';
-		}
 	}
 
 	function setNavTabsOnLoad() {
@@ -82,7 +74,7 @@
 			input.value = '';
 			input.focus();
 		} else {
-			loadSymbolClass = 'none';
+			// loadSymbolClass = 'none';
 			await scrapes.update((scrapes) => [...scrapes, result]); // code below must wait for this
 			throttleRequest = false; // reset throttle
 			$activeTabIndex = $scrapes.length - 1;
@@ -118,13 +110,21 @@
 
 	// server interaction
 	async function submitDOI(input: HTMLInputElement) {
+		loadSymbolClass1 = 'animation-loadUp';
+		loadSymbolClass2 = 'animation-loadDown';
 		const response = await fetch(`/api/crossref?doi=${input.value}`);
 		if (response.status === 404) {
 			showErrorUI(3000, 'Invalid DOI.');
+			throttleRequest = false;
 			throw new Error('Invalid DOI.');
 		} else {
+			$urlHistory = [...$urlHistory, `https://doi.org/${input.value}`];
 			const data = await response.json();
 			displayResults(data);
+			setTimeout(() => {
+				loadSymbolClass1 = 'none';
+				loadSymbolClass2 = 'none';
+			}, 1300);
 		}
 	}
 </script>
@@ -145,9 +145,9 @@
 
 <div class="loading-block">
 	<div bind:this={loadingSymbol} class="load-symbol-container">
-		<span class="dot dot1 {loadSymbolClass}" />
-		<span class="dot dot2 {loadSymbolClass}" />
-		<span class="dot dot3 {loadSymbolClass}" />
+		<span class="dot dot1 {loadSymbolClass1}" />
+		<span class="dot dot2 {loadSymbolClass2}" />
+		<span class="dot dot3 {loadSymbolClass1}" />
 	</div>
 	{#if displayErrorClass === 'none'}
 		<p class="fetchStatus" />
@@ -187,12 +187,12 @@
 				min-height: 13.5px;
 				border-radius: 30px;
 
-				&.dot2 {
-					animation-delay: 0.3s;
-				}
-				&.dot3 {
-					animation-delay: 0.6s;
-				}
+				// &.dot2 {
+				// 	animation-delay: 0.3s;
+				// }
+				// &.dot3 {
+				// 	animation-delay: 0.6s;
+				// }
 			}
 		}
 
@@ -216,25 +216,42 @@
 		}
 	}
 
-	.animation-load {
-		opacity: 1;
-		animation: load 1s linear infinite;
+	.animation-loadUp {
+		animation: loadUp 1.25s ease-in 1;
 	}
 
-	@keyframes load {
-		25% {
-			transform: translateY(-10px);
-			background-color: #00ff73;
+	.animation-loadDown {
+		animation: loadDown 1.25s ease-in 1;
+	}
+
+	@keyframes loadUp {
+		20% {
+			transform: translateY(-15px);
 		}
-		50% {
+		55% {
+			transform: translateY(15px);
+		}
+
+		80% {
 			transform: translateY(0px);
-		}
-		75% {
-			transform: translateY(10px);
 		}
 		100% {
 			transform: translateY(0px);
-			background-color: var(--symbol-color);
+		}
+	}
+
+	@keyframes loadDown {
+		20% {
+			transform: translateY(15px);
+		}
+		55% {
+			transform: translateY(-15px);
+		}
+		80% {
+			transform: translateY(0px);
+		}
+		100% {
+			transform: translateY(0px);
 		}
 	}
 
@@ -325,12 +342,6 @@
 		}
 		100% {
 			transform: translateX(0px);
-		}
-	}
-
-	@keyframes loading {
-		100% {
-			transform: rotate(360deg);
 		}
 	}
 

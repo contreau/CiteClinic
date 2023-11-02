@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scrapes, expandedClass, activeTabIndex, deleteNotification } from './store';
+	import { urlHistory, scrapes, expandedClass, activeTabIndex, deleteNotification } from './store';
 	import StyleLayer from './StyleLayer.svelte';
 
 	// contracts citation display when there are none
@@ -27,6 +27,10 @@
 			// reactivity - updates the store and then rerenders the {#each} blocks
 			scrapes.splice(citationNumber, 1);
 			return scrapes;
+		});
+		urlHistory.update((urls) => {
+			urls.splice(citationNumber, 1);
+			return urls;
 		});
 
 		const allTabButtons: HTMLElement[] = Array.from(document.querySelectorAll('.content-tab'));
@@ -86,6 +90,15 @@
 				allTabButtons.map((button) => button.classList.remove('active-tab'));
 				setTimeout(() => {
 					document.querySelector(`.tab-${citationNumber - 1}`)!.classList.add('active-tab');
+					// makes correct content active in addition to its tab
+					const allTabContents: HTMLElement[] = Array.from(
+						document.querySelectorAll('.section-wrap')
+					);
+					const newActiveContent: HTMLElement = document.querySelector(
+						`.section-${citationNumber - 1}`
+					)!;
+					allTabContents.map((tab) => tab.classList.add('display-none'));
+					newActiveContent.classList.remove('display-none');
 				}, 5);
 			}
 		}
