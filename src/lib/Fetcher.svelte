@@ -1,24 +1,6 @@
 <script lang="ts">
-	import {
-		parseData_NEJM,
-		parseData_LANCET,
-		parseData_JAMA,
-		parseData_BMJ,
-		parseData_NATURE,
-		parseData_PUBMED
-	} from '../ts/serverFunctions';
-
-	import {
-		pubmedPARAMS,
-		naturePARAMS,
-		nejmPARAMS,
-		lancetPARAMS,
-		jamaPARAMS,
-		bmjPARAMS
-	} from './parameters';
-
 	import { scrapes, urlHistory, expandedClass, firstCitationMade, activeTabIndex } from './store';
-	import type { Citation, Param } from '../ts/types';
+	import type { Citation } from '../ts/types';
 	import { onMount } from 'svelte';
 
 	let mobileView: boolean;
@@ -29,14 +11,17 @@
 		} else mobileView = false;
 	});
 
-	// TODO: * any final touch-ups
+	// TODO:
+	// * Make UI adjustments given changes to server config
+	// * consider removing URL history store? probably don't need it.
+	// * reference the netlify project copy when building out the name cleaning algorithm
+	// * address dealing with loading animation, since there really is no need for one now.
+	// * Update User Guide content.
 
 	let input: HTMLInputElement;
 	let source: HTMLSelectElement;
-	let sourceSelect = 'Select';
 	let buttonClass = 'dormant';
 	let buttonAnimation = 'none';
-	let inputWrap: HTMLDivElement;
 	let loadingSymbol: HTMLDivElement;
 	let fetchErrorMessage = 'Nothing to see here.';
 	let loadSymbolClass = 'none';
@@ -44,7 +29,7 @@
 	let throttleRequest = false;
 
 	function lightFetchButton() {
-		if (sourceSelect !== 'Select' && input.value !== '') {
+		if (input.value !== '') {
 			buttonClass = 'ready';
 		} else {
 			buttonClass = 'dormant';
@@ -62,16 +47,6 @@
 			loadingSymbol.style.setProperty('--symbol-color', 'var(--blue)');
 		}, displayTime);
 	}
-
-	const placeholders: { [char: string]: string } = {
-		Select: 'Paste URL ( include https:// )',
-		PubMed: 'https://pubmed.ncbi.nlm.nih.gov/......',
-		Nature: 'https://www.nature.com/articles/......',
-		NEJM: 'https://www.nejm.org/doi/full/......',
-		Lancet: 'https://www.thelancet.com/journals/......',
-		JAMA: 'https://jamanetwork.com/journals/......',
-		BMJ: 'https://www.bmj.com/content/......'
-	};
 
 	function checkSource() {
 		if (source.value !== 'Select' && input.value !== '') {
@@ -121,44 +96,6 @@
 		}
 	}
 
-	// URL validation
-	function validateURL(input: HTMLInputElement, params: Param): boolean {
-		try {
-			const url = new URL(input.value.trim());
-			if (url.host !== params.host) {
-				const errorMessage = 'The provided URL does not match your target.';
-				console.error(errorMessage);
-				invalidSubmissionAnimation();
-				showErrorUI(2000, errorMessage);
-				input.focus();
-				buttonClass = 'dormant';
-				return false;
-			} else {
-				console.clear();
-				urlHistory.update((urlHistory) => [...urlHistory, url.href]);
-				console.log(`URL History:`, $urlHistory);
-				return true;
-			}
-		} catch (err) {
-			console.error(err);
-			invalidSubmissionAnimation();
-			showErrorUI(2000, 'Invalid URL.');
-			input.focus();
-			buttonClass = 'dormant';
-			return false;
-		}
-	}
-
-	// invalid submission animation on cite button
-	function invalidSubmissionAnimation() {
-		buttonAnimation = 'rejectButton';
-		inputWrap.style.setProperty('--line-color', '#ff4646');
-		setTimeout(() => {
-			buttonAnimation = 'none';
-			inputWrap.style.setProperty('--line-color', '#387dfe');
-		}, 500);
-	}
-
 	// cite button handler
 	function citeButtonActions() {
 		// console.log(`throttle is ${throttleRequest}`);
@@ -166,92 +103,42 @@
 			showErrorUI(3000, 'Use CiteClinic on a desktop to generate more citations.');
 		} else if ($scrapes.length === 8) {
 			showErrorUI(3000, 'Maximum of 8 citations. Delete one to continue.');
-		} else if (input.value === null || input.value === '' || source.value === 'Select') {
+		} else if (input.value === null || input.value === '') {
+			buttonAnimation = 'rejectButton';
 			console.log('invalid input');
 			showErrorUI(2000, 'Missing fields.');
-			invalidSubmissionAnimation();
+			setTimeout(() => {
+				buttonAnimation = 'none';
+			}, 500);
 		} else if (!throttleRequest) {
-			buttonAnimation = 'none';
-			launchFetch(input);
-		}
-	}
-
-	async function retrieveAndDisplay(
-		input: HTMLInputElement,
-		param: Param,
-		parseDataCallback: (input: HTMLInputElement) => Promise<Citation>
-	) {
-		if (validateURL(input, param)) {
 			throttleRequest = true;
-			loadSymbolClass = 'animation-load';
-			const result = await parseDataCallback(input);
-			displayResults(result);
+			submitDOI(input);
 		}
 	}
 
-	// server interaction + page scraping
-	async function launchFetch(input: HTMLInputElement) {
-		switch (sourceSelect) {
-			case 'PubMed':
-				retrieveAndDisplay(input, pubmedPARAMS, parseData_PUBMED);
-				break;
-			case 'Nature':
-				retrieveAndDisplay(input, naturePARAMS, parseData_NATURE);
-				break;
-			case 'NEJM':
-				retrieveAndDisplay(input, nejmPARAMS, parseData_NEJM);
-				break;
-			case 'Lancet':
-				retrieveAndDisplay(input, lancetPARAMS, parseData_LANCET);
-				break;
-			case 'JAMA':
-				retrieveAndDisplay(input, jamaPARAMS, parseData_JAMA);
-				break;
-			case 'BMJ':
-				retrieveAndDisplay(input, bmjPARAMS, parseData_BMJ);
-				break;
+	// server interaction
+	async function submitDOI(input: HTMLInputElement) {
+		const response = await fetch(`/api/crossref?doi=${input.value}`);
+		if (response.status === 404) {
+			showErrorUI(3000, 'Invalid DOI.');
+			throw new Error('Invalid DOI.');
+		} else {
+			const data = await response.json();
+			displayResults(data);
 		}
 	}
 </script>
 
-<div class="input-wrap" bind:this={inputWrap}>
-	<div class="input-fields">
-		<select
-			bind:value={sourceSelect}
-			bind:this={source}
-			class={sourceSelect}
-			name="source"
-			id="source-select"
-			on:input={() => {
-				checkSource();
-			}}
-		>
-			<option value="Select">Select Site</option>
-			<option value="NEJM">New England Journal of Medicine</option>
-			<option value="PubMed">PubMed</option>
-			<option value="Nature">Nature</option>
-			<option value="Lancet">The Lancet</option>
-			<option value="JAMA">JAMA Network</option>
-			<option value="BMJ">British Medical Journal</option>
-		</select>
+<div class="input-field">
+	<input
+		bind:this={input}
+		on:input={lightFetchButton}
+		type="text"
+		class="url-input"
+		placeholder="Paste DOI (example: 10.1056/NEJMoa2303062)"
+	/>
 
-		<input
-			bind:this={input}
-			on:input={() => {
-				lightFetchButton();
-			}}
-			type="text"
-			class="url-input"
-			placeholder={placeholders[sourceSelect]}
-		/>
-	</div>
-
-	<button
-		on:click={() => {
-			citeButtonActions();
-		}}
-		type="submit"
-		class="submit {buttonClass} {buttonAnimation}"
+	<button on:click={citeButtonActions} type="submit" class="submit {buttonClass} {buttonAnimation}"
 		>CITE <i class="fa-solid fa-angles-right" /></button
 	>
 </div>
@@ -351,27 +238,20 @@
 		}
 	}
 
-	// outermost wrap of input module
-	.input-wrap {
-		--line-color: #387dfe;
-		position: relative;
+	.input-field {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.5rem;
 		margin: 0 auto;
 		margin-top: 0.8rem;
-		// border: solid 1px #565656;
-		width: 100%; // will shrink if removed bc it's a grid item
 		max-width: 1000px;
 		padding: 1em;
 		border-radius: 30px;
-	}
 
-	.input-fields {
-		display: flex;
-		align-items: center;
-		justify-content: space-around;
-
-		select,
 		input {
 			border: solid 3px transparent;
+			border-radius: 15px;
 			padding: 0.5em;
 			font-size: 1rem;
 			outline: transparent;
@@ -379,55 +259,6 @@
 			&:focus-visible {
 				border: solid 3px #fff;
 			}
-		}
-
-		input {
-			border-radius: 15px;
-		}
-
-		select {
-			--select: var(--primary);
-			--nejm: #bb2f39;
-			--pubmed: #1872c0;
-			--nature: #007c3c;
-			--lancet: #088798;
-			--jama: #d21f72;
-			--bmj: #034796;
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			appearance: none; // gets rid of default select element gloss on safari / dropdown arrows everywhere
-			width: 35%;
-			border-radius: 15px;
-			background-color: #0e6db1;
-			text-align: center;
-			text-align-last: center; // centers text in safari
-			transition: 0.3s all;
-			font-weight: 700;
-			&:hover {
-				cursor: pointer;
-			}
-		}
-
-		.Select {
-			background-color: var(--select);
-		}
-		.NEJM {
-			background-color: var(--nejm);
-		}
-		.PubMed {
-			background-color: var(pubmed);
-		}
-		.Nature {
-			background-color: var(--nature);
-		}
-		.Lancet {
-			background-color: var(--lancet);
-		}
-		.JAMA {
-			background-color: var(--jama);
-		}
-		.BMJ {
-			background-color: var(--bmj);
 		}
 
 		.url-input {
@@ -447,8 +278,6 @@
 		position: relative;
 		z-index: 3;
 		display: block;
-		margin: 0 auto;
-		margin-top: 2rem;
 		padding: 0.5em 2em;
 		border-radius: 10px;
 		border: solid 1px transparent;
@@ -506,17 +335,13 @@
 	}
 
 	@media (max-width: 400px) {
-		.input-wrap .input-fields .url-input {
+		.input-wrap .input-field .url-input {
 			width: 100%;
 		}
 
-		.input-fields {
+		.input-field {
 			flex-direction: column;
 			gap: 1.2rem;
-		}
-
-		#source-select {
-			width: 65%;
 		}
 	}
 

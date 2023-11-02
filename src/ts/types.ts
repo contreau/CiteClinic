@@ -12,18 +12,3 @@ export interface Citation {
 	borderColor: string;
 	boxShadow: string;
 }
-
-export interface Param {
-	title: string;
-	publishDate: string;
-	rawAuthors: string;
-	volume: string;
-	issue: string;
-	startPage: string;
-	endPage: string;
-	doi: string;
-	journal: string;
-	journalAbbrev: string;
-	host: string;
-	route: string;
-}
