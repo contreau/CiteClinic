@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
-	let exampleInput: string = 'This text field will update as you type.';
+	import { fade } from 'svelte/transition';
+	let exampleInput: string = "This text's display updates as you type.";
 </script>
 
 <svelte:head>
@@ -20,8 +20,8 @@
 
 <div
 	class="extra-padding-container"
-	in:fly={{ x: 200, duration: 200, delay: 200 }}
-	out:fly={{ x: 200, duration: 200 }}
+	in:fade={{ duration: 200, delay: 200 }}
+	out:fade={{ duration: 200 }}
 >
 	<h2>User Guide</h2>
 
@@ -34,8 +34,6 @@
 
 				<li><a href="#example-edit">Editable Example</a></li>
 
-				<li><a href="#supported-sites">Supported Sites</a></li>
-
 				<li><a href="#submit-feedback">Submit Feedback</a></li>
 			</ul>
 		</aside>
@@ -44,7 +42,8 @@
 				<h3 id="purpose">Purpose & Audience</h3>
 				<p>
 					<em>CiteClinic</em> allows you to easily
-					<b> scrape citation information </b> from medical journal sites and
+					<b> retrieve citation information </b> from any journal article with a valid Digital
+					Object Identifier (DOI) and
 					<b> generate modifiable, optionally styled UI citation components </b> for use on your site
 					or CMS of choice.
 				</p>
@@ -59,32 +58,33 @@
 			<section>
 				<h3 id="how-it-works">How it Works</h3>
 				<p>
-					CiteClinic scrapes citation fields primarily from the page metadata. Depending on the
-					site, a few of the citation fields are gathered from live page elements, which is a
-					slightly slower process.
+					CiteClinic interfaces with the <a
+						href="https://api.crossref.org/swagger-ui/index.html"
+						target="#">Crossref API</a
+					>. Because of CiteClinic's focus on the medical community, it produces citations in
+					<a href="https://library.viu.ca/citing/vancouver" target="#">Vancouver Style</a>. This may
+					change if there is specific user demand for other citation formats.
 				</p>
 
-				<p>A citation is then generated. You can:</p>
+				<p><b>User Flow:</b></p>
 
-				<ul>
+				<ol>
+					<li>
+						Type or paste a valid DOI string into the input bar, then click the "CITE" button.
+					</li>
 					<li>Edit the text fields to see live changes to your citation.</li>
 					<li>Modify border thickness, border color, and box shadow styles.</li>
 					<li>
 						Copy the HTML and CSS of your styled citation, which are regenerated with each change.
 					</li>
 					<li>Copy just the raw text, if desired.</li>
-				</ul>
+				</ol>
 
 				<p class="null-warning">
-					<i class="fa-solid fa-triangle-exclamation" /> If a field reads 'null', CiteClinic could not
-					generate it from your provided URL.
-				</p>
-
-				<p>
-					Because of CiteClinic's focus on medical journals, it produces citations in <a
-						href="https://library.viu.ca/citing/vancouver"
-						target="#">Vancouver Style</a
-					>. This may change if there is specific user demand for other citation formats.
+					<i class="fa-solid fa-triangle-exclamation" /> The "Authors" field will have some variance
+					in formatting. CiteClinic does its best to format author names to Vancouver style, but
+					it's not perfect.
+					<b>Review and edit your citations before exporting</b>.
 				</p>
 			</section>
 
@@ -93,9 +93,8 @@
 			<section>
 				<h3 id="example-edit">Editable Example</h3>
 				<p>
-					After your citation is generated, you can edit the individual fields that compose it. Not
-					all generations are perfect - make your own edits for any incorrect or missing
-					information.
+					After your citation is generated, you can edit the individual fields that compose it. Try
+					editing the text in the field below to see changes in the live display.
 				</p>
 				<div class="example-edit">
 					<p><b>Edit this field</b></p>
@@ -106,19 +105,6 @@
 				<div class="example-display">
 					<p>{exampleInput}</p>
 				</div>
-			</section>
-
-			<hr class="section-break-symbol" />
-			<section>
-				<h3 id="supported-sites">Supported Journal Sites</h3>
-				<ul>
-					<li><a href="https://www.nejm.org" target="#">New England Journal of Medicine</a></li>
-					<li><a href="https://pubmed.ncbi.nlm.nih.gov" target="#">PubMed</a></li>
-					<li><a href="https://www.nature.com/" target="#">Nature</a></li>
-					<li><a href="https://www.thelancet.com/" target="#">The Lancet</a></li>
-					<li><a href="https://jamanetwork.com/" target="#">JAMA Network</a></li>
-					<li><a href="https://www.bmj.com/" target="#">British Medical Journal</a></li>
-				</ul>
 			</section>
 
 			<hr class="section-break-symbol" />
@@ -196,11 +182,9 @@
 
 	.guide-content {
 		background-color: var(--background);
-		border-left: solid 1px var(--accent);
-		border-top-right-radius: 15px;
-		border-bottom-right-radius: 15px;
+		border-left: solid 1.5px var(--accent);
+		border-right: solid 1.5px var(--accent);
 		padding: 0 2em;
-		box-shadow: var(--accent) 1px 1px;
 	}
 
 	.guide-content > section:first-of-type h3 {

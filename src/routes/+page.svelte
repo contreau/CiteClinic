@@ -2,6 +2,26 @@
 	import Fetcher from '$lib/Fetcher.svelte';
 	import CitationDisplay from '$lib/CitationDisplay.svelte';
 	import { fade } from 'svelte/transition';
+	import { activeTabIndex } from '$lib/store';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		// retains active tab/content state when transitioning between user guide and main page
+		if ($activeTabIndex !== undefined) {
+			const activeTab = document.querySelector(`.tab-${$activeTabIndex}`);
+			const allTabContents: HTMLElement[] = Array.from(document.querySelectorAll('.section-wrap'));
+			const allTabButtons: HTMLElement[] = Array.from(document.querySelectorAll('.content-tab'));
+			const activeContent: HTMLElement = document.querySelector(`.section-${$activeTabIndex}`)!;
+
+			// sets active citation, hides rest
+			allTabContents.map((tab) => tab.classList.add('display-none'));
+			activeContent.classList.remove('display-none');
+
+			// highlights active nav tab, dims rest
+			allTabButtons.map((button) => button.classList.remove('active-tab'));
+			activeTab?.classList.add('active-tab');
+		}
+	});
 </script>
 
 <svelte:head>
@@ -19,7 +39,7 @@
 	/>
 </svelte:head>
 
-<main in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
+<main in:fade={{ duration: 200, delay: 200 }} out:fade={{ duration: 200 }}>
 	<div class="content-grid">
 		<div class="grid-item item1">
 			<Fetcher />

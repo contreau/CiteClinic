@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { dev } from '$app/environment';
-	import { inject } from '@vercel/analytics';
-	inject({ mode: dev ? 'development' : 'production' });
+	// TODO: uncomment this when ready for production on vercel
+	// import { dev } from '$app/environment';
+	// import { inject } from '@vercel/analytics';
+	// inject({ mode: dev ? 'development' : 'production' });
 
 	onMount(() => {
 		html = document.querySelector('html');
@@ -27,7 +28,7 @@
 	let buttonRoute: string = '/user-guide';
 	$: {
 		if ($page.route.id === '/user-guide') {
-			buttonText = 'Home Page';
+			buttonText = 'Citations';
 			buttonRoute = '/';
 		} else {
 			buttonText = 'User Guide';
@@ -57,8 +58,8 @@
 		<h1>Generate <span><em>styled</em></span> medical journal citations.</h1>
 	</div>
 
-	<button on:click={setTheme} class="theme-switch"> <i class={`fa-solid ${themeIcon}`} /></button>
 	<div class="links">
+		<button on:click={setTheme} class="theme-switch"> <i class={`fa-solid ${themeIcon}`} /></button>
 		<a href={buttonRoute}><button class="user-guide"> {buttonText} </button></a>
 		<a href="https://github.com/zenDev-2/CiteClinic" target="#"><i class="fa-brands fa-github" /></a
 		>
@@ -115,7 +116,7 @@
 	}
 
 	.padding-container {
-		padding: 0.5em 5em;
+		padding: 0.5em 3.5em;
 	}
 
 	body {
@@ -177,28 +178,10 @@
 		}
 	}
 
-	.theme-switch {
-		margin: 0;
-		min-height: 42px;
-		width: 42px;
-		font-weight: 600;
-		font-size: 1rem;
-		transition: all 0.4s;
-		border: solid 1px transparent;
-		border-radius: 50%;
-		padding: 0.5em;
-		background-color: var(--accent);
-		cursor: pointer;
-		&:focus-visible {
-			outline: transparent;
-			background-color: var(--secondary);
-		}
-	}
-
 	.links {
 		display: flex;
 		align-items: center;
-		gap: 3rem;
+		gap: 1.8rem;
 		button {
 			margin: 0;
 			font-weight: 600;
@@ -213,6 +196,24 @@
 				cursor: pointer;
 				background-color: var(--secondary);
 			}
+			&:focus-visible {
+				outline: transparent;
+				background-color: var(--secondary);
+			}
+		}
+
+		button.theme-switch {
+			margin: 0;
+			min-height: 42px;
+			width: 42px;
+			font-weight: 600;
+			font-size: 1rem;
+			transition: all 0.4s;
+			border: solid 1px transparent;
+			border-radius: 50%;
+			padding: 0.5em;
+			background-color: var(--accent);
+			cursor: pointer;
 			&:focus-visible {
 				outline: transparent;
 				background-color: var(--secondary);
@@ -238,7 +239,7 @@
 		text-align: center;
 		flex-shrink: 0; // sticks footer to bottom (see rule on main element)
 		background-color: var(--background);
-		box-shadow: rgba(0, 0, 0, 0.4) 0px -2px 20px, rgba(0, 0, 0, 0.2) 0px 3px 0px inset;
+		border-top: solid 1.5px var(--accent);
 
 		p {
 			margin: 0;
@@ -270,6 +271,13 @@
 
 		.tagline {
 			text-align: center;
+		}
+	}
+
+	@media (max-width: 500px) {
+		.links {
+			flex-wrap: wrap;
+			gap: 0.8rem;
 		}
 	}
 </style>
