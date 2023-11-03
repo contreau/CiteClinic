@@ -1,32 +1,23 @@
-# CiteClinic ![scroll](./static/favicon-32x32.png)
+# CiteClinic ![overlaid link icons](./static/favicon-32x32.png)
 
-_CiteClinic_ is an in-development web application that allows users to easily **scrape citation information** from medical-focused research journal sites and **generate modifiable, styled UI citation components** for use on their sites.
+_CiteClinic_ allows you to easily **retrieve citation information** from any journal article with a valid Digital Object Identifier (DOI) and **generate modifiable, optionally styled UI citation components** for use on your site or CMS of choice.
 
-👩‍💻 **Intended Userbase:** Web developers/web content managers for research institutions or universities that frequently update publications for resident doctors or researchers.
+This is a tool for web developers or site administrators who frequently update publication listings for resident doctors, researchers, professors, etc.
 
-❗**Citation Format:** Because several of the supported journal sites are medical-focused, the citation format generated is in [Vancouver Style](https://library.viu.ca/citing/vancouver). This may change if there is specific user demand for other citation formats.
+CiteClinic interfaces with the [Crossref API](https://api.crossref.org/swagger-ui/index.html). Because of CiteClinic's focus on the medical community, it produces citations in [Vancouver Style](https://library.viu.ca/citing/vancouver). This may change if there is specific user demand for other citation formats.
 
-📖 **Currently supported journal sites include:**
+## User Flow
 
-1. New England Journal of Medicine
-2. PubMed
-3. Nature
-4. The Lancet
-5. JAMA Network
-6. British Medical Journal
-
-## Notable Features
-
-- Scraped citation data is editable and the preview of users' components will update as they are modified.
-- Component cosmetics (primarily colors and shadows) will be modifiable.
-- Users can scrape one URL at a time or provide a .csv file of multiple URLs to be scraped from asynchronously.
-- Pure citation text can be used if no styled component is desired.
-- A sleek and intuitive user interface.
+- Type or paste a valid DOI string into the input bar, then click the "CITE" button.
+- A citation is generated and housed under its own tab on the page. Tabs can be navigated between and deleted.
+- Edit the text fields to see live changes to your citation.
+- Modify border thickness, border color, and box shadow styles.
+- Copy the HTML and CSS of your styled citation, which are regenerated with each change.
+- Copy just the raw text, if desired.
+- You can have a maximum of 8 active citations on the page.
 
 ## Feature Requests / Issues
 
-Got a feature or specific support you'd like to see in ScholarFetch? Encountered a bug or issue? Post it on this repository's [issues](https://github.com/zenDev-2/CiteClinic/issues) section.
+If you have any feature requests or have encountered a bug, post them on this repository's [issues](https://github.com/zenDev-2/CiteClinic/issues) section.
 
----
-
-🛠 🟠️ Built with SvelteKit
+Happy citing!

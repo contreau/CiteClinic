@@ -72,12 +72,17 @@
 					<li>
 						Type or paste a valid DOI string into the input bar, then click the "CITE" button.
 					</li>
+					<li>
+						A citation is generated and housed under its own tab on the page. Tabs can be navigated
+						between and deleted.
+					</li>
 					<li>Edit the text fields to see live changes to your citation.</li>
 					<li>Modify border thickness, border color, and box shadow styles.</li>
 					<li>
 						Copy the HTML and CSS of your styled citation, which are regenerated with each change.
 					</li>
 					<li>Copy just the raw text, if desired.</li>
+					<li><b>You can have a maximum of 8 active citations on the page.</b></li>
 				</ol>
 
 				<p class="null-warning">
