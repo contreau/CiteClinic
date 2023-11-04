@@ -6,15 +6,13 @@
 	let mobileView: boolean;
 	onMount(() => {
 		if (window.innerWidth < 810) {
-			console.log(window.innerWidth);
 			mobileView = true;
 		} else mobileView = false;
 	});
 
 	// TODO:
 	// * Make UI adjustments given changes to server config
-	// * some kind of DOI validation (for '10.'), also trim big empty strings before submitting to server
-	// * reference the netlify project copy when building out the name cleaning algorithm
+	// * Make an example button on the front page that loads a DOI into the input box
 	// * Look into possibility of generating formatted citation using crossref: https://citation.crosscite.org/docs.html#sec-4-1
 
 	let input: HTMLInputElement;
@@ -90,35 +88,39 @@
 
 	// cite button handler
 	function citeButtonActions() {
+		const userInput = input.value.trim();
 		// console.log(`throttle is ${throttleRequest}`);
 		if ($scrapes.length === 1 && mobileView) {
 			showErrorUI(3000, 'Use CiteClinic on a desktop to generate more citations.');
 		} else if ($scrapes.length === 8) {
 			showErrorUI(3000, 'Maximum of 8 citations. Delete one to continue.');
-		} else if (input.value === null || input.value === '') {
+		} else if (userInput === '') {
 			buttonAnimation = 'rejectButton';
 			console.log('invalid input');
-			showErrorUI(2000, 'Missing fields.');
+			showErrorUI(2000, 'Enter a DOI.');
 			setTimeout(() => {
 				buttonAnimation = 'none';
 			}, 500);
 		} else if (!throttleRequest) {
-			throttleRequest = true;
-			submitDOI(input);
+			if (!userInput.includes('10.')) showErrorUI(2000, 'Invalid DOI.');
+			else {
+				throttleRequest = true;
+				submitDOI(userInput);
+			}
 		}
 	}
 
 	// server interaction
-	async function submitDOI(input: HTMLInputElement) {
+	async function submitDOI(userInput: string) {
 		loadSymbolClass1 = 'animation-loadUp';
 		loadSymbolClass2 = 'animation-loadDown';
-		const response = await fetch(`/api/crossref?doi=${input.value}`);
+		const response = await fetch(`/api/crossref?doi=${userInput}`);
 		if (response.status === 404) {
 			showErrorUI(3000, 'Invalid DOI.');
 			throttleRequest = false;
 			throw new Error('Invalid DOI.');
 		} else {
-			$urlHistory = [...$urlHistory, `https://doi.org/${input.value}`];
+			$urlHistory = [...$urlHistory, `https://doi.org/${userInput}`];
 			const data = await response.json();
 			displayResults(data);
 			setTimeout(() => {

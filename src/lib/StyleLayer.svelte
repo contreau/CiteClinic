@@ -18,6 +18,8 @@
 			`#component${itemIndex + 1}-${lastCheckedRadioButton}`
 		);
 		if (lastShadowInput !== null) lastShadowInput.checked = true;
+
+		findNulls(citationObject, nullFieldsLookup);
 	});
 
 	// Props
@@ -121,10 +123,25 @@
 		borderColor: '#000000',
 		boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
 	};
+	const nullFieldsLookup: Record<string, string> = {
+		pages: 'Page Range',
+		issue: 'Issue Number',
+		volume: 'Volume Number'
+	};
+
+	function findNulls(object: Citation, nullFieldsLookup: Record<string, string>) {
+		for (let key in object) {
+			if (object[key as keyof object] === null) {
+				nullFields = [...nullFields, nullFieldsLookup[key]];
+			}
+		}
+	}
+
 	let styleDropdownVisible: boolean = true;
 	let optionsText: string = 'Style Options';
 	let citationParagraph: HTMLParagraphElement;
 	let lastCheckedRadioButton: string;
+	let nullFields: string[] = [];
 </script>
 
 <div class="block-wrap">
@@ -263,6 +280,14 @@
 			}}>Copy CSS &lbrace; &rbrace;</button
 		>
 	</div>
+	{#if nullFields.length > 0}
+		<div class="null-fields-wrap">
+			<p><i class="fa-solid fa-triangle-exclamation" /> <b>Null Fields:</b> |</p>
+			<ul>
+				{#each nullFields as field}<li>{field} |</li>{/each}
+			</ul>
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -513,6 +538,29 @@
 		width: 150px;
 		height: 150px;
 		margin: 0 auto;
+	}
+
+	// Null Fields
+	.null-fields-wrap {
+		display: flex;
+		justify-content: center;
+		margin: 0 auto;
+		margin-bottom: 1.6rem;
+		padding: 0.5em 2em;
+		border-radius: 30px;
+		background-color: var(--nullfields);
+		width: fit-content;
+		color: #000000;
+		p,
+		ul {
+			margin: 0;
+		}
+		ul {
+			padding-left: 0.3em;
+			li {
+				display: inline;
+			}
+		}
 	}
 
 	@keyframes fadeIn {
