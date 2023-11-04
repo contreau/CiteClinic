@@ -5,6 +5,9 @@ export interface Citation {
 	publishYear: string;
 	authors: string[];
 	doi: string;
+	volume: string | null;
+	pages: string | null;
+	issue: string | null;
 	volumeAndPageRange: string;
 	journal: string;
 	journalAbbreviation: string;
