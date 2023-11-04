@@ -86,10 +86,11 @@
 				</ol>
 
 				<p class="null-warning">
-					<i class="fa-solid fa-triangle-exclamation" /> The "Authors" field will have some variance
-					in formatting. CiteClinic does its best to format author names to Vancouver style, but
-					it's not perfect.
-					<b>Review and edit your citations before exporting</b>.
+					<i class="fa-solid fa-triangle-exclamation" /> <b>PLEASE NOTE</b>
+					<i class="fa-solid fa-triangle-exclamation" /> <br />
+					CiteClinic will alert you if there is a <b>null</b> value for a field, meaning that it is
+					empty in the Crossref database.
+					<b>Review and make any desired edits to your citations before exporting</b>.
 				</p>
 			</section>
 
@@ -259,6 +260,7 @@
 	}
 
 	p.null-warning {
+		text-align: center;
 		background-color: rgb(252, 205, 17);
 		color: #000;
 		border-radius: 10px;

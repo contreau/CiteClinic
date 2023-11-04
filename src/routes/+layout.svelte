@@ -91,6 +91,7 @@
 		--accent: #2066ac;
 		--placeholder: #00000079;
 		--textarea: #fff;
+		--nullfields: #fccd11;
 	}
 	:root[data-theme='dark'] {
 		--text: #eef5fc;
@@ -100,6 +101,7 @@
 		--accent: #3f7fbf;
 		--placeholder: #ffffff87;
 		--textarea: #201f26;
+		--nullfields: #fccd11;
 	}
 
 	*,
@@ -206,6 +208,7 @@
 			margin: 0;
 			min-height: 42px;
 			width: 42px;
+			color: #fff;
 			font-weight: 600;
 			font-size: 1rem;
 			transition: all 0.4s;
