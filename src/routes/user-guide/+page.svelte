@@ -85,13 +85,23 @@
 					<li><b>You can have a maximum of 8 active citations on the page.</b></li>
 				</ol>
 
-				<p class="null-warning">
-					<i class="fa-solid fa-triangle-exclamation" /> <b>PLEASE NOTE</b>
-					<i class="fa-solid fa-triangle-exclamation" /> <br />
-					CiteClinic will alert you if there is a <b>null</b> value for a field, meaning that it is
-					empty in the Crossref database.
-					<b>Review and make any desired edits to your citations before exporting</b>.
-				</p>
+				<div class="null-warning">
+					<p>
+						<b><u>IMPORTANT NOTES</u></b>
+					</p>
+					<ul>
+						<li>
+							This tool is designed for <b>journal articles</b> – valid DOI strings for non-journal articles
+							may be rejected by CiteClinic's API configuration. An error message will flash upon submitting
+							such a DOI.
+						</li>
+						<li>
+							CiteClinic will alert you if there is a <b>null</b> value for a field, meaning that it
+							is empty in the Crossref database.
+							<b>Review and make any desired edits to your citations before exporting</b>.
+						</li>
+					</ul>
+				</div>
 			</section>
 
 			<hr class="section-break-symbol" />
@@ -188,8 +198,8 @@
 
 	.guide-content {
 		background-color: var(--background);
-		border-left: solid 1.5px var(--accent);
-		border-right: solid 1.5px var(--accent);
+		border-left: solid 0.5px var(--accent);
+		border-right: solid 0.5px var(--accent);
 		padding: 0 2em;
 	}
 
@@ -259,13 +269,24 @@
 		margin-top: 0;
 	}
 
-	p.null-warning {
-		text-align: center;
-		background-color: rgb(252, 205, 17);
+	.null-warning {
+		background-color: rgb(151, 201, 255);
 		color: #000;
 		border-radius: 10px;
 		margin: 0;
 		margin-top: 1.5rem;
-		padding: 0.4em;
+		padding: 0.6em 0.4em;
+
+		p {
+			padding: 0;
+			padding-bottom: 0.3em;
+			margin: 0;
+			text-align: center;
+		}
+
+		ul {
+			margin: 0;
+			padding-left: 1em;
+		}
 	}
 </style>
