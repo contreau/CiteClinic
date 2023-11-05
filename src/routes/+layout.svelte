@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { onNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	// TODO: uncomment this when ready for production on vercel
-	// import { dev } from '$app/environment';
-	// import { inject } from '@vercel/analytics';
-	// inject({ mode: dev ? 'development' : 'production' });
+	import { dev } from '$app/environment';
+	import { inject } from '@vercel/analytics';
+	inject({ mode: dev ? 'development' : 'production' });
 
 	onMount(() => {
 		html = document.querySelector('html');
@@ -36,7 +35,7 @@
 		}
 	}
 	let html: HTMLHtmlElement | null;
-	let themeIcon: string = 'fa-moon';
+	let themeIcon: string = 'fa-sun';
 
 	function setTheme() {
 		if (html?.dataset.theme === 'dark') {
@@ -154,7 +153,6 @@
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
-		// background-color: #032741;
 		background-color: var(--background);
 		box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
 			rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
@@ -242,7 +240,7 @@
 		text-align: center;
 		flex-shrink: 0; // sticks footer to bottom (see rule on main element)
 		background-color: var(--background);
-		border-top: solid 1.5px var(--accent);
+		border-top: solid 0.5px var(--accent);
 
 		p {
 			margin: 0;

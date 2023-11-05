@@ -175,7 +175,14 @@
 							</div>
 							<div class="grid-item">
 								<p class="input-label">Extra Information</p>
-								<textarea class="no-resize" spellcheck="false" readonly>DOI: {scrape.doi}</textarea>
+								<ul class="extra-info">
+									<li><b>DOI:</b> <u>{scrape.doi}</u></li>
+									<li><b>Journal:</b> <u>{scrape.journal}</u></li>
+									<li>
+										<b>Date of Publication:</b>
+										<u>{scrape.publishDate[1]}/{scrape.publishDate[2]}/{scrape.publishDate[0]}</u>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -333,6 +340,18 @@
 		}
 	}
 
+	ul.extra-info {
+		background-color: var(--textarea);
+		margin: 0;
+		padding: 0.5em 1em 0.5em 1em;
+		border-radius: 10px;
+		list-style-type: none;
+
+		li {
+			font-weight: 400;
+		}
+	}
+
 	.input-wrap {
 		position: relative;
 		display: block;
@@ -356,6 +375,7 @@
 	.input-label {
 		margin-top: 0;
 		margin-bottom: 0.5rem;
+		font-weight: 600;
 	}
 
 	@keyframes fadeIn {

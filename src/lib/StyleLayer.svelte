@@ -18,6 +18,7 @@
 			`#component${itemIndex + 1}-${lastCheckedRadioButton}`
 		);
 		if (lastShadowInput !== null) lastShadowInput.checked = true;
+		if (citationObject.stylesVisible) styleDropdownVisible = true;
 
 		findNulls(citationObject, nullFieldsLookup);
 	});
@@ -35,6 +36,7 @@
 	// toggles reveal of styling options
 	async function toggleStyleDropdown(lastCheckedRadioButton: string) {
 		styleDropdownVisible = !styleDropdownVisible;
+		citationObject.stylesVisible = !citationObject.stylesVisible;
 		await styleDropdownVisible;
 		const lastShadowInput: HTMLInputElement | null = document.querySelector(
 			`#component${itemIndex + 1}-${lastCheckedRadioButton}`
@@ -45,6 +47,7 @@
 	$: {
 		if (styleDropdownVisible) optionsText = 'Close Options';
 		else optionsText = 'Style Options';
+		// toggleStyleDropdown(lastCheckedRadioButton);
 	}
 
 	// copy raw text to clipboard
@@ -137,7 +140,7 @@
 		}
 	}
 
-	let styleDropdownVisible: boolean = true;
+	let styleDropdownVisible: boolean = false;
 	let optionsText: string = 'Style Options';
 	let citationParagraph: HTMLParagraphElement;
 	let lastCheckedRadioButton: string;
@@ -214,6 +217,7 @@
 							value="shadow1"
 							data-name="shadow1"
 							type="radio"
+							checked={citationObject.boxShadow === 'shadow1'}
 						/>
 						<label for={`component${itemIndex + 1}-shadow1`}>Shadow 1</label>
 					</div>
@@ -227,6 +231,7 @@
 							value="shadow2"
 							data-name="shadow2"
 							type="radio"
+							checked={citationObject.boxShadow === 'shadow2'}
 						/>
 						<label for={`component${itemIndex + 1}-shadow2`}>Shadow 2</label>
 					</div>
@@ -240,6 +245,7 @@
 							value="shadow3"
 							data-name="shadow3"
 							type="radio"
+							checked={citationObject.boxShadow === 'shadow3'}
 						/>
 						<label for={`component${itemIndex + 1}-shadow3`}>Shadow 3</label>
 					</div>
@@ -253,6 +259,7 @@
 							value="noShadow"
 							data-name="noShadow"
 							type="radio"
+							checked={citationObject.boxShadow === 'noShadow'}
 						/>
 						<label for={`component${itemIndex + 1}-noShadow`}>None</label>
 					</div>
@@ -280,6 +287,7 @@
 			}}>Copy CSS &lbrace; &rbrace;</button
 		>
 	</div>
+	<h3 class="citation-fields-title">Citation Fields</h3>
 	{#if nullFields.length > 0}
 		<div class="null-fields-wrap">
 			<p><i class="fa-solid fa-triangle-exclamation" /> <b>Null Fields:</b> |</p>
@@ -341,6 +349,7 @@
 	.btn-grad {
 		background-image: linear-gradient(to right, #1a2980 0%, #0bb6b3 51%, #1a2980 100%);
 		font-size: inherit;
+		font-weight: 600;
 		min-width: 160px;
 		border: solid 2px transparent;
 		margin: 0 auto;
@@ -434,7 +443,7 @@
 		width: 100%;
 		border-radius: 15px;
 		border: solid 1px;
-		color: #ffffff;
+		color: var(--text);
 	}
 
 	.style-option-title {
@@ -540,12 +549,23 @@
 		margin: 0 auto;
 	}
 
+	.block-wrap {
+		h3.citation-fields-title {
+			border-bottom: solid 1px var(--text);
+			border-radius: 0;
+			font-size: 1.4rem;
+			text-align: left;
+			max-width: 100%;
+			padding: 0;
+			margin-bottom: 0.8rem;
+		}
+	}
+
 	// Null Fields
 	.null-fields-wrap {
 		display: flex;
 		justify-content: center;
-		margin: 0 auto;
-		margin-bottom: 1.6rem;
+		margin: 1.5rem auto;
 		padding: 0.5em 2em;
 		border-radius: 30px;
 		background-color: var(--nullfields);

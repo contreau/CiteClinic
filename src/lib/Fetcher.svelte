@@ -10,11 +10,6 @@
 		} else mobileView = false;
 	});
 
-	// TODO:
-	// * Make UI adjustments given changes to server config
-	// * Make an example button on the front page that loads a DOI into the input box
-	// * Look into possibility of generating formatted citation using crossref: https://citation.crosscite.org/docs.html#sec-4-1
-
 	let input: HTMLInputElement;
 	let buttonClass = 'dormant';
 	let buttonAnimation = 'none';
@@ -129,6 +124,12 @@
 			}, 1300);
 		}
 	}
+
+	// loads example DOI into input
+	function loadDOIExample() {
+		input.value = '10.1056/NEJMoa2305032';
+		buttonClass = 'ready';
+	}
 </script>
 
 <div class="input-field">
@@ -141,7 +142,7 @@
 	/>
 
 	<button on:click={citeButtonActions} type="submit" class="submit {buttonClass} {buttonAnimation}"
-		>CITE <i class="fa-solid fa-angles-right" /></button
+		>CITE <i class="fa-solid fa-globe" /></button
 	>
 </div>
 
@@ -160,10 +161,13 @@
 	{/if}
 </div>
 
-{#if !$firstCitationMade}
+{#if $scrapes.length === 0}
 	<p class="new-user-message">
 		<em>New to CiteClinic? Check out the <a href="/user-guide">User Guide</a> first.</em>
 	</p>
+	<button on:click={loadDOIExample} class="citation-example"
+		>Load an example <i class="fa-solid fa-wand-magic-sparkles" /></button
+	>
 {/if}
 
 <style lang="scss">
@@ -323,7 +327,7 @@
 	}
 	.dormant {
 		color: #fff;
-		background-color: var(--primary);
+		background-color: var(--accent);
 		filter: none;
 	}
 
@@ -366,6 +370,19 @@
 		a {
 			transition: 0.2s all;
 			color: var(--blue);
+		}
+	}
+
+	.citation-example {
+		margin: 0 auto;
+		background-color: var(--accent);
+		color: #fff;
+		border-radius: 30px;
+		font-weight: 600;
+		margin-bottom: 3.5rem;
+		&:hover,
+		&:focus-visible {
+			background-color: var(--secondary);
 		}
 	}
 </style>
