@@ -55,7 +55,8 @@ export async function GET({ url }) {
 				journalAbbreviation: retrievedData['short-container-title'][0] + '.',
 				borderWidth: 0,
 				borderColor: '#000000',
-				boxShadow: 'shadow1'
+				boxShadow: 'shadow1',
+				stylesVisible: false
 			};
 			return json(citation);
 		}

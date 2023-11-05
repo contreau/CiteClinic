@@ -14,4 +14,5 @@ export interface Citation {
 	borderWidth: number;
 	borderColor: string;
 	boxShadow: string;
+	stylesVisible: boolean;
 }
