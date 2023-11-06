@@ -2,12 +2,12 @@
 	import Fetcher from '$lib/Fetcher.svelte';
 	import CitationDisplay from '$lib/CitationDisplay.svelte';
 	import { fade } from 'svelte/transition';
-	import { activeTabIndex } from '$lib/store';
+	import { activeTabIndex, scrapes } from '$lib/store';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
 		// retains active tab/content state when transitioning between user guide and main page
-		if ($activeTabIndex !== undefined) {
+		if ($activeTabIndex !== undefined && $scrapes.length !== 0) {
 			const activeTab = document.querySelector(`.tab-${$activeTabIndex}`);
 			const allTabContents: HTMLElement[] = Array.from(document.querySelectorAll('.section-wrap'));
 			const allTabButtons: HTMLElement[] = Array.from(document.querySelectorAll('.content-tab'));
