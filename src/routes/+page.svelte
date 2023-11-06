@@ -35,14 +35,14 @@
 	<title>Your Citations • CiteClinic</title>
 	<meta
 		name="description"
-		content="CiteClinic allows users to easily scrape citation information from medical journal sites and generate modifiable, styled UI components."
+		content="CiteClinic allows users to easily generate citation information from medical journal sites and create modifiable, styled UI components."
 	/>
 	<meta name="title" content="Generate Styled Medical Journal Citations • CiteClinic" />
 	<meta property="og:title" content="Generate Styled Medical Journal Citations • CiteClinic" />
 	<meta property="og:url" content="https://citeclinic.app" />
 	<meta
 		property="og:description"
-		content="CiteClinic allows users to easily scrape citation information from medical journal sites and generate modifiable, styled UI components."
+		content="CiteClinic allows users to easily generate citation information from medical journal sites and create modifiable, styled UI components."
 	/>
 </svelte:head>
 
