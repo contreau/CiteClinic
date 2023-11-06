@@ -454,6 +454,10 @@
 		margin-bottom: 0.8rem;
 	}
 
+	input[type='range'] {
+		cursor: pointer;
+	}
+
 	input[type='range']::-webkit-slider-runnable-track {
 		background-color: #fff;
 		border-radius: 30px;

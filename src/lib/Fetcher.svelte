@@ -165,7 +165,7 @@
 	<p class="new-user-message">
 		<em>New to CiteClinic? Check out the <a href="/user-guide">User Guide</a> first.</em>
 	</p>
-	<button on:click={loadDOIExample} class="citation-example"
+	<button on:click={loadDOIExample} type="button" class="citation-example"
 		>Load an example <i class="fa-solid fa-wand-magic-sparkles" /></button
 	>
 {/if}
@@ -319,6 +319,10 @@
 		}
 	}
 
+	.submit {
+		min-width: 146px;
+	}
+
 	// fetch button lights up when a source is selected / url is input
 	.ready {
 		color: #fff;
@@ -375,6 +379,7 @@
 
 	.citation-example {
 		margin: 0 auto;
+		min-width: 264px;
 		background-color: var(--accent);
 		color: #fff;
 		border-radius: 30px;

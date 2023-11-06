@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { onNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { dev } from '$app/environment';
-	import { inject } from '@vercel/analytics';
-	inject({ mode: dev ? 'development' : 'production' });
+	// import { dev } from '$app/environment';
+	// import { inject } from '@vercel/analytics';
+	// inject({ mode: dev ? 'development' : 'production' });
 
 	onMount(() => {
 		html = document.querySelector('html');
+		year = new Date().getFullYear();
 	});
 
 	// View Transition between pages (only works in Chrome rn)
@@ -23,19 +24,20 @@
 	});
 
 	import { page } from '$app/stores';
-	let buttonText: string = 'User Guide';
-	let buttonRoute: string = '/user-guide';
+	let pageText: string = 'User Guide';
+	let pageRoute: string = '/user-guide';
 	$: {
 		if ($page.route.id === '/user-guide') {
-			buttonText = 'Citations';
-			buttonRoute = '/';
+			pageText = 'Citations';
+			pageRoute = '/';
 		} else {
-			buttonText = 'User Guide';
-			buttonRoute = '/user-guide';
+			pageText = 'User Guide';
+			pageRoute = '/user-guide';
 		}
 	}
 	let html: HTMLHtmlElement | null;
 	let themeIcon: string = 'fa-sun';
+	let year: number = 2023;
 
 	function setTheme() {
 		if (html?.dataset.theme === 'dark') {
@@ -51,23 +53,28 @@
 <nav class="padding-container">
 	<div class="masthead">
 		<p class="logotext"><span>Cite</span>Clinic</p>
-		<img class="logo" src="/logo.svg" alt="Blue Cross" />
+		<img class="logo" height="45" width="45" src="/logo.svg" alt="Blue Cross" />
 	</div>
 	<div class="tagline">
 		<h1>Generate <span><em>styled</em></span> medical journal citations.</h1>
 	</div>
 
 	<div class="links">
-		<button on:click={setTheme} class="theme-switch"> <i class={`fa-solid ${themeIcon}`} /></button>
-		<a href={buttonRoute}><button class="user-guide"> {buttonText} </button></a>
-		<a href="https://github.com/zenDev-2/CiteClinic" target="#"><i class="fa-brands fa-github" /></a
+		<button on:click={setTheme} type="button" class="theme-switch" aria-label="Color Theme Toggle">
+			<i class={`fa-solid ${themeIcon}`} /></button
 		>
+		<a href={pageRoute} class="user-guide" aria-label={pageText}> {pageText} </a>
 	</div>
 </nav>
 <slot />
 <footer>
-	<img class="footer-img" src="/footer-img-min.png" alt="Wolf" />
-	<p>made by CK</p>
+	<img class="footer-img" width="22.5" height="22.5" src="/footer-img-min.png" alt="Wolf" />
+	<p>
+		<a href="https://github.com/zenDev-2/CiteClinic" target="#" aria-label="GitHub Repository"
+			>Made by CK</a
+		>
+		• &copy; {year}
+	</p>
 </footer>
 
 <style lang="scss" global>
@@ -88,6 +95,7 @@
 		--primary: #3c6e9f;
 		--secondary: #a9ccef;
 		--accent: #2066ac;
+		--span: #085bad;
 		--placeholder: #00000079;
 		--textarea: #fff;
 		--nullfields: #fccd11;
@@ -97,7 +105,8 @@
 		--background: #071727;
 		--primary: #6091c3;
 		--secondary: #103356;
-		--accent: #3f7fbf;
+		--accent: #085bad;
+		--span: #3c98f4;
 		--placeholder: #ffffff87;
 		--textarea: #201f26;
 		--nullfields: #fccd11;
@@ -135,7 +144,7 @@
 		font-size: 2rem;
 		font-weight: 600;
 		span {
-			color: var(--accent);
+			color: var(--span);
 		}
 	}
 
@@ -163,8 +172,8 @@
 		gap: 1rem;
 
 		img {
-			width: 100%;
-			max-width: 35px;
+			max-width: 100%;
+			height: auto;
 		}
 	}
 
@@ -173,7 +182,7 @@
 			font-size: clamp(1rem, 4vw, 1.6rem);
 			margin: 0;
 			span {
-				color: var(--accent);
+				color: var(--span);
 			}
 		}
 	}
@@ -182,14 +191,18 @@
 		display: flex;
 		align-items: center;
 		gap: 1.8rem;
-		button {
+
+		a.user-guide {
 			margin: 0;
+			min-width: 119px;
+			text-align: center;
+			text-decoration: none;
 			font-weight: 600;
 			font-size: 1rem;
 			transition: all 0.4s;
 			border: transparent;
 			border-radius: 10px;
-			padding: 0.5em;
+			padding: 0.35em;
 			background-color: var(--accent);
 			color: #fff;
 			&:hover {
@@ -205,7 +218,7 @@
 		button.theme-switch {
 			margin: 0;
 			min-height: 42px;
-			width: 42px;
+			min-width: 42px;
 			color: #fff;
 			font-weight: 600;
 			font-size: 1rem;
@@ -215,19 +228,13 @@
 			padding: 0.5em;
 			background-color: var(--accent);
 			cursor: pointer;
+			&:hover {
+				cursor: pointer;
+				background-color: var(--secondary);
+			}
 			&:focus-visible {
 				outline: transparent;
 				background-color: var(--secondary);
-			}
-		}
-		a {
-			color: var(--accent);
-			.fa-github {
-				font-size: 2.5rem;
-				transition: 0.2s all;
-				&:hover {
-					color: var(--secondary);
-				}
 			}
 		}
 	}
@@ -249,13 +256,17 @@
 		}
 
 		img {
-			max-width: 22.5px;
+			max-width: 100%;
 			height: auto;
+		}
+
+		a {
+			color: var(--blue);
 		}
 	}
 
 	@media (min-width: 900px) {
-		button.user-guide {
+		a.user-guide {
 			min-width: 119px;
 		}
 	}

@@ -268,7 +268,8 @@
 	}
 
 	.citation-display-area {
-		transition: all 0.5s;
+		min-height: 148px;
+		transition: max-width 0.5s;
 		border: solid 0.5px transparent;
 		background-color: var(--secondary);
 		-webkit-backdrop-filter: brightness(75%);

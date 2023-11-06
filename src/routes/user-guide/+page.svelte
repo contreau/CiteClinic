@@ -60,10 +60,12 @@
 				<p>
 					CiteClinic interfaces with the <a
 						href="https://api.crossref.org/swagger-ui/index.html"
-						target="#">Crossref API</a
+						target="#"
+						aria-label="Crossref API">Crossref API</a
 					>. Because of CiteClinic's focus on the medical community, it produces citations in
-					<a href="https://library.viu.ca/citing/vancouver" target="#">Vancouver Style</a>. This may
-					change if there is specific user demand for other citation formats.
+					<a href="https://library.viu.ca/citing/vancouver" target="#" aria-label="Vancouver Style"
+						>Vancouver Style</a
+					>. This may change if there is specific user demand for other citation formats.
 				</p>
 
 				<p><b>User Flow:</b></p>
@@ -113,8 +115,12 @@
 					editing the text in the field below to see changes in the live display.
 				</p>
 				<div class="example-edit">
-					<p><b>Edit this field</b></p>
-					<textarea spellcheck="false" bind:value={exampleInput} />
+					<p id="modifiable-field"><b>Edit this field</b></p>
+					<textarea
+						aria-labelledby="modifiable-field"
+						spellcheck="false"
+						bind:value={exampleInput}
+					/>
 				</div>
 
 				<p class="live-display-subtitle"><b>Live Display</b></p>
@@ -131,7 +137,8 @@
 					Got a feature or specific support you'd like to see in CiteClinic? Encountered a bug or
 					issue? Post it on the GitHub repository's <a
 						href="https://github.com/zenDev-2/CiteClinic/issues"
-						target="#">issues section</a
+						target="#"
+						aria-label="GitHub Repository Issues Section">issues section</a
 					>.
 				</p>
 			</section>
