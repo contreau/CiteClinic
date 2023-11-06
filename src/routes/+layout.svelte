@@ -70,7 +70,7 @@
 <footer>
 	<img class="footer-img" width="22.5" height="22.5" src="/footer-img-min.png" alt="Wolf" />
 	<p>
-		<a href="https://github.com/zenDev-2/CiteClinic" target="#" aria-label="GitHub Repository"
+		<a href="https://github.com/zenDev-2/CiteClinic" target="#" aria-label="Made by CK"
 			>Made by CK</a
 		>
 		• &copy; {year}

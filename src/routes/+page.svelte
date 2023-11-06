@@ -21,7 +21,14 @@
 			allTabButtons.map((button) => button.classList.remove('active-tab'));
 			activeTab?.classList.add('active-tab');
 		}
+		// Initial fade-in on first site visit
+		firstVisit = !sessionStorage.getItem('visited');
+		sessionStorage.setItem('visited', 'true');
+		if (!firstVisit) initialLoad = 'none';
 	});
+
+	let firstVisit: boolean;
+	let initialLoad: string = 'fadeIn';
 </script>
 
 <svelte:head>
@@ -40,7 +47,7 @@
 </svelte:head>
 
 <main in:fade={{ duration: 200, delay: 200 }} out:fade={{ duration: 200 }}>
-	<div class="content-grid">
+	<div class={`content-grid ${initialLoad}`}>
 		<div class="grid-item item1">
 			<Fetcher />
 		</div>
@@ -61,5 +68,16 @@
 	main {
 		padding-top: 0.5em;
 		flex: 1 0 auto; // sticks footer to bottom
+	}
+
+	.fadeIn {
+		opacity: 0;
+		animation: fadeIn 300ms linear forwards;
+	}
+
+	@keyframes fadeIn {
+		100% {
+			opacity: 1;
+		}
 	}
 </style>
