@@ -287,12 +287,23 @@
 			}}>Copy CSS &lbrace; &rbrace;</button
 		>
 	</div>
+
 	<h3 class="citation-fields-title">Citation Fields</h3>
 	{#if nullFields.length > 0}
 		<div class="null-fields-wrap">
-			<p><i class="fa-solid fa-triangle-exclamation" /> <b>Null Fields:</b> |</p>
+			<p><i class="fa-solid fa-triangle-exclamation" /> <b>Null (Missing) Fields:</b></p>
 			<ul>
-				{#each nullFields as field}<li>{field} |</li>{/each}
+				{#each nullFields as field, i}
+					{#if i === nullFields.length - 1}
+						<li>
+							{field}
+						</li>
+					{:else}
+						<li>
+							{field},
+						</li>
+					{/if}
+				{/each}
 			</ul>
 		</div>
 	{/if}
@@ -300,6 +311,8 @@
 
 <style lang="scss">
 	.block-wrap {
+		opacity: 0;
+		animation: fadeIn 0.2s 0.2s ease-in forwards;
 		h3 {
 			font-size: 1.5rem;
 			text-align: center;
@@ -584,6 +597,13 @@
 			li {
 				display: inline;
 			}
+		}
+	}
+
+	@media (max-width: 550px) {
+		.null-fields-wrap {
+			display: block;
+			text-align: center;
 		}
 	}
 

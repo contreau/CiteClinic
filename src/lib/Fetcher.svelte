@@ -76,7 +76,7 @@
 			buttonClass = 'dormant';
 			input.value = '';
 			input.focus();
-			console.log('Fetched Data:', $scrapes);
+			// console.log('Fetched Data:', $scrapes);
 			setNavTabsOnLoad();
 		}
 	}
@@ -162,16 +162,22 @@
 </div>
 
 {#if $scrapes.length === 0}
-	<p class="new-user-message">
-		<em>New to CiteClinic? Check out the <a href="/user-guide">User Guide</a> first.</em>
-	</p>
 	<button on:click={loadDOIExample} type="button" class="citation-example"
-		>Load an example <i class="fa-solid fa-wand-magic-sparkles" /></button
+		>See an example <i class="fa-solid fa-wand-magic-sparkles" /></button
 	>
+	<!-- <p class="new-user-message">
+		<em>New? Start with the <a href="/user-guide">User Guide</a>.</em>
+	</p> -->
 {/if}
 
 <style lang="scss">
 	// Block with loading animation + error messaging
+	@media (min-width: 500px) {
+		.loading-block {
+			margin-bottom: 4.5rem;
+		}
+	}
+
 	.loading-block {
 		padding-top: 1.5em;
 		padding-bottom: 1em;
@@ -366,25 +372,26 @@
 		}
 	}
 
-	.new-user-message {
-		text-align: center;
-		margin-top: 0;
+	// .new-user-message {
+	// 	text-align: center;
+	// 	margin-top: 0;
+	// 	margin-bottom: 3.5rem;
 
-		font-size: 1.05rem;
-		a {
-			transition: 0.2s all;
-			color: var(--blue);
-		}
-	}
+	// 	font-size: 1.05rem;
+	// 	a {
+	// 		transition: 0.2s all;
+	// 		color: var(--blue);
+	// 	}
+	// }
 
 	.citation-example {
 		margin: 0 auto;
+		// margin-bottom: 6rem;
 		min-width: 264px;
 		background-color: var(--accent);
 		color: #fff;
 		border-radius: 30px;
 		font-weight: 600;
-		margin-bottom: 3.5rem;
 		&:hover,
 		&:focus-visible {
 			background-color: var(--secondary);

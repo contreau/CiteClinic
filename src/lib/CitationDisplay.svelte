@@ -126,11 +126,7 @@
 
 <section class="citation-display-area {$expandedClass}">
 	<p class="default-display-icon"><i class="fa-solid fa-bookmark" /></p>
-	{#if $scrapes.length === 0}
-		<div class="default-display">
-			<p class="default-display-message">Create your first citation.</p>
-		</div>
-	{:else}
+	{#if $scrapes.length > 0}
 		<div class="wrap">
 			<section class="display">
 				{#each $scrapes as scrape, i}
@@ -180,7 +176,15 @@
 									<li><b>Journal:</b> <u>{scrape.journal}</u></li>
 									<li>
 										<b>Date of Publication:</b>
-										<u>{scrape.publishDate[1]}/{scrape.publishDate[2]}/{scrape.publishDate[0]}</u>
+										{#if scrape.publishDate.length === 2}
+											<u>{scrape.publishDate[1]}/{scrape.publishDate[0]}</u>
+										{:else if scrape.publishDate.length === 3}
+											<u
+												>{scrape.publishDate[1]}/{scrape.publishDate[2]}/{scrape.publishDate[0]}
+											</u>
+										{:else}
+											<u>{scrape.publishDate[0]}</u>
+										{/if}
 									</li>
 								</ul>
 							</div>
@@ -199,7 +203,6 @@
 		align-items: center;
 		gap: 0.6rem;
 		margin: 0 auto;
-		min-height: 40px;
 		transition: min-width 0.3s;
 	}
 
@@ -270,9 +273,8 @@
 	.citation-display-area {
 		min-height: 148px;
 		transition: max-width 0.5s;
-		border: solid 0.5px transparent;
-		background-color: var(--secondary);
-		-webkit-backdrop-filter: brightness(75%);
+		background-color: var(--background);
+		--webkit-backdrop-filter: brightness(75%);
 		backdrop-filter: brightness(65%);
 		max-width: 650px;
 		border-radius: 20px;
@@ -280,22 +282,18 @@
 		width: 100%; // will shrink if removed bc it's a flex item
 	}
 
-	.expanded {
-		border: none;
-		max-width: 100%;
-		padding: 0.5em 5em 2em 5em;
-		border-radius: 0;
+	@media (max-width: 1200px) {
+		.citation-display-area {
+			margin-bottom: 3rem;
+		}
 	}
 
-	// Display with citations
-	.default-display {
-		p {
-			text-align: center;
-		}
-		p.default-display-message {
-			font-size: 1.25rem;
-			font-weight: 600;
-		}
+	.expanded {
+		border: none;
+		border-top: solid 1.5px var(--accent);
+		max-width: 100%;
+		padding: 0em 5em 2em 5em;
+		border-radius: 0;
 	}
 
 	// Populated citation display container
@@ -308,6 +306,8 @@
 	}
 
 	.block--edit {
+		opacity: 0;
+		animation: fadeIn 0.2s 0.2s ease-in forwards;
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: 1.2rem;
@@ -317,6 +317,7 @@
 		text-align: center;
 		font-size: 1.4rem;
 		margin-bottom: 0;
+		margin-top: 2.5rem;
 		color: var(--blue);
 		filter: drop-shadow(0 0 0.3em var(--blue));
 	}
@@ -325,7 +326,9 @@
 		background-color: var(--textarea);
 		color: var(--text);
 		display: block;
-		font-size: 0.9rem;
+		font-size: 1rem;
+		font-family: system-ui;
+		line-height: 1.6;
 		width: 100%;
 		margin-bottom: 0.5rem;
 		resize: vertical;

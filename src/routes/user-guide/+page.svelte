@@ -136,7 +136,7 @@
 				<p>
 					Got a feature or specific support you'd like to see in CiteClinic? Encountered a bug or
 					issue? Post it on the GitHub repository's <a
-						href="https://github.com/zenDev-2/CiteClinic/issues"
+						href="https://github.com/contreau/CiteClinic/issues"
 						target="#"
 						aria-label="GitHub Repository Issues Section">issues section</a
 					>.
@@ -153,6 +153,7 @@
 	}
 	h2 {
 		text-align: center;
+		color: var(--span);
 	}
 
 	h3 {
@@ -240,11 +241,18 @@
 		}
 	}
 
+	@media (max-width: 620px) {
+		.extra-padding-container {
+			padding: 0 0em;
+		}
+	}
+
 	textarea {
 		background-color: var(--textarea);
 		color: var(--text);
 		display: block;
-		font-size: 0.9rem;
+		font-size: 1rem;
+		font-family: system-ui;
 		width: 100%;
 		margin-bottom: 0.5rem;
 		resize: none;
@@ -278,11 +286,12 @@
 
 	.null-warning {
 		background-color: rgb(151, 201, 255);
+		background-color: var(--nullfields);
 		color: #000;
 		border-radius: 10px;
 		margin: 0;
 		margin-top: 1.5rem;
-		padding: 0.6em 0.4em;
+		padding: 0.6em 1em;
 
 		p {
 			padding: 0;

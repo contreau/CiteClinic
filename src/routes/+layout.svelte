@@ -68,7 +68,6 @@
 </nav>
 <slot />
 <footer>
-	<img class="footer-img" width="22.5" height="22.5" src="/footer-img-min.png" alt="Wolf" />
 	<p>
 		<a href="https://conorkelley.me" target="#" aria-label="Made by CK">Made by CK</a>
 		• &copy; {year}
@@ -100,7 +99,7 @@
 	}
 	:root[data-theme='dark'] {
 		--text: #eef5fc;
-		--background: #071727;
+		--background: #081018;
 		--primary: #6091c3;
 		--secondary: #103356;
 		--accent: #085bad;
@@ -166,8 +165,7 @@
 		justify-content: space-between;
 		width: 100%;
 		background-color: var(--background);
-		box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
-			rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+		border-bottom: solid 0.5px var(--accent);
 	}
 	.masthead {
 		display: flex;
