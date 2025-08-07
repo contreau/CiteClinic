@@ -69,8 +69,8 @@
 <slot />
 <footer>
 	<p>
-		<a href="https://conorkelley.me" target="#" aria-label="Made by CK">Made by CK</a>
-		• &copy; {year}
+		&copy; {year} •
+		<a href="https://conorkelley.me" target="#" aria-label="Made by CK"> Conor Kelley</a>
 	</p>
 </footer>
 
