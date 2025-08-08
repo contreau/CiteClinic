@@ -6,7 +6,7 @@ const config = {
 	preprocess: preprocess({ scss: 'true' }),
 	kit: {
 		adapter: adapter({
-			runtime: 'nodejs18.x'
+			runtime: 'nodejs20.x'
 		})
 	}
 };
